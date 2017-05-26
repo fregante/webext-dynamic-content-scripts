@@ -26,7 +26,7 @@
     "watch:xo": "onchange 'src/*.js' --initial -- xo --fix",
     "watch:rollup": "npm run build -- --watch",
     "watch": "npm run watch:rollup | npm run watch:xo",
-    "build": "rollup -c node:webext --name injectContentScripts --input src/index.js --output dist/webext-dynamic-content-scripts.js",
+    "build": "rollup -c node:webext --name injectContentScripts --banner //\\ https://github.com/bfred-it/webext-dynamic-content-scripts --input src/index.js --output dist/webext-dynamic-content-scripts.js",
     "test": "xo"
   },
   "xo": {

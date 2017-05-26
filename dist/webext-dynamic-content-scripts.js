@@ -1,3 +1,4 @@
+// https://github.com/bfred-it/webext-dynamic-content-scripts
 var injectContentScripts = (function () {
 'use strict';
 

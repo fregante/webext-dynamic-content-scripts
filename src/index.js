@@ -25,11 +25,6 @@ async function injectContentScript(script, tabId) {
 }
 
 async function injectContentScripts(tab) {
-	// Exit if already injected
-	try {
-		return await pingContentScript(tab.id || tab);
-	} catch (err) {}
-
 	// Get the tab object if we don't have it already
 	if (!tab.id) {
 		tab = await new Promise(resolve => chrome.tabs.get(tab, resolve));
@@ -49,9 +44,16 @@ async function injectContentScripts(tab) {
 	}, resolve));
 	logRuntimeErrors();
 
-	if (isPermitted) {
-		chrome.runtime.getManifest().content_scripts.forEach(s => injectContentScript(s, tab.id));
+	if (!isPermitted) {
+		return;
 	}
+
+	// Exit if already injected
+	try {
+		return await pingContentScript(tab.id || tab);
+	} catch (err) {}
+
+	chrome.runtime.getManifest().content_scripts.forEach(s => injectContentScript(s, tab.id));
 }
 
 export default function (tab = false) {

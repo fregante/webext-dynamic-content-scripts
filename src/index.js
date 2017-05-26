@@ -36,22 +36,22 @@ async function injectContentScripts(tab) {
 		logRuntimeErrors();
 	}
 
-	// Verify that we have permission to the current tab
-	// Url is available only with `tabs` permission.
-	// If that's missing, you'll see errors in background.js's console.
-	// It's fine.
-	if (tab.url) {
-		const isPermitted = await new Promise(resolve => chrome.permissions.contains({
-			origins: [new URL(tab.url).origin + '/']
-		}, resolve));
-		logRuntimeErrors();
-
-		if (!isPermitted) {
-			return;
-		}
+	// If we don't have the URL, we definitely can't access it.
+	if (!tab.url) {
+		return;
 	}
 
-	chrome.runtime.getManifest().content_scripts.forEach(s => injectContentScript(s, tab.id));
+	// We might just get the url because of the `tabs` permission,
+	// not necessarily because we have access to the origin.
+	// This will explicitly verify this permission.
+	const isPermitted = await new Promise(resolve => chrome.permissions.contains({
+		origins: [new URL(tab.url).origin + '/']
+	}, resolve));
+	logRuntimeErrors();
+
+	if (isPermitted) {
+		chrome.runtime.getManifest().content_scripts.forEach(s => injectContentScript(s, tab.id));
+	}
 }
 
 export default function (tab = false) {

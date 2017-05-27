@@ -2,7 +2,7 @@
 
 > Automatically inject your `content_scripts` on custom domains.
 
-This is useful when you add extra domains via `chrome.permission`. For example: https://github.com/npmhub/npmhub/issues/29
+This is useful when you add extra domains via `chrome.permission`. For example [to support GitHub Enterprise](https://github.com/npmhub/npmhub/issues/29)
 
 [![Travis build status](https://api.travis-ci.org/bfred-it/webext-dynamic-content-scripts.svg?branch=master)](https://travis-ci.org/bfred-it/webext-dynamic-content-scripts)
 [![npm version](https://img.shields.io/npm/v/webext-dynamic-content-scripts.svg)](https://www.npmjs.com/package/webext-dynamic-content-scripts)

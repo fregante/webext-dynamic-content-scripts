@@ -9,19 +9,8 @@ function logRuntimeErrors() {
 async function injectContentScript(script, tabId) {
 	const allFrames = script.all_frames;
 	const runAt = script.run_at;
-
-	// Flatten file list
-	const list = [
-		...script.css.map(file => ({file, fn: 'insertCSS'})),
-		...script.js.map(file => ({file, fn: 'executeScript'}))
-	];
-
-	// Guarantee execution order
-	for (const {file, fn} of list) {
-		/* eslint no-await-in-loop: 0 */ // We actually need the loop to wait
-		await new Promise(resolve => chrome.tabs[fn](tabId, {file, allFrames, runAt}, resolve));
-		logRuntimeErrors(); // TODO: should errors stop the execution instead?
-	}
+	script.css.forEach(file => chrome.tabs.insertCSS(tabId, {file, allFrames, runAt}, logRuntimeErrors));
+	script.js.forEach(file => chrome.tabs.executeScript(tabId, {file, allFrames, runAt}, logRuntimeErrors));
 }
 
 async function injectContentScripts(tab) {

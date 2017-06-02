@@ -1,6 +1,9 @@
 // https://github.com/bfred-it/webext-dynamic-content-scripts
-var injectContentScripts = (function () {
-'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.injectContentScripts = factory());
+}(this, (function () { 'use strict';
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -101,4 +104,4 @@ var index = function (tab = false) {
 
 return index;
 
-}());
+})));

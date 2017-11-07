@@ -44,6 +44,6 @@
     "xo": "^0.18.2"
   },
   "dependencies": {
-    "webext-content-script-ping": "^1.0.1"
+    "webext-content-script-ping": "github:bfred-it/webext-content-script-ping#debug"
   }
 }

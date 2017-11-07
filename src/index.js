@@ -39,20 +39,30 @@ async function injectContentScripts(tab) {
 
 	// Exit if already injected
 	try {
+		console.log('webext-dynamic-content-scripts: will ping');
+		console.log(tab.id || tab);
 		return await pingContentScript(tab.id || tab);
-	} catch (err) {}
+	} catch (err) {
+		console.log('webext-dynamic-content-scripts: no ping back', err);
+	}
 
+	console.log('webext-dynamic-content-scripts: injecting');
 	chrome.runtime.getManifest().content_scripts.forEach(s => injectContentScript(s, tab.id));
 }
 
 export default function (tab = false) {
 	if (tab === false) {
+		console.log('webext-dynamic-content-scripts: will inject scripts on load');
 		chrome.tabs.onUpdated.addListener((tabId, {status}) => {
 			if (status === 'loading') {
+				console.log('webext-dynamic-content-scripts: will inject scripts, now loading');
+				console.log(tabId);
 				injectContentScripts(tabId);
 			}
 		});
 	} else {
+		console.log('webext-dynamic-content-scripts: will inject scripts');
+		console.log(tab);
 		injectContentScripts(tab);
 	}
 }

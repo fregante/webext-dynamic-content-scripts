@@ -42,8 +42,5 @@
     "rollup-config-webext": "^1.1.0",
     "rollup-watch": "^3.2.2",
     "xo": "^0.18.2"
-  },
-  "dependencies": {
-    "webext-content-script-ping": "github:bfred-it/webext-content-script-ping#debug"
   }
 }

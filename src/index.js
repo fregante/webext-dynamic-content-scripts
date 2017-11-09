@@ -4,8 +4,9 @@ async function p(fn, ...args) {
 	return new Promise((resolve, reject) => fn(...args, r => {
 		if (chrome.runtime.lastError) {
 			reject(chrome.runtime.lastError);
+		} else {
+			resolve(r);
 		}
-		resolve(r);
 	}));
 }
 
@@ -30,8 +31,12 @@ export default async function injectContentScripts(tab = false) {
 			for (const group of chrome.runtime.getManifest().content_scripts) {
 				const allFrames = group.all_frames;
 				const runAt = group.run_at;
-				group.css.forEach(file => p(chrome.tabs.insertCSS, tabId, {file, allFrames, runAt}));
-				group.js.forEach(file => p(chrome.tabs.executeScript, tabId, {file, allFrames, runAt}));
+				for (const file of group.css) {
+					p(chrome.tabs.insertCSS, tabId, {file, allFrames, runAt});
+				}
+				for (const file of group.js) {
+					p(chrome.tabs.executeScript, tabId, {file, allFrames, runAt});
+				}
 			}
 		}
 	} catch (err) {

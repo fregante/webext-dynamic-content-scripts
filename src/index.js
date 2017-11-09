@@ -1,6 +1,4 @@
-// Mark this script as loaded
-// This is only meaningful when this module is loaded as a content_script
-document.__wasContentScriptLoaded = true;
+import pingContentScript from 'webext-content-script-ping';
 
 async function p(fn, ...args) {
 	return new Promise((resolve, reject) => fn(...args, r => {
@@ -28,11 +26,7 @@ export default async function injectContentScripts(tab = false) {
 	// Really inject scripts on the specified tab
 	try {
 		const tabId = tab.id || tab;
-		const [hasScriptAlready] = await p(chrome.tabs.executeScript, tabId, {
-			code: 'document.__wasContentScriptLoaded',
-			runAt: 'document_start'
-		});
-		if (!hasScriptAlready) {
+		if (!await pingContentScript(tabId)) {
 			for (const group of chrome.runtime.getManifest().content_scripts) {
 				const allFrames = group.all_frames;
 				const runAt = group.run_at;

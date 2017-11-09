@@ -36,6 +36,9 @@
       "webextensions"
     ]
   },
+  "dependencies": {
+    "webext-content-script-ping": "^2.0.0-0"
+  },
   "devDependencies": {
     "onchange": "^3.2.0",
     "rollup": "^0.41.6",

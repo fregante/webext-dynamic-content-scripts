@@ -1,5 +1,7 @@
 import pingContentScript from 'webext-content-script-ping';
 
+const contextMenuId = 'webext-dynamic-content-scripts:add-permission';
+
 async function p(fn, ...args) {
 	return new Promise((resolve, reject) => fn(...args, r => {
 		if (chrome.runtime.lastError) {
@@ -44,17 +46,17 @@ export function toFutureTabs() {
 	});
 }
 
-const contextMenuId = 'webext-dynamic-content-scripts:add-permission';
+export function addPermissionContextMenu(options = {}) {
+	const {name: extensionName} = chrome.runtime.getManifest();
 
-function getMenuLabel() {
-	const manifest = chrome.runtime.getManifest();
-	return `Enable ${manifest.name} on this domain`;
-}
+	options = Object.assign({
+		title: `Enable ${extensionName} on this domain`,
+		reloadOnSuccess: true
+	}, options);
 
-export function addPermissionContextMenu(title = getMenuLabel()) {
 	chrome.contextMenus.create({
 		id: contextMenuId,
-		title,
+		title: options.title,
 		contexts: ['page_action'],
 		documentUrlPatterns: [
 			'http://*/*',
@@ -72,7 +74,7 @@ export function addPermissionContextMenu(title = getMenuLabel()) {
 			}, granted => {
 				if (chrome.runtime.lastError) {
 					alert(`Error: ${chrome.runtime.lastError.message}`);
-				} else if (granted && confirm('Do you want to reload this page to apply Refined GitHub?')) {
+				} else if (granted && options.reloadOnSuccess && confirm(`Do you want to reload this page to apply ${extensionName}?`)) {
 					chrome.tabs.reload(tabId);
 				}
 			});

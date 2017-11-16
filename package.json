@@ -37,7 +37,7 @@
     ]
   },
   "dependencies": {
-    "webext-content-script-ping": "^2.0.0-0"
+    "webext-content-script-ping": "^2.0.1"
   },
   "devDependencies": {
     "onchange": "^3.2.0",

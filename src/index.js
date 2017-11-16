@@ -10,16 +10,24 @@ async function p(fn, ...args) {
 	}));
 }
 
-export async function addToTab(tab = false) {
-	if (tab === false) {
+export async function addToTab(tab, contentScripts) {
+	if (typeof tab !== 'object' && typeof tab !== 'number') {
 		throw new TypeError('Specify a Tab or tabId');
+	}
+
+	if (contentScripts === false) {
+		// Get all scripts from manifest.json
+		contentScripts = chrome.runtime.getManifest().content_scripts;
+	} else if (!Array.isArray(contentScripts)) {
+		// Single script object, make it an array
+		contentScripts = [contentScripts];
 	}
 
 	try {
 		const tabId = tab.id || tab;
 		if (!await pingContentScript(tabId)) {
 			const injections = [];
-			for (const group of chrome.runtime.getManifest().content_scripts) {
+			for (const group of contentScripts) {
 				const allFrames = group.all_frames;
 				const runAt = group.run_at;
 				for (const file of group.css) {
@@ -37,10 +45,10 @@ export async function addToTab(tab = false) {
 	}
 }
 
-export function addToFutureTabs() {
+export function addToFutureTabs(scripts) {
 	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
 		if (status === 'loading') {
-			addToTab(tabId);
+			addToTab(tabId, scripts);
 		}
 	});
 }

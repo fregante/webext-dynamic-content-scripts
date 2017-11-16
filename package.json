@@ -1,6 +1,6 @@
 {
   "name": "webext-dynamic-content-scripts",
-  "version": "5.0.0-0",
+  "version": "5.0.0-1",
   "description": "Automatically inject your `content_scripts` on custom domains.",
   "license": "MIT",
   "repository": "bfred-it/webext-dynamic-content-scripts",

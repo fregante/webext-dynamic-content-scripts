@@ -18,16 +18,18 @@ export async function addToTab(tab = false) {
 	try {
 		const tabId = tab.id || tab;
 		if (!await pingContentScript(tabId)) {
+			const injections = [];
 			for (const group of chrome.runtime.getManifest().content_scripts) {
 				const allFrames = group.all_frames;
 				const runAt = group.run_at;
 				for (const file of group.css) {
-					p(chrome.tabs.insertCSS, tabId, {file, allFrames, runAt});
+					injections.push(p(chrome.tabs.insertCSS, tabId, {file, allFrames, runAt}));
 				}
 				for (const file of group.js) {
-					p(chrome.tabs.executeScript, tabId, {file, allFrames, runAt});
+					injections.push(p(chrome.tabs.executeScript, tabId, {file, allFrames, runAt}));
 				}
 			}
+			return Promise.all(injections);
 		}
 	} catch (err) {
 		// Probably the domain isn't permitted.

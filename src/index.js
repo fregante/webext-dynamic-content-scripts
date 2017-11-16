@@ -10,21 +10,11 @@ async function p(fn, ...args) {
 	}));
 }
 
-function injectContentScriptsOnNewTabs() {
-	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
-		if (status === 'loading') {
-			injectContentScripts(tabId);
-		}
-	});
-}
-
-export default async function injectContentScripts(tab = false) {
-	// Enable auto-mode
+export async function addToTab(tab = false) {
 	if (tab === false) {
-		return injectContentScriptsOnNewTabs();
+		throw new TypeError('Specify a Tab or tabId');
 	}
 
-	// Really inject scripts on the specified tab
 	try {
 		const tabId = tab.id || tab;
 		if (!await pingContentScript(tabId)) {
@@ -44,3 +34,16 @@ export default async function injectContentScripts(tab = false) {
 		// It's easier to catch this than do 2 queries
 	}
 }
+
+export function addToFutureTabs() {
+	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
+		if (status === 'loading') {
+			addToTab(tabId);
+		}
+	});
+}
+
+export default {
+	addToTab,
+	addToFutureTabs
+};

@@ -94,12 +94,16 @@ In combination with [`webext-domain-permission-toggle`](https://github.com/bfred
 
 **manifest.json**
 
-```json
+```js
 {
 	"permissions": [
 		"https://github.com/*",
-		"contextMenus"
+		"contextMenus",
+		"activeTab" // Required for Firefox support (webext-domain-permission-toggle)
 	],
+	"browser_action": { // Required for Firefox support (webext-domain-permission-toggle)
+		"default_icon": "icon.png"
+	},
 	"optional_permissions": [
 		"http://*/*",
 		"https://*/*"

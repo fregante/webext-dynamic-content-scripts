@@ -15,7 +15,7 @@ export async function addToTab(tab, contentScripts) {
 		throw new TypeError('Specify a Tab or tabId');
 	}
 
-	if (contentScripts === false) {
+	if (!contentScripts) {
 		// Get all scripts from manifest.json
 		contentScripts = chrome.runtime.getManifest().content_scripts;
 	} else if (!Array.isArray(contentScripts)) {

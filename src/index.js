@@ -10,21 +10,10 @@ async function p(fn, ...args) {
 	}));
 }
 
-function injectContentScriptsOnNewTabs() {
-	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
-		if (status === 'loading') {
-			injectContentScripts(tabId);
-		}
-	});
-}
-
-export default async function injectContentScripts(tab = false) {
-	// Enable auto-mode
+export async function toTab(tab = false) {
 	if (tab === false) {
-		return injectContentScriptsOnNewTabs();
+		throw new TypeError('Specify a Tab or tabId');
 	}
-
-	// Really inject scripts on the specified tab
 	try {
 		const tabId = tab.id || tab;
 		if (!await pingContentScript(tabId)) {
@@ -44,3 +33,53 @@ export default async function injectContentScripts(tab = false) {
 		// It's easier to catch this than do 2 queries
 	}
 }
+
+export function toFutureTabs() {
+	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
+		if (status === 'loading') {
+			toTab(tabId);
+		}
+	});
+}
+
+const contextMenuId = 'webext-dynamic-content-scripts:add-permission';
+
+function getMenuLabel() {
+	const manifest = chrome.runtime.getManifest();
+	return `Enable ${manifest.name} on this domain`;
+}
+
+export function addPermissionContextMenu(title = getMenuLabel()) {
+	chrome.contextMenus.create({
+		id: contextMenuId,
+		title,
+		contexts: ['page_action'],
+		documentUrlPatterns: [
+			'http://*/*',
+			'https://*/*'
+		]
+	});
+
+	chrome.contextMenus.onClicked.addListener(async ({menuItemId}, {tabId, url}) => {
+		/* eslint-disable no-alert */
+		if (menuItemId === contextMenuId) {
+			chrome.permissions.request({
+				origins: [
+					`${new URL(url).origin}/*`
+				]
+			}, granted => {
+				if (chrome.runtime.lastError) {
+					alert(`Error: ${chrome.runtime.lastError.message}`);
+				} else if (granted && confirm('Do you want to reload this page to apply Refined GitHub?')) {
+					chrome.tabs.reload(tabId);
+				}
+			});
+		}
+	});
+}
+
+export default {
+	toTab,
+	toFutureTabs,
+	addPermissionContextMenu
+};

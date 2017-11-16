@@ -14,7 +14,26 @@ npm install --save webext-dynamic-content-scripts
 
 ### Plain files
 
-1. Include the file `dist/webext-dynamic-content-scripts.js` in your manifest.json, both as a `background` script and `content_script`.
+1. In your `manifest.json`, include the file as background and as content script:
+
+	```js
+	{
+		"background": {
+			"scripts": [
+				"dist/webext-dynamic-content-scripts.js"
+			]
+		},
+		"content_scripts": [
+			{
+				"js": [
+					"dist/webext-dynamic-content-scripts.js",
+					"content.js"
+				]
+			}
+		]
+	}
+	```
+
 2. In your background script **only**, run `injectContentScripts()`
 
 ### With a bundler

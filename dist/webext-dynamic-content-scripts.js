@@ -1,107 +1,113 @@
 // https://github.com/bfred-it/webext-dynamic-content-scripts
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.injectContentScripts = factory());
-}(this, (function () { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.DCS = global.DCS || {})));
+}(this, (function (exports) { 'use strict';
+
+function interopDefault(ex) {
+	return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex;
+}
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var webextContentScriptPing = createCommonjsModule(function (module, exports) {
+var webextContentScriptPing = createCommonjsModule(function (module) {
 // https://github.com/bfred-it/webext-content-script-ping
 
+/**
+ * Ping responder
+ */
+document.__webextContentScriptLoaded = true;
+
+/**
+ * Pinger
+ */
 function pingContentScript(tab) {
 	return new Promise((resolve, reject) => {
-		setTimeout(reject, 300);
-		chrome.tabs.sendMessage(tab.id || tab, chrome.runtime.id, {
-			// Only the main frame is necessary;
-			// if that isn't loaded, no other iframe is
-			frameId: 0
-		}, response => {
-			if (response === chrome.runtime.id) {
-				resolve();
+		chrome.tabs.executeScript(tab.id || tab, {
+			code: 'document.__webextContentScriptLoaded',
+			runAt: 'document_start'
+		}, hasScriptAlready => {
+			if (chrome.runtime.lastError) {
+				reject(chrome.runtime.lastError);
 			} else {
-				reject();
+				resolve(Boolean(hasScriptAlready[0]));
 			}
 		});
 	});
 }
 
-if (!chrome.runtime.getBackground) {
-	// Respond to pings
-	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-		if (request === chrome.runtime.id) {
-			sendResponse(chrome.runtime.id);
+if (typeof module === 'object') {
+	module.exports = pingContentScript;
+}
+});
+
+var pingContentScript = interopDefault(webextContentScriptPing);
+
+async function p(fn, ...args) {
+	return new Promise((resolve, reject) => fn(...args, r => {
+		if (chrome.runtime.lastError) {
+			reject(chrome.runtime.lastError);
+		} else {
+			resolve(r);
+		}
+	}));
+}
+
+async function addToTab(tab, contentScripts) {
+	if (typeof tab !== 'object' && typeof tab !== 'number') {
+		throw new TypeError('Specify a Tab or tabId');
+	}
+
+	if (!contentScripts) {
+		// Get all scripts from manifest.json
+		contentScripts = chrome.runtime.getManifest().content_scripts;
+	} else if (!Array.isArray(contentScripts)) {
+		// Single script object, make it an array
+		contentScripts = [contentScripts];
+	}
+
+	try {
+		const tabId = tab.id || tab;
+		if (!await pingContentScript(tabId)) {
+			const injections = [];
+			for (const group of contentScripts) {
+				const allFrames = group.all_frames;
+				const runAt = group.run_at;
+				for (const file of group.css) {
+					injections.push(p(chrome.tabs.insertCSS, tabId, {file, allFrames, runAt}));
+				}
+				for (const file of group.js) {
+					injections.push(p(chrome.tabs.executeScript, tabId, {file, allFrames, runAt}));
+				}
+			}
+			return Promise.all(injections);
+		}
+	} catch (err) {
+		// Probably the domain isn't permitted.
+		// It's easier to catch this than do 2 queries
+	}
+}
+
+function addToFutureTabs(scripts) {
+	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
+		if (status === 'loading') {
+			addToTab(tabId, scripts);
 		}
 	});
 }
 
-if (typeof exports === 'object') {
-	exports.pingContentScript = pingContentScript;
-}
-});
-
-var pingContentScript = webextContentScriptPing.pingContentScript;
-
-function logRuntimeErrors() {
-	if (chrome.runtime.lastError) {
-		console.error(chrome.runtime.lastError);
-	}
-}
-
-async function injectContentScript(script, tabId) {
-	const allFrames = script.all_frames;
-	const runAt = script.run_at;
-	script.css.forEach(file => chrome.tabs.insertCSS(tabId, {file, allFrames, runAt}, logRuntimeErrors));
-	script.js.forEach(file => chrome.tabs.executeScript(tabId, {file, allFrames, runAt}, logRuntimeErrors));
-}
-
-async function injectContentScripts(tab) {
-	// Get the tab object if we don't have it already
-	if (!tab.id) {
-		tab = await new Promise(resolve => chrome.tabs.get(tab, resolve));
-		logRuntimeErrors();
-	}
-
-	// If we don't have the URL, we definitely can't access it.
-	if (!tab.url) {
-		return;
-	}
-
-	// We might just get the url because of the `tabs` permission,
-	// not necessarily because we have access to the origin.
-	// This will explicitly verify this permission.
-	const isPermitted = await new Promise(resolve => chrome.permissions.contains({
-		origins: [new URL(tab.url).origin + '/']
-	}, resolve));
-	logRuntimeErrors();
-
-	if (!isPermitted) {
-		return;
-	}
-
-	// Exit if already injected
-	try {
-		return await pingContentScript(tab.id || tab);
-	} catch (err) {}
-
-	chrome.runtime.getManifest().content_scripts.forEach(s => injectContentScript(s, tab.id));
-}
-
-var index = function (tab = false) {
-	if (tab === false) {
-		chrome.tabs.onUpdated.addListener((tabId, {status}) => {
-			if (status === 'loading') {
-				injectContentScripts(tabId);
-			}
-		});
-	} else {
-		injectContentScripts(tab);
-	}
+var index = {
+	addToTab,
+	addToFutureTabs
 };
 
-return index;
+exports.addToTab = addToTab;
+exports.addToFutureTabs = addToFutureTabs;
+exports['default'] = index;
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

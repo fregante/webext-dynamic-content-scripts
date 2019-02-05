@@ -18,7 +18,6 @@
     "firefox"
   ],
   "module": "src/index.js",
-  "types": "index.d.ts",
   "main": "dist/webext-dynamic-content-scripts.js",
   "files": [
     "src",

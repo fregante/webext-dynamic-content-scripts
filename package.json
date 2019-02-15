@@ -21,7 +21,8 @@
   "main": "dist/webext-dynamic-content-scripts.js",
   "files": [
     "src",
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "scripts": {
     "watch:xo": "onchange 'src/*.js' --initial -- xo --fix",
@@ -40,6 +41,7 @@
     "webext-content-script-ping": "^2.0.1"
   },
   "devDependencies": {
+    "@types/firefox-webext-browser": "^65.0.0",
     "onchange": "^3.2.0",
     "rollup": "^0.41.6",
     "rollup-config-webext": "^1.1.0",

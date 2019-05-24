@@ -30,10 +30,10 @@ export async function addToTab(tab, contentScripts) {
 			for (const group of contentScripts) {
 				const allFrames = group.all_frames;
 				const runAt = group.run_at;
-				for (const file of group.css) {
+				for (const file of group.css || []) {
 					injections.push(p(chrome.tabs.insertCSS, tabId, {file, allFrames, runAt}));
 				}
-				for (const file of group.js) {
+				for (const file of group.js || []) {
 					injections.push(p(chrome.tabs.executeScript, tabId, {file, allFrames, runAt}));
 				}
 			}

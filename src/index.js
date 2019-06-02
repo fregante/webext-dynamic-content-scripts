@@ -10,15 +10,12 @@ async function p(fn, ...args) {
 	}));
 }
 
-export async function addToTab(tab, contentScripts) {
+export async function addToTab(tab, contentScripts = chrome.runtime.getManifest().content_scripts) {
 	if (typeof tab !== 'object' && typeof tab !== 'number') {
 		throw new TypeError('Specify a Tab or tabId');
 	}
 
-	if (!contentScripts) {
-		// Get all scripts from manifest.json
-		contentScripts = chrome.runtime.getManifest().content_scripts;
-	} else if (!Array.isArray(contentScripts)) {
+	if (!Array.isArray(contentScripts)) {
 		// Single script object, make it an array
 		contentScripts = [contentScripts];
 	}
@@ -45,7 +42,7 @@ export async function addToTab(tab, contentScripts) {
 	}
 }
 
-export function addToFutureTabs(scripts) {
+export function addToFutureTabs(scripts = chrome.runtime.getManifest().content_scripts) {
 	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
 		if (status === 'loading') {
 			addToTab(tabId, scripts);

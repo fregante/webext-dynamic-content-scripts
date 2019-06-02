@@ -25,11 +25,9 @@
     "index.d.ts"
   ],
   "scripts": {
-    "watch:xo": "onchange 'src/*.js' --initial -- xo --fix",
-    "watch:rollup": "npm run build -- --watch",
-    "watch": "npm run watch:rollup | npm run watch:xo",
-    "build": "rollup -c node:webext --name DCS --banner //\\ https://github.com/bfred-it/webext-dynamic-content-scripts --format umd --input src/index.js --output dist/webext-dynamic-content-scripts.js",
-    "test": "xo"
+    "watch": "npm run build -- --watch",
+    "build": "rollup -c node:webext --name DCS --banner //\\ https://github.com/bfred-it/webext-dynamic-content-scripts --output.format umd --input src/index.js --file  dist/webext-dynamic-content-scripts.js --output.exports named",
+    "test": "xo && npm run build"
   },
   "xo": {
     "envs": [
@@ -41,11 +39,10 @@
     "webext-content-script-ping": "^2.0.1"
   },
   "devDependencies": {
-    "@types/firefox-webext-browser": "^65.0.0",
-    "onchange": "^3.2.0",
-    "rollup": "^0.41.6",
+    "@types/firefox-webext-browser": "^67.0.2",
+    "rollup": "^0.68.2",
     "rollup-config-webext": "^1.1.0",
-    "rollup-watch": "^3.2.2",
-    "xo": "^0.18.2"
+    "rollup-watch": "^4.3.1",
+    "xo": "^0.24.0"
   }
 }

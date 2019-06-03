@@ -110,30 +110,48 @@
 
 	function getRegexFromGlobs(scripts) {
 		const regexStrings = [];
-		for (const script of scripts) {
-			for (const glob of script.matches) {
+		for (const {matches} of scripts) {
+			if (!matches) {
+				continue;
+			}
+
+			for (const glob of matches) {
 				const regexString = glob
 					.replace(/^.*:\/\/([^/]+)\/.*/, '$1') // From `https://*.google.com/foo*bar` to `*.google.com`
 					.replace(/\./g, '\\.') // Escape dots
 					.replace(/\*/g, '.+'); // Converts `*` to `.+`
-				regexStrings.push('^' + regexString + '$');
+				regexStrings.push(regexString);
 			}
 		}
 
-		return new RegExp(regexStrings.join('|'));
+		// If `regexStrings` is empty, it won't match anything
+		return new RegExp('^' + regexStrings.join('$|^') + '$');
 	}
 
 	function addToFutureTabs(scripts = chrome.runtime.getManifest().content_scripts) {
 		const hostsInScripts = getRegexFromGlobs(scripts);
 
 		chrome.tabs.onUpdated.addListener(async (tabId, {status}) => {
-			const {url} = await getUrl(tabId);
-			if (!url) {
-				return; // No permission on domain
+			if (status !== 'loading') {
+				return;
 			}
 
-			// Ensure that ontent script is already defined in manifest.json or `scripts` argument
-			if (status === 'loading' && !hostsInScripts.test(new URL(url).host)) {
+			// If we no URL, we have no permissions
+			const url = await getUrl(tabId);
+			if (!url) {
+				return;
+			}
+
+			// If the host is already defined in manifest.json, the script was already injected
+			const parsedUrl = new URL(url);
+			if (hostsInScripts.test(parsedUrl.host)) {
+				return;
+			}
+
+			const isOriginPermitted = await p(chrome.permissions.contains, {
+				origins: [parsedUrl.origin + '/*']
+			});
+			if (isOriginPermitted) {
 				addToTab(tabId, scripts);
 			}
 		});

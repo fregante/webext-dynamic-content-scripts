@@ -56,6 +56,21 @@
 		}));
 	}
 
+	function getUrl(tab) {
+		return new Promise(resolve => {
+			chrome.tabs.executeScript(tab.id || tab, {
+				code: 'location.href',
+				runAt: 'document_start'
+			}, urls => {
+				if (chrome.runtime.lastError) {
+					resolve();
+				} else {
+					resolve(urls[0]);
+				}
+			});
+		});
+	}
+
 	async function addToTab(tab, contentScripts = chrome.runtime.getManifest().content_scripts) {
 		if (typeof tab !== 'object' && typeof tab !== 'number') {
 			throw new TypeError('Specify a Tab or tabId');
@@ -112,7 +127,7 @@
 		const hostsInScripts = getRegexFromGlobs(scripts);
 
 		chrome.tabs.onUpdated.addListener(async (tabId, {status}) => {
-			const {url} = await p(chrome.tabs.get, tabId);
+			const {url} = await getUrl(tabId);
 			if (!url) {
 				return; // No permission on domain
 			}

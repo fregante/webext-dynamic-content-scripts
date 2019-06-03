@@ -86,13 +86,26 @@ export function addToFutureTabs(scripts = chrome.runtime.getManifest().content_s
 	const hostsInScripts = getRegexFromGlobs(scripts);
 
 	chrome.tabs.onUpdated.addListener(async (tabId, {status}) => {
-		const {url} = await getUrl(tabId);
-		if (!url) {
-			return; // No permission on domain
+		if (status !== 'loading') {
+			return;
 		}
 
-		// Ensure that ontent script is already defined in manifest.json or `scripts` argument
-		if (status === 'loading' && !hostsInScripts.test(new URL(url).host)) {
+		// If we no URL, we have no permissions
+		const url = await getUrl(tabId);
+		if (!url) {
+			return;
+		}
+
+		// If the host is already defined in manifest.json, the script was already injected
+		const parsedUrl = new URL(url);
+		if (hostsInScripts.test(parsedUrl.host)) {
+			return;
+		}
+
+		const isOriginPermitted = await p(chrome.permissions.contains, {
+			origins: [parsedUrl.origin + '/*']
+		});
+		if (isOriginPermitted) {
 			addToTab(tabId, scripts);
 		}
 	});

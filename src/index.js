@@ -64,17 +64,22 @@ export async function addToTab(tab, contentScripts = chrome.runtime.getManifest(
 
 function getRegexFromGlobs(scripts) {
 	const regexStrings = [];
-	for (const script of scripts) {
-		for (const glob of script.matches) {
+	for (const {matches} of scripts) {
+		if (!matches) {
+			continue;
+		}
+
+		for (const glob of matches) {
 			const regexString = glob
 				.replace(/^.*:\/\/([^/]+)\/.*/, '$1') // From `https://*.google.com/foo*bar` to `*.google.com`
 				.replace(/\./g, '\\.') // Escape dots
 				.replace(/\*/g, '.+'); // Converts `*` to `.+`
-			regexStrings.push('^' + regexString + '$');
+			regexStrings.push(regexString);
 		}
 	}
 
-	return new RegExp(regexStrings.join('|'));
+	// If `regexStrings` is empty, it won't match anything
+	return new RegExp('^' + regexStrings.join('$|^') + '$');
 }
 
 export function addToFutureTabs(scripts = chrome.runtime.getManifest().content_scripts) {

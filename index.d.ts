@@ -5,7 +5,7 @@
  *
  * @param contentScripts The content scripts to inject, follows the same format as in manifest.json
  */
-export function addToFutureTabs(contentScripts?: ContentScript | ContentScript[]): void;
+export function addToFutureTabs(contentScripts?: browser._manifest.ContentScript | browser._manifest.ContentScript[]): void;
 
 /**
  * This is an advanced version of `chrome.tabs.executeScript`/`chrome.tabs.insertCSS`:
@@ -30,4 +30,4 @@ export function addToFutureTabs(contentScripts?: ContentScript | ContentScript[]
  * 		// Not supported: all matches and globs properties
  * 	});
  */
-export function addToTab(tab: browser.tabs.Tab | number, contentScripts?: ContentScript | ContentScript[]): Promise<void>;
+export function addToTab(tab: browser.tabs.Tab | number, contentScripts?: browser._manifest.ContentScript | browser._manifest.ContentScript[]): Promise<void>;

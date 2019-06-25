@@ -36,10 +36,10 @@
     ]
   },
   "dependencies": {
+    "@types/firefox-webext-browser": "^67.0.2",
     "webext-content-script-ping": "^2.0.1"
   },
   "devDependencies": {
-    "@types/firefox-webext-browser": "^67.0.2",
     "rollup": "^0.68.2",
     "rollup-config-webext": "^1.1.0",
     "rollup-watch": "^4.3.1",

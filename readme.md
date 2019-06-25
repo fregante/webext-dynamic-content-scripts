@@ -5,7 +5,7 @@
 This is an advanced version of `chrome.tabs.executeScript`/`chrome.tabs.insertCSS`:
 
 - It accepts a mixed JS/CSS object just like in `manifest.json`. <details><summary>Example</summary>
-	
+
 	```js
 	DCS.addToTab(tab, {
 		run_at: 'document_start',
@@ -14,12 +14,11 @@ This is an advanced version of `chrome.tabs.executeScript`/`chrome.tabs.insertCS
 			'content.css'
 		],
 		js: [
-			'webext-dynamic-content-scripts.js',
-			'jquery.slim.min.js',
-			'browser-polyfill.min.js',
+			'jquery.slim.min.js', // example
+			'browser-polyfill.min.js', // example
 			'content.js'
 		]
-		// Not supported: all matches and globs properties
+		// Not supported: all globs properties
 	});
 	```
 
@@ -28,7 +27,7 @@ This is an advanced version of `chrome.tabs.executeScript`/`chrome.tabs.insertCS
 	</details>
 
 - It can inject scripts automatically to all permitted domains, so if you authorize new domains later, DCS will automatically inject `content_scripts`<details><summary>Example</summary>
-	
+
 	**Specify what you want:**
 	```js
 	DCS.addToFutureTabs({js: ['file.js']});
@@ -142,12 +141,6 @@ DPT.addContextMenu();
 DCS.addToFutureTabs(/* Default: content_scripts from manifest.json */);
 ```
 
-**content.js**
-
-```js
-import 'webext-dynamic-content-scripts'; // only with webpack, etc
-```
-
 </details>
 
 ## API
@@ -170,7 +163,7 @@ Default: **all** the JS/CSS files specified in `content_scripts` in `manifest.js
 
 Format details: https://developer.chrome.com/extensions/content_scripts
 
-It can either be an object, like: 
+It can either be an object, like:
 
 ```js
 {js: ['a.js', 'b.js']}

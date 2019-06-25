@@ -1,5 +1,3 @@
-import pingContentScript from 'webext-content-script-ping';
-
 async function p(fn, ...args) {
 	return new Promise((resolve, reject) => fn(...args, r => {
 		if (chrome.runtime.lastError) {
@@ -25,7 +23,20 @@ function getUrl(tab) {
 	});
 }
 
-export async function addToTab(tab, contentScripts = chrome.runtime.getManifest().content_scripts) {
+const manifestContentScripts = typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest().content_scripts;
+
+function isFileInManifest(type, matches, file) {
+	for (const group of manifestContentScripts) {
+		if (group[type].includes(file) && group.matches.some(matches.includes, matches)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// TODO: ensure that the same scripts aren't injected multiple times
+export async function addToTab(tab, contentScripts) {
 	if (typeof tab !== 'object' && typeof tab !== 'number') {
 		throw new TypeError('Specify a Tab or tabId');
 	}
@@ -36,55 +47,62 @@ export async function addToTab(tab, contentScripts = chrome.runtime.getManifest(
 	}
 
 	const tabId = tab.id || tab;
-	if (!await pingContentScript(tabId)) {
-		const injections = [];
-		for (const group of contentScripts) {
-			const allFrames = group.all_frames;
-			const runAt = group.run_at;
-			for (const file of group.css || []) {
-				injections.push(p(chrome.tabs.insertCSS, tabId, {
-					file,
-					allFrames,
-					runAt
-				}));
+	const previouslyLoaded = await p(chrome.tabs.executeScript, tabId, {
+		code: 'document.__webextContentScriptLoaded',
+		runAt: 'document_start'
+	});
+	const injectedFileList = [];
+	const injections = [];
+	for (let group of contentScripts) {
+		group = {css: [], js: [], ...group};
+
+		const runAt = group.run_at;
+		const matches = group.matches;
+		const allFrames = group.all_frames;
+
+		for (const file of group.css) {
+			if (previouslyLoaded.includes(file) || !isFileInManifest('css', matches, file)) {
+				continue;
 			}
 
-			for (const file of group.js || []) {
-				injections.push(p(chrome.tabs.executeScript, tabId, {
-					file,
-					allFrames,
-					runAt
-				}));
-			}
+			injectedFileList.push(file);
+			injections.push(p(chrome.tabs.insertCSS, tabId, {
+				matches,
+				file,
+				allFrames,
+				runAt
+			}));
 		}
+
+		for (const file of group.js) {
+			if (previouslyLoaded.includes(file) || !isFileInManifest('css', matches, file)) {
+				continue;
+			}
+
+			injectedFileList.push(file);
+			injections.push(p(chrome.tabs.executeScript, tabId, {
+				matches,
+				file,
+				allFrames,
+				runAt
+			}));
+		}
+
+		if (injectedFileList.length > 0) {
+			// Mark as loaded, from `pingContentScript`
+			chrome.tabs.executeScript(tabId, {
+				code: `document.__webextContentScriptLoaded = (document.__webextContentScriptLoaded || []).concat(${JSON.stringify(injectedFileList)});`,
+				allFrames,
+				runAt: 'document_start'
+			});
+		}
+
 
 		return Promise.all(injections);
 	}
 }
 
-function getRegexFromGlobs(scripts) {
-	const regexStrings = [];
-	for (const {matches} of scripts) {
-		if (!matches) {
-			continue;
-		}
-
-		for (const glob of matches) {
-			const regexString = glob
-				.replace(/^.*:\/\/([^/]+)\/.*/, '$1') // From `https://*.google.com/foo*bar` to `*.google.com`
-				.replace(/\./g, '\\.') // Escape dots
-				.replace(/\*/g, '.+'); // Converts `*` to `.+`
-			regexStrings.push(regexString);
-		}
-	}
-
-	// If `regexStrings` is empty, it won't match anything
-	return new RegExp('^' + regexStrings.join('$|^') + '$');
-}
-
 export function addToFutureTabs(scripts = chrome.runtime.getManifest().content_scripts) {
-	const hostsInScripts = getRegexFromGlobs(scripts);
-
 	chrome.tabs.onUpdated.addListener(async (tabId, {status}) => {
 		if (status !== 'loading') {
 			return;
@@ -96,14 +114,9 @@ export function addToFutureTabs(scripts = chrome.runtime.getManifest().content_s
 			return;
 		}
 
-		// If the host is already defined in manifest.json, the script was already injected
-		const parsedUrl = new URL(url);
-		if (hostsInScripts.test(parsedUrl.host)) {
-			return;
-		}
-
+		const {origin} = new URL(url);
 		const isOriginPermitted = await p(chrome.permissions.contains, {
-			origins: [parsedUrl.origin + '/*']
+			origins: [origin + '/*']
 		});
 		if (isOriginPermitted) {
 			addToTab(tabId, scripts);

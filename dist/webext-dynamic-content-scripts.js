@@ -1,4 +1,4 @@
-// https://github.com/bfred-it/webext-dynamic-content-scripts
+// https://github.com/fregante/webext-dynamic-content-scripts
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -14,7 +14,7 @@
 	}
 
 	var webextContentScriptPing = createCommonjsModule(function (module) {
-	// https://github.com/bfred-it/webext-content-script-ping
+	// https://github.com/fregante/webext-content-script-ping
 
 	/**
 	 * Ping responder

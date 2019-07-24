@@ -2,32 +2,32 @@
   "name": "webext-dynamic-content-scripts",
   "version": "6.0.0-2",
   "description": "Automatically inject your `content_scripts` on custom domains.",
-  "license": "MIT",
-  "repository": "bfred-it/webext-dynamic-content-scripts",
-  "author": "Federico Brigante <github@bfred.it> (bfred.it)",
   "keywords": [
     "browser",
-    "webext",
     "chrome",
-    "extension",
     "content script",
-    "ping",
-    "test",
     "detect",
     "detection",
-    "firefox"
+    "extension",
+    "firefox",
+    "ping",
+    "test",
+    "webext"
   ],
-  "module": "src/index.js",
-  "main": "dist/webext-dynamic-content-scripts.js",
+  "repository": "fregante/webext-dynamic-content-scripts",
+  "license": "MIT",
+  "author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
   "files": [
     "src",
     "dist",
     "index.d.ts"
   ],
+  "main": "dist/webext-dynamic-content-scripts.js",
+  "module": "src/index.js",
   "scripts": {
-    "watch": "npm run build -- --watch",
-    "build": "rollup -c node:webext --name DCS --banner //\\ https://github.com/bfred-it/webext-dynamic-content-scripts --output.format umd --input src/index.js --file  dist/webext-dynamic-content-scripts.js --output.exports named",
-    "test": "xo && npm run build"
+    "build": "rollup -c node:webext --name DCS --banner //\\ https://github.com/fregante/webext-dynamic-content-scripts --output.format umd --input src/index.js --file  dist/webext-dynamic-content-scripts.js --output.exports named",
+    "test": "xo && npm run build",
+    "watch": "npm run build -- --watch"
   },
   "xo": {
     "envs": [

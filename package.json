@@ -15,7 +15,7 @@
 		"browser",
 		"extension"
 	],
-	"repository": "fregante/webext-additional-permissions",
+	"repository": "fregante/webext-dynamic-content-scripts",
 	"license": "MIT",
 	"author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
 	"files": [

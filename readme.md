@@ -104,6 +104,12 @@ In combination with [`webext-domain-permission-toggle`](https://github.com/frega
 **background.js**
 
 ```js
+DPT.addContextMenu();
+```
+
+or if you use a bundler:
+
+```js
 import 'webext-dynamic-content-scripts';
 import {addContextMenu} from 'webext-domain-permission-toggle';
 

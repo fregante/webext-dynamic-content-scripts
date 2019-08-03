@@ -2,13 +2,18 @@
 
 > WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`
 
-[**Migration instructions from v5 to v6.**](https://github.com/fregante/webext-dynamic-content-scripts/pull/9)
-
 For example, when your users enable more domains via [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle), this module will automatically register your `content_scripts` from `manifest.json` into the new domain.
 
 The main use case is to add support for _GitHub/GitLab Enterprise_ domains to your GitHub/GitLab extension: you start with `github.com` and then users can add new domains; this way you don't need to use a broad `<all_urls>` permission.
 
 **Notice:** this plugin includes polyfills for [contentScript.register](https://github.com/fregante/content-scripts-register-polyfill) (for Chrome) and [Permission Events](https://github.com/fregante/webext-permissions-events-polyfill) (for Firefox)
+
+## Guides
+
+[**Migration instructions from v5 to v6.**](https://github.com/fregante/webext-dynamic-content-scripts/pull/9)
+
+[**How to let your users enable your extension on any domain.**](how-to-add-github-enterprise-support-to-web-extensions.md)
+
 
 ## Install
 
@@ -55,62 +60,6 @@ Include `webext-dynamic-content-scripts` as a background script and add `optiona
 	]
 }
 ```
-
-This is a full-featured example:
-
-<details><summary><strong>Your content scripts are enabled on <code>github.com</code> but you want to add custom domains:</strong></summary>
-
-In combination with [`webext-domain-permission-toggle`](https://github.com/fregante/webext-domain-permission-toggle), you can implement the feature in 1 line of code.
-
-**manifest.json**
-
-```js
-{
-	"permissions": [
-		"https://github.com/*",
-		"contextMenus",
-		"activeTab" // Required for Firefox support (webext-domain-permission-toggle)
-	],
-	"browser_action": { // Required for Firefox support (webext-domain-permission-toggle)
-		"default_icon": "icon.png"
-	},
-	"optional_permissions": [
-		"http://*/*",
-		"https://*/*"
-	],
-	"background": {
-		"scripts": [
-			"webext-domain-permission-toggle.js",
-			"webext-dynamic-content-scripts.js",
-			"background.js"
-		]
-	},
-	"content_scripts": [
-		{
-			"matches": [
-				"https://github.com/*"
-			],
-			"css": [
-				"content.css"
-			],
-			"js": [
-				"content.js"
-			]
-		}
-	]
-}
-```
-
-**background.js**
-
-```js
-import 'webext-dynamic-content-scripts';
-import {addContextMenu} from 'webext-domain-permission-toggle';
-
-addContextMenu();
-```
-
-</details>
 
 ## Related
 

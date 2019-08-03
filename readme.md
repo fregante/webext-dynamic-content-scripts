@@ -1,57 +1,40 @@
-# webext-dynamic-content-scripts (in short: DCS) [![Travis build status](https://api.travis-ci.org/fregante/webext-dynamic-content-scripts.svg?branch=master)](https://travis-ci.org/fregante/webext-dynamic-content-scripts) [![npm version](https://img.shields.io/npm/v/webext-dynamic-content-scripts.svg)](https://www.npmjs.com/package/webext-dynamic-content-scripts)
+# webext-dynamic-content-scripts [![Travis build status](https://api.travis-ci.org/fregante/webext-dynamic-content-scripts.svg?branch=master)](https://travis-ci.org/fregante/webext-dynamic-content-scripts) [![npm version](https://img.shields.io/npm/v/webext-dynamic-content-scripts.svg)](https://www.npmjs.com/package/webext-dynamic-content-scripts)
 
-> WebExtension module: Dynamically inject `content_scripts`
+> WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`
 
-This is an advanced version of `chrome.tabs.executeScript`/`chrome.tabs.insertCSS`:
+[**Migration instructions from v5 to v6.**](https://github.com/fregante/webext-dynamic-content-scripts/pull/9)
 
-- It accepts a mixed JS/CSS object just like in `manifest.json`. <details><summary>Example</summary>
+For example, a user can enable more domainsvia [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle) and this module will automatically register your `content_scripts` from `manifest.json` into the new domain.
 
-	```js
-	DCS.addToTab(tab, {
-		run_at: 'document_start',
-		all_frames: true,
-		css: [
-			'content.css'
-		],
-		js: [
-			'jquery.slim.min.js', // example
-			'browser-polyfill.min.js', // example
-			'content.js'
-		]
-		// Not supported: all globs properties
-	});
-	```
+The main use case is to add support for GitHub/GitLab Enterprise domains to your GitHub/GitLab extension: you start with `github.com` and then users can add new domains; this way you don't need to use a broad `<all_urls>` permission.
 
-	Format details: https://developer.chrome.com/extensions/content_scripts
-
-	</details>
-
-- It can inject scripts automatically to all permitted domains, so if you authorize new domains later, DCS will automatically inject `content_scripts`<details><summary>Example</summary>
-
-	**Specify what you want:**
-	```js
-	DCS.addToFutureTabs({js: ['file.js']});
-	```
-	**Or automatically inject ALL scripts already defined in `manifest.json`'s `content_scripts`**, perfect when you want to inject your existing `content_scripts` to new domains authorized via `chrome.permissions`:
-	```js
-	DCS.addToFutureTabs();
-	```
-
-	</details>
-
-- It will inject the scripts only once per tab, automatically, as long as DCS is included in the scripts list (or via `import`/`require`)
-
+**Notice:** this plugin includes polyfills for [contentScript.register](https://github.com/fregante/content-scripts-register-polyfill) (for Chrome) and [Permission Events](https://github.com/fregante/webext-permissions-events-polyfill) (for Firefox)
 
 ## Install
 
 ```sh
-npm install webext-dynamic-content-scripts
+You can just download the [standalone bundle](https://packd.fregante.now.sh/webext-additional-permissions) (it might take a minute to download) and include the file in your `manifest.json`, or:
+
+```sh
+npm install webext-additional-permissions
 ```
 
-### manifest.json
+```js
+// This module is only offered as a ES Module
+import 'webext-dynamic-content-scripts';
+```
+
+## Usage
+
+Include `webext-dynamic-content-scripts` as a background script and add `optional_permissions` to allow new permissions to be added. The scripts defined in `content_scripts` will be added on the new domains (`matches` will be replaced)
 
 ```json
+// example manifest.json
 {
+	"optional_permissions": [
+		"http://*/*",
+		"https://*/*"
+	],
 	"background": {
 		"scripts": [
 			"webext-dynamic-content-scripts.js",
@@ -60,8 +43,13 @@ npm install webext-dynamic-content-scripts
 	},
 	"content_scripts": [
 		{
+			"matches": [
+				"https://github.com/*"
+			],
+			"css": [
+				"content.css"
+			],
 			"js": [
-				"webext-dynamic-content-scripts.js",
 				"content.js"
 			]
 		}
@@ -69,23 +57,7 @@ npm install webext-dynamic-content-scripts
 }
 ```
 
-### webpack, rollup, browserify
-
-```js
-// background.js
-import DCS from 'webext-dynamic-content-scripts';
-```
-
-```js
-// content.js
-import 'webext-dynamic-content-scripts';
-// Needed to make sure that scripts aren't loaded twice.
-```
-
-
-## Usage
-
-You'll find some simple examples in the 3-point description at the start of this readme. This is a full-feature example:
+This is a full-feature example:
 
 <details><summary><strong>Your content scripts are enabled on <code>github.com</code> but you want to add custom domains:</strong></summary>
 
@@ -123,7 +95,6 @@ In combination with [`webext-domain-permission-toggle`](https://github.com/frega
 				"content.css"
 			],
 			"js": [
-				"webext-dynamic-content-scripts.js",
 				"content.js"
 			]
 		}
@@ -134,58 +105,13 @@ In combination with [`webext-domain-permission-toggle`](https://github.com/frega
 **background.js**
 
 ```js
-import DPT from 'webext-domain-permission-toggle'; // only with webpack, etc
-import DCS from 'webext-dynamic-content-scripts'; // only with webpack, etc
+import 'webext-dynamic-content-scripts';
+import {addContextMenu} from 'webext-domain-permission-toggle';
 
-DPT.addContextMenu();
-DCS.addToFutureTabs(/* Default: content_scripts from manifest.json */);
+addContextMenu();
 ```
 
 </details>
-
-## API
-
-### DCS.addToTab(tab, [scripts])
-
-It will inject the specified scripts to the tab via `executeScript` and `insertCSS`.
-
-#### tab
-
-Type: `Tab` `number`
-
-A `Tab` object or just its `id` as defined here: https://developer.chrome.com/extensions/tabs#type-Tab
-
-#### scripts
-
-Type: `Object` `Array`
-
-Default: **all** the JS/CSS files specified in `content_scripts` in `manifest.json`
-
-Format details: https://developer.chrome.com/extensions/content_scripts
-
-It can either be an object, like:
-
-```js
-{js: ['a.js', 'b.js']}
-```
-
-Or an array of objects (unlikely to be needed but it matches `content_scripts` exactly):
-
-```js
-[
-	{js: ['a.js']},
-	{js: ['b.js']}
-]
-```
-
-
-### DCS.addToFutureTabs([scripts])
-
-Same as `DCS.addToTab`, but it will automatically listen to new tabs and inject the scripts as needed.
-
-#### scripts
-
-Same as `scripts` in `DCS.addToTab`.
 
 ## Related
 

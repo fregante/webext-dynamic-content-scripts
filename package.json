@@ -1,48 +1,64 @@
 {
-  "name": "webext-dynamic-content-scripts",
-  "version": "6.0.0-2",
-  "description": "Automatically inject your `content_scripts` on custom domains.",
-  "keywords": [
-    "browser",
-    "chrome",
-    "content script",
-    "detect",
-    "detection",
-    "extension",
-    "firefox",
-    "ping",
-    "test",
-    "webext"
-  ],
-  "repository": "fregante/webext-dynamic-content-scripts",
-  "license": "MIT",
-  "author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
-  "files": [
-    "src",
-    "dist",
-    "index.d.ts"
-  ],
-  "main": "dist/webext-dynamic-content-scripts.js",
-  "module": "src/index.js",
-  "scripts": {
-    "build": "rollup -c node:webext --name DCS --banner //\\ https://github.com/fregante/webext-dynamic-content-scripts --output.format umd --input src/index.js --file  dist/webext-dynamic-content-scripts.js --output.exports named",
-    "test": "xo && npm run build",
-    "watch": "npm run build -- --watch"
-  },
-  "xo": {
-    "envs": [
-      "browser",
-      "webextensions"
-    ]
-  },
-  "dependencies": {
-    "@types/firefox-webext-browser": "^67.0.2",
-    "webext-content-script-ping": "^2.0.1"
-  },
-  "devDependencies": {
-    "rollup": "^0.68.2",
-    "rollup-config-webext": "^1.1.0",
-    "rollup-watch": "^4.3.1",
-    "xo": "^0.24.0"
-  }
+	"name": "webext-dynamic-content-scripts",
+	"version": "6.0.0-2",
+	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
+	"keywords": [
+		"contentscript",
+		"register",
+		"injection",
+		"permissions",
+		"request",
+		"optional_permissions",
+		"manifest",
+		"chrome",
+		"firefox",
+		"browser",
+		"extension"
+	],
+	"repository": "fregante/webext-additional-permissions",
+	"license": "MIT",
+	"author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
+	"files": [
+		"index.js",
+		"index.d.ts"
+	],
+	"module": "index.js",
+	"scripts": {
+		"build": "tsc",
+		"prepublishOnly": "tsc",
+		"test": "xo && tsc --noEmit",
+		"watch": "tsc --watch"
+	},
+	"xo": {
+		"envs": [
+			"browser",
+			"webextensions"
+		],
+		"extensions": [
+			"ts"
+		],
+		"rules": {
+			"import/no-unassigned-import": "off"
+		},
+		"overrides": [
+			{
+				"files": "**/*.ts",
+				"extends": "xo-typescript"
+			}
+		]
+	},
+	"dependencies": {
+		"@types/chrome": "0.0.86",
+		"content-scripts-register-polyfill": "^1.0.0",
+		"webext-additional-permissions": "^0.1.0",
+		"webext-permissions-events-polyfill": "^1.0.1"
+	},
+	"devDependencies": {
+		"@sindresorhus/tsconfig": "^0.4.0",
+		"@typescript-eslint/eslint-plugin": "^1.13.0",
+		"@typescript-eslint/parser": "^1.13.0",
+		"eslint-config-xo-typescript": "^0.15.0",
+		"typescript": "^3.5.3",
+		"xo": "*"
+	}
 }

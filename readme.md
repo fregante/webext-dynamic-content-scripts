@@ -1,4 +1,4 @@
-# webext-dynamic-content-scripts (in short: DCS) [![Travis build status](https://api.travis-ci.org/bfred-it/webext-dynamic-content-scripts.svg?branch=master)](https://travis-ci.org/bfred-it/webext-dynamic-content-scripts) [![npm version](https://img.shields.io/npm/v/webext-dynamic-content-scripts.svg)](https://www.npmjs.com/package/webext-dynamic-content-scripts)
+# webext-dynamic-content-scripts (in short: DCS) [![Travis build status](https://api.travis-ci.org/fregante/webext-dynamic-content-scripts.svg?branch=master)](https://travis-ci.org/fregante/webext-dynamic-content-scripts) [![npm version](https://img.shields.io/npm/v/webext-dynamic-content-scripts.svg)](https://www.npmjs.com/package/webext-dynamic-content-scripts)
 
 > WebExtension module: Dynamically inject `content_scripts`
 
@@ -89,7 +89,7 @@ You'll find some simple examples in the 3-point description at the start of this
 
 <details><summary><strong>Your content scripts are enabled on <code>github.com</code> but you want to add custom domains:</strong></summary>
 
-In combination with [`webext-domain-permission-toggle`](https://github.com/bfred-it/webext-domain-permission-toggle), you can implement the feature with two calls
+In combination with [`webext-domain-permission-toggle`](https://github.com/fregante/webext-domain-permission-toggle), you can implement the feature with two calls
 
 **manifest.json**
 
@@ -189,12 +189,13 @@ Same as `scripts` in `DCS.addToTab`.
 
 ## Related
 
-* [`webext-domain-permission-toggle`](https://github.com/bfred-it/webext-domain-permission-toggle): Browser-action context menu to request permission for the current tab.
-* [`webext-content-script-ping`](https://github.com/bfred-it/webext-content-script-ping): One-file interface to detect whether your content script have loaded.
-* [`webext-options-sync`](https://github.com/bfred-it/webext-options-sync): Helps you manage and autosave your extension's options.
-* [`webext-inject-on-install`](https://github.com/bfred-it/webext-inject-on-install): Automatically add content scripts to existing tabs when your extension is installed.
-* [`Awesome WebExtensions`](https://github.com/bfred-it/Awesome-WebExtensions): A curated list of awesome resources for Web Extensions development.
+* [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle) - Browser-action context menu to request permission for the current tab.
+* [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options.
+* [webext-storage-cache](https://github.com/fregante/webext-storage-cache) - Map-like promised cache storage with expiration.
+* [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run.
+* [webext-content-script-ping](https://github.com/fregante/webext-content-script-ping) - One-file interface to detect whether your content script have loaded.
+* [`Awesome WebExtensions`](https://github.com/fregante/Awesome-WebExtensions): A curated list of awesome resources for Web Extensions development.
 
 ## License
 
-MIT © Federico Brigante — [Twitter](http://twitter.com/bfred_it)
+MIT © [Federico Brigante](https://bfred.it)

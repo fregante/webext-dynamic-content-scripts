@@ -37,6 +37,9 @@
 		"extensions": [
 			"ts"
 		],
+		"rules": {
+			"import/no-unassigned-import": "off"
+		},
 		"overrides": [
 			{
 				"files": "**/*.ts",

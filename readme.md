@@ -58,66 +58,6 @@ Include `webext-dynamic-content-scripts` as a background script and add `optiona
 
 This is a full-featured example:
 
-<details><summary><strong>Your content scripts are enabled on <code>github.com</code> but you want to add custom domains:</strong></summary>
-
-In combination with [`webext-domain-permission-toggle`](https://github.com/fregante/webext-domain-permission-toggle), you can implement the feature in 1 line of code.
-
-**manifest.json**
-
-```js
-{
-	"permissions": [
-		"https://github.com/*",
-		"contextMenus",
-		"activeTab" // Required for Firefox support (webext-domain-permission-toggle)
-	],
-	"browser_action": { // Required for Firefox support (webext-domain-permission-toggle)
-		"default_icon": "icon.png"
-	},
-	"optional_permissions": [
-		"http://*/*",
-		"https://*/*"
-	],
-	"background": {
-		"scripts": [
-			"webext-domain-permission-toggle.js",
-			"webext-dynamic-content-scripts.js",
-			"background.js"
-		]
-	},
-	"content_scripts": [
-		{
-			"matches": [
-				"https://github.com/*"
-			],
-			"css": [
-				"content.css"
-			],
-			"js": [
-				"content.js"
-			]
-		}
-	]
-}
-```
-
-**background.js**
-
-```js
-addDomainPermissionToggle();
-```
-
-or if you use a bundler:
-
-```js
-import 'webext-dynamic-content-scripts';
-import addDomainPermissionToggle from 'webext-domain-permission-toggle';
-
-addDomainPermissionToggle();
-```
-
-</details>
-
 ## Related
 
 ### Permissions

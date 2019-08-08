@@ -15,7 +15,7 @@ function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
 
 // Automatically register the content scripts on the new origins
 async function registerOnOrigins({origins: newOrigins}: chrome.permissions.Permissions): Promise<void> {
-	const manifest = browser.runtime.getManifest().content_scripts!;
+	const manifest = chrome.runtime.getManifest().content_scripts!;
 
 	// Register one at a time to allow removing one at a time as well
 	for (const origin of newOrigins || []) {

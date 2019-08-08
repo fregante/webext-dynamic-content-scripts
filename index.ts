@@ -25,7 +25,7 @@ async function registerOnOrigins({origins: newOrigins}: chrome.permissions.Permi
 				css: (config.css || []).map(convertPath),
 				allFrames: config.all_frames,
 				matches: [origin],
-				runAt: config.run_at
+				runAt: config.run_at as browser.extensionTypes.RunAt
 			});
 			registeredScripts.set(origin, registeredScript);
 		}

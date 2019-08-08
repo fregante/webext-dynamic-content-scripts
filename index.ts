@@ -20,7 +20,7 @@ async function registerOnOrigins({origins: newOrigins}: chrome.permissions.Permi
 	// Register one at a time to allow removing one at a time as well
 	for (const origin of newOrigins || []) {
 		for (const config of manifest) {
-			const registeredScript = browser.contentScripts.register({
+			const registeredScript = chrome.contentScripts.register({
 				js: (config.js || []).map(convertPath),
 				css: (config.css || []).map(convertPath),
 				allFrames: config.all_frames,

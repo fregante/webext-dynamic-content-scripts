@@ -17,10 +17,10 @@ The main use case is to add support for _GitHub/GitLab Enterprise_ domains to yo
 
 ## Install
 
-You can just download the [standalone bundle](https://packd.fregante.now.sh/webext-additional-permissions) (it might take a minute to download) and include the file in your `manifest.json`, or:
+You can just download the [standalone bundle](https://packd.fregante.now.sh/webext-dynamic-content-scripts) (it might take a minute to download) and include the file in your `manifest.json`, or:
 
 ```sh
-npm install webext-additional-permissions
+npm install webext-dynamic-content-scripts
 ```
 
 ```js

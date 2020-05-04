@@ -34,31 +34,26 @@
 			"browser",
 			"webextensions"
 		],
-		"extensions": [
-			"ts"
-		],
 		"rules": {
+			"@typescript-eslint/no-floating-promises": "off",
+			"@typescript-eslint/prefer-nullish-coalescing": "off",
+			"@typescript-eslint/prefer-readonly-parameter-types": "off",
+			"unicorn/no-fn-reference-in-iterator": "off",
 			"import/no-unassigned-import": "off"
-		},
-		"overrides": [
-			{
-				"files": "**/*.ts",
-				"extends": "xo-typescript"
-			}
-		]
+		}
 	},
 	"dependencies": {
-		"@types/chrome": "0.0.86",
+		"@types/chrome": "0.0.106",
 		"content-scripts-register-polyfill": "^1.0.0",
-		"webext-additional-permissions": "^0.1.0",
+		"webext-additional-permissions": "^1.0.0",
 		"webext-permissions-events-polyfill": "^1.0.1"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.4.0",
-		"@typescript-eslint/eslint-plugin": "^1.13.0",
-		"@typescript-eslint/parser": "^1.13.0",
-		"eslint-config-xo-typescript": "^0.15.0",
-		"typescript": "^3.5.3",
-		"xo": "*"
+		"@sindresorhus/tsconfig": "^0.7.0",
+		"@typescript-eslint/eslint-plugin": "^2.30.0",
+		"@typescript-eslint/parser": "^2.30.0",
+		"eslint-config-xo-typescript": "^0.28.0",
+		"typescript": "^3.8.3",
+		"xo": "^0.30.0"
 	}
 }

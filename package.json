@@ -18,11 +18,11 @@
 	"repository": "fregante/webext-dynamic-content-scripts",
 	"license": "MIT",
 	"author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
+	"module": "index.js",
 	"files": [
 		"index.js",
 		"index.d.ts"
 	],
-	"module": "index.js",
 	"scripts": {
 		"build": "tsc",
 		"prepublishOnly": "tsc",

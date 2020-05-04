@@ -6,11 +6,9 @@
 
 You can implement the feature effortlessly by using these 2 modules:
 
-[webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle) will add a toggle in the Browser Action icon that will let the user requestion permission to any domain. 
+[webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle) will add a toggle in the Browser Action icon that will let the user requestion permission to any domain.
 
 [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts) will use this permission to inject the content scripts you declared in `manifest.json`, but instead of injecting just on the default domain (github.com) they'll be injected on all the new domains that the user added.
-
-
 
 ## background.js
 

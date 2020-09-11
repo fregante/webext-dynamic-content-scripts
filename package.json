@@ -44,8 +44,7 @@
 	},
 	"dependencies": {
 		"content-scripts-register-polyfill": "^1.0.4",
-		"webext-additional-permissions": "^1.0.0",
-		"webext-permissions-events-polyfill": "^1.0.1"
+		"webext-additional-permissions": "^1.0.0"
 	},
 	"devDependencies": {
 		"@types/chrome": "0.0.122",

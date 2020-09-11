@@ -6,7 +6,7 @@ For example, when your users enable more domains via [webext-domain-permission-t
 
 The main use case is to add support for _GitHub/GitLab Enterprise_ domains to your GitHub/GitLab extension: you start with `github.com` and then users can add new domains; this way you don't need to use a broad `<all_urls>` permission.
 
-**Notice:** this plugin includes polyfills for [contentScript.register](https://github.com/fregante/content-scripts-register-polyfill) (for Chrome) and [Permission Events](https://github.com/fregante/webext-permissions-events-polyfill) (for Firefox)
+**Notice:** this plugin includes polyfills for [contentScript.register](https://github.com/fregante/content-scripts-register-polyfill) (for Chrome).
 
 ## Guides
 
@@ -66,7 +66,6 @@ Include `webext-dynamic-content-scripts` as a background script and add `optiona
 
 - [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle) - Browser-action context menu to request permission for the current tab. Chrome and Firefox.
 - [webext-additional-permissions](https://github.com/fregante/webext-additional-permissions) - Get any optional permissions that users have granted you.
-- [webext-permissions-events-polyfill](https://github.com/fregante/webext-permissions-events-polyfill) - Polyfill for `onAdded` and `onRemoved` permission events for Firefox. (included in `webext-dynamic-content-scripts`)
 
 ### Others
 

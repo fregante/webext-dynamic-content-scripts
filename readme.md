@@ -1,4 +1,4 @@
-# webext-dynamic-content-scripts [![Travis build status](https://api.travis-ci.org/fregante/webext-dynamic-content-scripts.svg?branch=master)](https://travis-ci.org/fregante/webext-dynamic-content-scripts) [![npm version](https://img.shields.io/npm/v/webext-dynamic-content-scripts.svg)](https://www.npmjs.com/package/webext-dynamic-content-scripts)
+# webext-dynamic-content-scripts [![npm version](https://img.shields.io/npm/v/webext-dynamic-content-scripts.svg)](https://www.npmjs.com/package/webext-dynamic-content-scripts)
 
 > WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`
 
@@ -78,4 +78,4 @@ Include `webext-dynamic-content-scripts` as a background script and add `optiona
 
 ## License
 
-MIT © [Federico Brigante](https://bfred.it)
+MIT © [Federico Brigante](https://fregante.com)

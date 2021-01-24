@@ -35,10 +35,8 @@
 			"webextensions"
 		],
 		"rules": {
-			"@typescript-eslint/no-floating-promises": "off",
 			"@typescript-eslint/prefer-nullish-coalescing": "off",
-			"@typescript-eslint/prefer-readonly-parameter-types": "off",
-			"unicorn/no-fn-reference-in-iterator": "off",
+			"unicorn/no-array-callback-reference": "off",
 			"import/no-unassigned-import": "off"
 		}
 	},
@@ -47,9 +45,9 @@
 		"webext-additional-permissions": "^1.0.0"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.7.0",
-		"@types/chrome": "0.0.123",
-		"typescript": "^4.0.2",
-		"xo": "^0.33.1"
+		"@sindresorhus/tsconfig": "^0.8.0",
+		"@types/chrome": "0.0.128",
+		"typescript": "^4.1.3",
+		"xo": "^0.37.1"
 	}
 }

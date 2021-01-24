@@ -32,12 +32,12 @@ async function registerOnOrigins({origins: newOrigins}: chrome.permissions.Permi
 }
 
 (async () => {
-	registerOnOrigins(await getAdditionalPermissions());
+	void registerOnOrigins(await getAdditionalPermissions());
 })();
 
 chrome.permissions.onAdded.addListener(permissions => {
 	if (permissions.origins && permissions.origins.length > 0) {
-		registerOnOrigins(permissions);
+		void registerOnOrigins(permissions);
 	}
 });
 
@@ -49,7 +49,7 @@ chrome.permissions.onRemoved.addListener(async ({origins}) => {
 	for (const [origin, script] of registeredScripts) {
 		if (origins.includes(origin)) {
 			// eslint-disable-next-line no-await-in-loop
-			(await script).unregister();
+			void (await script).unregister();
 		}
 	}
 });

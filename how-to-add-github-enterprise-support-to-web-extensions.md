@@ -38,8 +38,7 @@ addDomainPermissionToggle();
 		"default_icon": "icon.png"
 	},
 	"optional_permissions": [
-		"http://*/*",
-		"https://*/*"
+		"*://*/*"
 	],
 	"background": {
 		"scripts": [

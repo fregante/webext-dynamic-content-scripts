@@ -20,8 +20,8 @@ async function registerOnOrigins({origins: newOrigins}: chrome.permissions.Permi
 	for (const origin of newOrigins || []) {
 		for (const config of manifest) {
 			const registeredScript = chrome.contentScripts.register({
-				js: (config.js || []).map(convertPath),
-				css: (config.css || []).map(convertPath),
+				js: (config.js || []).map(file => convertPath(file)),
+				css: (config.css || []).map(file => convertPath(file)),
 				allFrames: config.all_frames,
 				matches: [origin],
 				runAt: config.run_at as browser.extensionTypes.RunAt

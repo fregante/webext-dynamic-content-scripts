@@ -32,7 +32,9 @@ async function registerOnOrigins({origins: newOrigins}: chrome.permissions.Permi
 }
 
 (async () => {
-	void registerOnOrigins(await getAdditionalPermissions());
+	void registerOnOrigins(await getAdditionalPermissions({
+		strictOrigins: false
+	}));
 })();
 
 chrome.permissions.onAdded.addListener(permissions => {

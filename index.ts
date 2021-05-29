@@ -16,7 +16,11 @@ function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
 async function registerOnOrigins({
 	origins: newOrigins
 }: chrome.permissions.Permissions): Promise<void> {
-	const manifest = chrome.runtime.getManifest().content_scripts!;
+	const manifest = chrome.runtime.getManifest().content_scripts;
+
+	if (!manifest) {
+		throw new Error('webext-dynamic-content-scripts tried to register scripts on th new host permissions, but no content scripts were found in the manifest.');
+	}
 
 	// Register one at a time to allow removing one at a time as well
 	for (const origin of newOrigins || []) {

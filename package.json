@@ -40,13 +40,13 @@
 		}
 	},
 	"dependencies": {
-		"content-scripts-register-polyfill": "^2.1.0",
+		"content-scripts-register-polyfill": "^2.1.2",
 		"webext-additional-permissions": "^2.0.1"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.9.0",
-		"@types/chrome": "0.0.133",
-		"typescript": "^4.2.3",
-		"xo": "^0.38.2"
+		"@sindresorhus/tsconfig": "^1.0.2",
+		"@types/chrome": "0.0.143",
+		"typescript": "^4.3.2",
+		"xo": "^0.40.1"
 	}
 }

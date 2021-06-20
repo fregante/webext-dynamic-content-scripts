@@ -40,7 +40,7 @@
 		}
 	},
 	"dependencies": {
-		"content-scripts-register-polyfill": "^2.2.0",
+		"content-scripts-register-polyfill": "^2.2.0-2",
 		"webext-additional-permissions": "^2.0.1"
 	},
 	"devDependencies": {

@@ -16,6 +16,7 @@
 		"extension"
 	],
 	"repository": "fregante/webext-dynamic-content-scripts",
+	"funding": "https://github.com/sponsors/fregante",
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
 	"module": "index.js",

@@ -1,6 +1,6 @@
 {
 	"name": "webext-dynamic-content-scripts",
-	"version": "7.1.2",
+	"version": "7.2.0-0",
 	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
 	"keywords": [
 		"contentscript",
@@ -40,7 +40,7 @@
 		}
 	},
 	"dependencies": {
-		"content-scripts-register-polyfill": "^2.1.2",
+		"content-scripts-register-polyfill": "^2.2.0-2",
 		"webext-additional-permissions": "^2.0.1"
 	},
 	"devDependencies": {

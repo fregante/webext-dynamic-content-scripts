@@ -8,7 +8,9 @@ Promise<browser.contentScripts.RegisteredContentScript>
 
 type ContentScripts = NonNullable<chrome.runtime.Manifest['content_scripts']>;
 
-const registerContentScript = globalThis?.browser?.contentScripts?.register ?? registerContentScriptPonyfill;
+const registerContentScript =
+	globalThis?.browser?.contentScripts?.register ??
+	registerContentScriptPonyfill;
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
 function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {

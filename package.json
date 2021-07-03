@@ -1,6 +1,6 @@
 {
 	"name": "webext-dynamic-content-scripts",
-	"version": "8.0.0-1",
+	"version": "8.0.0-3",
 	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
 	"keywords": [
 		"contentscript",
@@ -16,6 +16,7 @@
 		"extension"
 	],
 	"repository": "fregante/webext-dynamic-content-scripts",
+	"funding": "https://github.com/sponsors/fregante",
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
 	"module": "index.js",
@@ -40,13 +41,14 @@
 		}
 	},
 	"dependencies": {
-		"content-scripts-register-polyfill": "^2.2.0-2",
+		"content-scripts-register-polyfill": "^3.0.0",
 		"webext-additional-permissions": "^2.0.1"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^1.0.2",
-		"@types/chrome": "0.0.143",
-		"typescript": "^4.3.2",
-		"xo": "^0.40.1"
+		"@types/chrome": "0.0.145",
+		"@types/firefox-webext-browser": "^82.0.0",
+		"typescript": "^4.3.5",
+		"xo": "^0.40.3"
 	}
 }

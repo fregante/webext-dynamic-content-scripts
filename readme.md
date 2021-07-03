@@ -6,17 +6,15 @@ For example, when your users enable more domains via [webext-domain-permission-t
 
 The main use case is to add support for _GitHub/GitLab Enterprise_ domains to your GitHub/GitLab extension: you start with `github.com` and then users can add new domains; this way you don't need to use a broad `<all_urls>` permission.
 
-**Notice:** this plugin includes polyfills for [contentScript.register](https://github.com/fregante/content-scripts-register-polyfill) (for Chrome).
+Tested in Chrome, Firefox, and Safari.
 
 ## Guides
-
-[**Migration instructions from v5 to v6.**](https://github.com/fregante/webext-dynamic-content-scripts/pull/9)
 
 [**How to let your users enable your extension on any domain.**](how-to-add-github-enterprise-support-to-web-extensions.md)
 
 ## Install
 
-You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-dynamic-content-scripts) and include it in your `manifest.json`.
+You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-dynamic-content-scripts) and include it in your `manifest.json`. Or use npm:
 
 ```sh
 npm install webext-dynamic-content-scripts
@@ -83,7 +81,6 @@ If available, the `webNavigation` API will be automatically used in every situat
 - [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options. Chrome and Firefox.
 - [webext-storage-cache](https://github.com/fregante/webext-storage-cache) - Map-like promised cache storage with expiration. Chrome and Firefox
 - [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run. Chrome and Firefox.
-- [webext-content-script-ping](https://github.com/fregante/webext-content-script-ping) - One-file interface to detect whether your content script have loaded.
 - [web-ext-submit](https://github.com/fregante/web-ext-submit) - Wrapper around Mozilla’s web-ext to submit extensions to AMO.
 - [Awesome-WebExtensions](https://github.com/fregante/Awesome-WebExtensions) - A curated list of awesome resources for WebExtensions development.
 

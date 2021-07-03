@@ -6,7 +6,7 @@ string,
 Promise<browser.contentScripts.RegisteredContentScript>
 >();
 
-type ContentScript = NonNullable<chrome.runtime.Manifest['content_scripts']>[number];
+type ContentScripts = NonNullable<chrome.runtime.Manifest['content_scripts']>;
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
 function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
@@ -14,7 +14,7 @@ function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
 	return {file: url.pathname};
 }
 
-function injectIntoTab(tabId: number, scripts: ContentScript[]) {
+function injectIntoTab(tabId: number, scripts: ContentScripts) {
 	for (const script of scripts) {
 		for (const file of script.css || []) {
 			void chrome.tabs.insertCSS(tabId, {
@@ -32,7 +32,7 @@ function injectIntoTab(tabId: number, scripts: ContentScript[]) {
 	}
 }
 
-function injectOnExistingTabs(origins: string[], scripts: ContentScript[]) {
+function injectOnExistingTabs(origins: string[], scripts: ContentScripts) {
 	chrome.tabs.query({
 		url: origins
 	}, tabs => {

@@ -6,8 +6,6 @@ For example, when your users enable more domains via [webext-domain-permission-t
 
 The main use case is to add support for _GitHub/GitLab Enterprise_ domains to your GitHub/GitLab extension: you start with `github.com` and then users can add new domains; this way you don't need to use a broad `<all_urls>` permission.
 
-**Notice:** this plugin includes polyfills for [contentScript.register](https://github.com/fregante/content-scripts-register-polyfill) (for Chrome).
-
 ## Guides
 
 [**Migration instructions from v5 to v6.**](https://github.com/fregante/webext-dynamic-content-scripts/pull/9)

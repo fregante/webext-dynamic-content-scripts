@@ -1,4 +1,4 @@
-import registerContentScriptPonyfill from 'content-scripts-register-polyfill/polyfill.js';
+import registerContentScriptPonyfill from 'content-scripts-register-polyfill/ponyfill.js';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
 
 const registeredScripts = new Map<
@@ -8,7 +8,7 @@ Promise<browser.contentScripts.RegisteredContentScript>
 
 type ContentScripts = NonNullable<chrome.runtime.Manifest['content_scripts']>;
 
-const registerContentScript = globalThis?.browser?.contentScripts?.register ?? registerContentScriptPonyfill
+const registerContentScript = globalThis?.browser?.contentScripts?.register ?? registerContentScriptPonyfill;
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
 function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {

@@ -23,14 +23,14 @@ function injectIntoTab(tabId: number, scripts: ContentScripts) {
 		for (const file of script.css || []) {
 			void chrome.tabs.insertCSS(tabId, {
 				file,
-				allFrames: script.all_frames
+				allFrames: script.all_frames,
 			});
 		}
 
 		for (const file of script.js || []) {
 			void chrome.tabs.executeScript(tabId, {
 				file,
-				allFrames: script.all_frames
+				allFrames: script.all_frames,
 			});
 		}
 	}
@@ -38,7 +38,7 @@ function injectIntoTab(tabId: number, scripts: ContentScripts) {
 
 function injectOnExistingTabs(origins: string[], scripts: ContentScripts) {
 	chrome.tabs.query({
-		url: origins
+		url: origins,
 	}, tabs => {
 		for (const tab of tabs) {
 			if (tab.id) {
@@ -50,7 +50,7 @@ function injectOnExistingTabs(origins: string[], scripts: ContentScripts) {
 
 // Automatically register the content scripts on the new origins
 async function registerOnOrigins({
-	origins: newOrigins
+	origins: newOrigins,
 }: chrome.permissions.Permissions): Promise<void> {
 	const manifest = chrome.runtime.getManifest().content_scripts;
 
@@ -67,7 +67,7 @@ async function registerOnOrigins({
 				allFrames: config.all_frames,
 				matches: [origin],
 				excludeMatches: config.matches,
-				runAt: config.run_at as browser.extensionTypes.RunAt
+				runAt: config.run_at as browser.extensionTypes.RunAt,
 			});
 			registeredScripts.set(origin, registeredScript);
 		}
@@ -79,8 +79,8 @@ async function registerOnOrigins({
 (async () => {
 	void registerOnOrigins(
 		await getAdditionalPermissions({
-			strictOrigins: false
-		})
+			strictOrigins: false,
+		}),
 	);
 })();
 

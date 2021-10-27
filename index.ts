@@ -66,6 +66,7 @@ async function registerOnOrigins({
 				css: (config.css || []).map(file => convertPath(file)),
 				allFrames: config.all_frames,
 				matches: [origin],
+				excludeMatches: config.matches,
 				runAt: config.run_at as browser.extensionTypes.RunAt
 			});
 			registeredScripts.set(origin, registeredScript);

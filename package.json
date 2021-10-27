@@ -36,6 +36,7 @@
 			"webextensions"
 		],
 		"rules": {
+			"no-implicit-globals": "off",
 			"@typescript-eslint/prefer-nullish-coalescing": "off",
 			"import/no-unassigned-import": "off"
 		}

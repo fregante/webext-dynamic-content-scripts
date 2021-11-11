@@ -37,6 +37,10 @@ function injectIntoTab(tabId: number, scripts: ContentScripts) {
 }
 
 function injectOnExistingTabs(origins: string[], scripts: ContentScripts) {
+	if (origins.length === 0) {
+		return;
+	}
+
 	chrome.tabs.query({
 		url: origins,
 	}, tabs => {

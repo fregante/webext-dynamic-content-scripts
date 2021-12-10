@@ -80,13 +80,13 @@ async function registerOnOrigins({
 	injectOnExistingTabs(newOrigins || [], manifest);
 }
 
-(async () => {
+chrome.runtime.onStartup.addListener(async () => {
 	void registerOnOrigins(
 		await getAdditionalPermissions({
 			strictOrigins: false,
 		}),
 	);
-})();
+});
 
 chrome.permissions.onAdded.addListener(permissions => {
 	if (permissions.origins && permissions.origins.length > 0) {

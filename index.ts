@@ -1,5 +1,6 @@
 import registerContentScriptPonyfill from 'content-scripts-register-polyfill/ponyfill.js';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
+import {injectContentScript} from 'webext-content-scripts';
 
 const registeredScripts = new Map<
 string,
@@ -18,24 +19,6 @@ function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
 	return {file: url.pathname};
 }
 
-function injectIntoTab(tabId: number, scripts: ContentScripts) {
-	for (const script of scripts) {
-		for (const file of script.css || []) {
-			void chrome.tabs.insertCSS(tabId, {
-				file,
-				allFrames: script.all_frames,
-			});
-		}
-
-		for (const file of script.js || []) {
-			void chrome.tabs.executeScript(tabId, {
-				file,
-				allFrames: script.all_frames,
-			});
-		}
-	}
-}
-
 function injectOnExistingTabs(origins: string[], scripts: ContentScripts) {
 	if (origins.length === 0) {
 		return;
@@ -46,7 +29,7 @@ function injectOnExistingTabs(origins: string[], scripts: ContentScripts) {
 	}, tabs => {
 		for (const tab of tabs) {
 			if (tab.id) {
-				injectIntoTab(tab.id, scripts);
+				void injectContentScript(tab.id, scripts);
 			}
 		}
 	});

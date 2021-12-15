@@ -42,12 +42,13 @@
 		}
 	},
 	"dependencies": {
-		"content-scripts-register-polyfill": "^3.1.0",
-		"webext-additional-permissions": "^2.1.1"
+		"content-scripts-register-polyfill": "^3.2.0",
+		"webext-additional-permissions": "^2.1.1",
+		"webext-content-scripts": "^0.12.0"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^2.0.0",
-		"@types/chrome": "0.0.161",
+		"@types/chrome": "^0.0.171",
 		"@types/firefox-webext-browser": "^94.0.0",
 		"typescript": "^4.4.4",
 		"xo": "^0.45.0"

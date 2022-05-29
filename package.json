@@ -42,9 +42,9 @@
 		}
 	},
 	"dependencies": {
-		"content-scripts-register-polyfill": "^3.2.0",
-		"webext-additional-permissions": "^2.1.1",
-		"webext-content-scripts": "^0.12.0"
+		"content-scripts-register-polyfill": "^3.2.2",
+		"webext-additional-permissions": "^2.3.0",
+		"webext-content-scripts": "^1.0.1"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^2.0.0",

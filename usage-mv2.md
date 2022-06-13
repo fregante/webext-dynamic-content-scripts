@@ -7,9 +7,7 @@ Include `webext-dynamic-content-scripts` as a background script and add `optiona
 ```json
 // example manifest.json
 {
-	"optional_permissions": [
-		"*://*/*"
-	],
+	"optional_permissions": ["*://*/*"],
 	"background": {
 		"scripts": [
 			"webext-dynamic-content-scripts.js",

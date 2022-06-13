@@ -38,19 +38,14 @@ You need to:
 
 ```js
 // example background.worker.js
-navigator.importScripts(
-	"webext-dynamic-content-scripts.js"
-)
+navigator.importScripts('webext-dynamic-content-scripts.js');
 ```
+
 ```json
 // example manifest.json
 {
-	"permissions": [
-		"scripting"
-	],
-	"optional_host_permissions": [
-		"*://*/*"
-	],
+	"permissions": ["scripting"],
+	"optional_host_permissions": ["*://*/*"],
 	"background": {
 		"service_worker": "background.worker.js"
 	},

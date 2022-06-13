@@ -25,7 +25,35 @@ import addDomainPermissionToggle from 'webext-domain-permission-toggle';
 addDomainPermissionToggle();
 ```
 
-## manifest.json example
+## manifest.json v3 example
+
+```js
+{
+	"permissions": [
+		"scripting",
+		"contextMenus",
+		"activeTab" // Required for Firefox support (webext-domain-permission-toggle)
+	],
+	"action": { // Required for Firefox support (webext-domain-permission-toggle)
+		"default_icon": "icon.png"
+	},
+	"optional_host_permissions": [
+		"*://*/*"
+	],
+	"background": {
+		"scripts": "background.worker.js"
+	},
+	"content_scripts": [
+		{
+			"matches": ["https://github.com/*"],
+			"css": ["content.css"],
+			"js": ["content.js"]
+		}
+	]
+}
+```
+
+## manifest.json v2 example
 
 ```js
 {
@@ -49,15 +77,9 @@ addDomainPermissionToggle();
 	},
 	"content_scripts": [
 		{
-			"matches": [
-				"https://github.com/*"
-			],
-			"css": [
-				"content.css"
-			],
-			"js": [
-				"content.js"
-			]
+			"matches": ["https://github.com/*"],
+			"css": ["content.css"],
+			"js": ["content.js"]
 		}
 	]
 }

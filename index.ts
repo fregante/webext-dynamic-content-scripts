@@ -11,6 +11,7 @@ type ContentScripts = NonNullable<chrome.runtime.Manifest['content_scripts']>;
 
 const registerContentScript
 	= globalThis?.browser?.contentScripts?.register
+	?? globalThis?.chrome?.scripting?.registerContentScripts
 	?? registerContentScriptPonyfill;
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
@@ -42,7 +43,7 @@ async function registerOnOrigins({
 	const manifest = chrome.runtime.getManifest().content_scripts;
 
 	if (!manifest) {
-		throw new Error('webext-dynamic-content-scripts tried to register scripts on th new host permissions, but no content scripts were found in the manifest.');
+		throw new Error('webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.');
 	}
 
 	// Register one at a time to allow removing one at a time as well

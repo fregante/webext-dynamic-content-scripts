@@ -35,7 +35,9 @@
 		"watch": "tsc --watch"
 	},
 	"alias": {
-		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js"
+		"these-are-just-mocks-for-parcel-tests": "yolo",
+		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
+		"webext-dynamic-content-scripts": "./index.ts"
 	},
 	"xo": {
 		"envs": [

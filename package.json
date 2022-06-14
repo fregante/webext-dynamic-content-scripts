@@ -31,11 +31,13 @@
 		"prejest": "npm run demo:build",
 		"jest": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
 		"prepack": "tsc --sourceMap false",
-		"test": "xo && tsc --noEmit",
+		"test": "xo && tsc --noEmit && npm run jest",
 		"watch": "tsc --watch"
 	},
 	"alias": {
-		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js"
+		"these-are-just-mocks-for-parcel-tests": "yolo",
+		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
+		"webext-dynamic-content-scripts": "./index.ts"
 	},
 	"xo": {
 		"envs": [

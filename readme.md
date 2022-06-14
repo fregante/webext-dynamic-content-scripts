@@ -3,7 +3,7 @@
 > WebExtension module: Automatically registers your `content_scripts` on domains added via `permissions.request`
 
 - Browsers: Chrome, Firefox, and Safari
-- Manifest: v2 and v3
+- Manifest: v2 (v3 coming soon)
 
 This module will automatically register your `content_scripts` from `manifest.json` into new domains granted via `permissions.request()`, or via [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle).
 
@@ -30,34 +30,7 @@ import 'webext-dynamic-content-scripts';
 
 _For Manifest v2, refer to the [usage-mv2](./usage-mv2.md) documentation._
 
-You need to:
-
-- import `webext-dynamic-content-scripts` in the worker (no functions need to be called)
-- specify `optional_host_permissions` in the manifest to allow new permissions to be added
-- specify at least one `content_scripts`
-
-```js
-// example background.worker.js
-navigator.importScripts('webext-dynamic-content-scripts.js');
-```
-
-```json
-// example manifest.json
-{
-	"permissions": ["scripting"],
-	"optional_host_permissions": ["*://*/*"],
-	"background": {
-		"service_worker": "background.worker.js"
-	},
-	"content_scripts": [
-		{
-			"matches": ["https://github.com/*"],
-			"css": ["content.css"],
-			"js": ["content.js"]
-		}
-	]
-}
-```
+Manifest v3 supporting is [coming soon](https://github.com/fregante/webext-dynamic-content-scripts/issues/18).
 
 ## Related
 

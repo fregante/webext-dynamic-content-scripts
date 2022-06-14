@@ -44,13 +44,13 @@
 	"dependencies": {
 		"content-scripts-register-polyfill": "^3.2.2",
 		"webext-additional-permissions": "^2.3.0",
-		"webext-content-scripts": "^1.0.1"
+		"webext-content-scripts": "^1.0.2"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^2.0.0",
-		"@types/chrome": "^0.0.171",
-		"@types/firefox-webext-browser": "^94.0.0",
-		"typescript": "^4.4.4",
-		"xo": "^0.45.0"
+		"@sindresorhus/tsconfig": "^3.0.1",
+		"@types/chrome": "^0.0.190",
+		"@types/firefox-webext-browser": "^94.0.1",
+		"typescript": "^4.7.3",
+		"xo": "^0.50.0"
 	}
 }

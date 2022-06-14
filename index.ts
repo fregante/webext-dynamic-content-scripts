@@ -82,10 +82,11 @@ chrome.permissions.onRemoved.addListener(async ({origins}) => {
 		return;
 	}
 
-	for (const [origin, script] of registeredScripts) {
+	for (const [origin, scriptPromise] of registeredScripts) {
 		if (origins.includes(origin)) {
 			// eslint-disable-next-line no-await-in-loop
-			void (await script).unregister();
+			const script = await scriptPromise;
+			void script.unregister();
 		}
 	}
 });

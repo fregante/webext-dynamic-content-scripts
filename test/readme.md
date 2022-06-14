@@ -7,6 +7,6 @@ npm run demo:watch
 npx web-ext run --target=chromium
 ```
 
-You should see the changes applied the `content.*` files.
+You should see the changes applied by the `content.*` files.
 
 Also open the background script console to see any errors.

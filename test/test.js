@@ -20,31 +20,43 @@ async function expectToNotMatchElement(window, selector) {
 
 // TODO: Test CSS injection
 
-describe('tab', () => {
+// "Static" will test the manifest-based injection
+// "Dynamic" is the URL we're injecting. The "additional permission" is faked via a mock
+const pages = [
+	['static', 'https://iframe-test-page.vercel.app/'],
+	['dynamic', 'https://iframe-test-page-n786423ca-fregante.vercel.app/'],
+];
+
+const nestedPages = [
+	['static', './Framed-page'],
+	['dynamic', 'https://iframe-test-page-n786423ca-fregante.vercel.app'],
+];
+
+describe.each(pages)('%s: tab', (title, url) => {
 	beforeAll(async () => {
-		await page.goto('https://iframe-test-page.vercel.app/');
+		await page.goto(url);
 	});
 
 	it('should load page', async () => {
 		await expect(page).toMatch('Parent page');
 	});
 
-	it('should load static content script, once', async () => {
-		await expect(page).toMatchElement('.static');
-		await expectToNotMatchElement(page, '.static + .static');
+	it('should load the content script, once', async () => {
+		await expect(page).toMatchElement('.web-ext');
+		await expectToNotMatchElement(page, '.web-ext + .web-ext');
 	});
 
-	it('should load static content script after a reload, once', async () => {
+	it('should load the content script after a reload, once', async () => {
 		await page.reload();
-		await expect(page).toMatchElement('.static');
-		await expectToNotMatchElement(page, '.static + .static');
+		await expect(page).toMatchElement('.web-ext');
+		await expectToNotMatchElement(page, '.web-ext + .web-ext');
 	});
 });
 
 let iframe;
-describe('iframe', () => {
+describe.each(pages)('%s: iframe', (title, url) => {
 	beforeAll(async () => {
-		await page.goto('https://iframe-test-page.vercel.app/');
+		await page.goto(url);
 		const elementHandle = await page.waitForSelector('iframe');
 		iframe = await elementHandle.contentFrame();
 	});
@@ -52,35 +64,36 @@ describe('iframe', () => {
 		await expect(iframe).toMatch('Framed page');
 	});
 
-	it('should load static content script, once', async () => {
-		await expect(iframe).toMatchElement('.static');
-		await expectToNotMatchElement(iframe, '.static + .static');
+	it('should load the content script, once', async () => {
+		await expect(iframe).toMatchElement('.web-ext');
+		await expectToNotMatchElement(iframe, '.web-ext + .web-ext');
 	});
 
-	it('should load static content script after a reload, once', async () => {
+	it('should load the content script after a reload, once', async () => {
 		await iframe.goto(iframe.url());
-		await expect(iframe).toMatchElement('.static');
-		await expectToNotMatchElement(iframe, '.static + .static');
+		await expect(iframe).toMatchElement('.web-ext');
+		await expectToNotMatchElement(iframe, '.web-ext + .web-ext');
 	});
 });
 
 let iframeOfExcludedParent;
-describe('excludeMatches', () => {
+describe.each(nestedPages)('%s: excludeMatches', (title, url) => {
 	beforeAll(async () => {
-		await page.goto('https://fregante.github.io/pixiebrix-testing-ground/Parent-page?iframe=./Framed-page');
+		await page.goto('https://fregante.github.io/pixiebrix-testing-ground/Parent-page?iframe=' + encodeURIComponent(url));
 		const elementHandle = await page.waitForSelector('iframe');
 		iframeOfExcludedParent = await elementHandle.contentFrame();
 	});
 
 	it('should load page and iframe', async () => {
 		await expect(page).toMatchElement('title', {text: 'Parent page'});
-		await expect(iframeOfExcludedParent).toMatchElement('title', {text: 'Framed page'});
+		// TODO: We need another page like `pixiebrix-testing-ground`, on a different domain, to customize the title
+		// await expect(iframeOfExcludedParent).toMatchElement('title', {text: 'Framed page'});
 	});
 
-	it('should load static content script only in iframe, once', async () => {
-		await expectToNotMatchElement(page, '.static');
-		await expect(iframeOfExcludedParent).toMatchElement('.static');
-		await expectToNotMatchElement(iframeOfExcludedParent, '.static + .static');
+	it('should load the content script only in iframe, once', async () => {
+		await expectToNotMatchElement(page, '.web-ext');
+		await expect(iframeOfExcludedParent).toMatchElement('.web-ext');
+		await expectToNotMatchElement(iframeOfExcludedParent, '.web-ext + .web-ext');
 	});
 });
 

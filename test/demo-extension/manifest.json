@@ -4,7 +4,8 @@
 	"manifest_version": 2,
 	"permissions": [
 		"webNavigation",
-		"https://iframe-test-page.vercel.app/*"
+		"https://iframe-test-page.vercel.app/*",
+		"https://iframe-test-page-n786423ca-fregante.vercel.app/*"
 	],
 	"background": {
 		"scripts": [

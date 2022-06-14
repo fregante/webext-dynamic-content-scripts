@@ -1,5 +1,5 @@
 document.body.insertAdjacentHTML(
 	'beforeEnd',
-	'<p class="static">Static script loaded',
+	'<p class="web-ext">Content script loaded',
 );
-console.log('Static script loaded', new Date());
+console.log('Content script loaded', new Date());

@@ -34,6 +34,9 @@
 		"test": "xo && tsc --noEmit",
 		"watch": "tsc --watch"
 	},
+	"alias": {
+		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js"
+	},
 	"xo": {
 		"envs": [
 			"browser",

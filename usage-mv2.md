@@ -1,5 +1,7 @@
 # webext-dynamic-content-scripts on Manifest v2
 
+_For Manifest v3, refer to the [Usage section on the main readme](readme.md)._
+
 Include `webext-dynamic-content-scripts` as a background script and add `optional_permissions` to allow new permissions to be added. The scripts defined in `content_scripts` will be added on the new domains (`matches` will be replaced)
 
 ```json

@@ -12,7 +12,9 @@ type ContentScripts = NonNullable<chrome.runtime.Manifest['content_scripts']>;
 const chromeRegister = globalThis?.chrome?.scripting?.registerContentScripts;
 const firefoxRegister = globalThis?.browser?.contentScripts?.register;
 
-async function registerContentScript(contentScript: browser.contentScripts.RegisteredContentScriptOptions): Promise<browser.contentScripts.RegisteredContentScript> {
+async function registerContentScript(
+	contentScript: browser.contentScripts.RegisteredContentScriptOptions,
+): Promise<browser.contentScripts.RegisteredContentScript> {
 	if (chromeRegister) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
 		await chromeRegister([{

@@ -26,6 +26,10 @@
 	],
 	"scripts": {
 		"build": "tsc",
+		"demo:build": "parcel build --no-cache",
+		"demo:watch": "parcel watch --no-cache --no-hmr",
+		"prejest": "npm run demo:build",
+		"jest": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
 		"prepack": "tsc --sourceMap false",
 		"test": "xo && tsc --noEmit",
 		"watch": "tsc --watch"
@@ -41,16 +45,49 @@
 			"import/no-unassigned-import": "off"
 		}
 	},
+	"jest": {
+		"injectGlobals": false,
+		"preset": "jest-puppeteer",
+		"testMatch": [
+			"**/test/*.js"
+		]
+	},
 	"dependencies": {
 		"content-scripts-register-polyfill": "^3.2.2",
 		"webext-additional-permissions": "^2.3.0",
 		"webext-content-scripts": "^1.0.2"
 	},
 	"devDependencies": {
+		"@parcel/config-webextension": "^2.6.0",
 		"@sindresorhus/tsconfig": "^3.0.1",
 		"@types/chrome": "^0.0.190",
 		"@types/firefox-webext-browser": "^94.0.1",
+		"jest": "^28.1.1",
+		"jest-puppeteer": "^6.1.0",
+		"parcel": "^2.6.0",
+		"puppeteer": "^14.4.0",
 		"typescript": "^4.7.3",
 		"xo": "^0.50.0"
+	},
+	"targets": {
+		"main": false,
+		"module": false,
+		"default": {
+			"source": "./test/demo-extension/manifest.json",
+			"distDir": "./test/dist",
+			"sourceMap": {
+				"inline": true
+			},
+			"optimize": false
+		}
+	},
+	"webExt": {
+		"sourceDir": "test/dist",
+		"run": {
+			"startUrl": [
+				"https://iframe-test-page.vercel.app/",
+				"https://iframe-test-page.vercel.app/cross-origin-parent.html"
+			]
+		}
 	}
 }

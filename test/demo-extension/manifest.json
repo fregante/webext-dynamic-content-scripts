@@ -1,0 +1,41 @@
+{
+	"name": "content-scripts-register-polyfill",
+	"version": "0.0.0",
+	"manifest_version": 2,
+	"permissions": [
+		"webNavigation",
+		"https://iframe-test-page.vercel.app/*"
+	],
+	"background": {
+		"scripts": [
+			"background.js"
+		]
+	},
+	"content_scripts": [
+		{
+			"all_frames": true,
+			"matches": [
+				"https://iframe-test-page.vercel.app/*"
+			],
+			"js": [
+				"content.js"
+			],
+			"css": [
+				"content.css"
+			]
+		},
+		{
+			"all_frames": true,
+			"matches": ["https://fregante.github.io/pixiebrix-testing-ground/*"],
+			"exclude_matches": [
+				"https://fregante.github.io/pixiebrix-testing-ground/Parent-page*"
+			],
+			"js": ["content.js"],
+			"css": ["content.css"]
+		}
+	],
+	"web_accessible_resources": [
+		"*.js",
+		"*.css"
+	]
+}

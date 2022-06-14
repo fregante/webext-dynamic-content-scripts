@@ -25,10 +25,11 @@ import addDomainPermissionToggle from 'webext-domain-permission-toggle';
 addDomainPermissionToggle();
 ```
 
-## manifest.json example
+## manifest.json v2 example
 
 ```js
 {
+	"version": 2,
 	"permissions": [
 		"https://github.com/*",
 		"contextMenus",
@@ -49,15 +50,9 @@ addDomainPermissionToggle();
 	},
 	"content_scripts": [
 		{
-			"matches": [
-				"https://github.com/*"
-			],
-			"css": [
-				"content.css"
-			],
-			"js": [
-				"content.js"
-			]
+			"matches": ["https://github.com/*"],
+			"css": ["content.css"],
+			"js": ["content.js"]
 		}
 	]
 }

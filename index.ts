@@ -19,7 +19,7 @@ function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
 	return {file: url.pathname};
 }
 
-function injectOnExistingTabs(origins: string[], scripts: ContentScripts) {
+function injectToExistingTabs(origins: string[], scripts: ContentScripts) {
 	if (origins.length === 0) {
 		return;
 	}
@@ -42,7 +42,7 @@ async function registerOnOrigins({
 	const manifest = chrome.runtime.getManifest().content_scripts;
 
 	if (!manifest) {
-		throw new Error('webext-dynamic-content-scripts tried to register scripts on th new host permissions, but no content scripts were found in the manifest.');
+		throw new Error('webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.');
 	}
 
 	// Register one at a time to allow removing one at a time as well
@@ -60,7 +60,9 @@ async function registerOnOrigins({
 		}
 	}
 
-	injectOnExistingTabs(newOrigins || [], manifest);
+	// May not be needed in the future in Firefox
+	// https://bugzilla.mozilla.org/show_bug.cgi?id=1458947
+	injectToExistingTabs(newOrigins || [], manifest);
 }
 
 (async () => {

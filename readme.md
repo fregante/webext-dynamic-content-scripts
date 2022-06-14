@@ -1,12 +1,13 @@
 # webext-dynamic-content-scripts [![npm version](https://img.shields.io/npm/v/webext-dynamic-content-scripts.svg)](https://www.npmjs.com/package/webext-dynamic-content-scripts)
 
-> WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`
+> WebExtension module: Automatically registers your `content_scripts` on domains added via `permissions.request`
 
-For example, when your users enable more domains via [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle), this module will automatically register your `content_scripts` from `manifest.json` into the new domain.
+- Browsers: Chrome, Firefox, and Safari
+- Manifest: v2 (v3 coming soon)
 
-The main use case is to add support for _GitHub/GitLab Enterprise_ domains to your GitHub/GitLab extension: you start with `github.com` and then users can add new domains; this way you don't need to use a broad `<all_urls>` permission.
+This module will automatically register your `content_scripts` from `manifest.json` into new domains granted via `permissions.request()`, or via [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle).
 
-Tested in Chrome, Firefox, and Safari.
+The main use case is ship your extension with a minimal set of hosts and then allow the user to enable it on any domain; this way you don't need to use a broad `<all_urls>` permission.
 
 ## Guides
 
@@ -27,47 +28,9 @@ import 'webext-dynamic-content-scripts';
 
 ## Usage
 
-Include `webext-dynamic-content-scripts` as a background script and add `optional_permissions` to allow new permissions to be added. The scripts defined in `content_scripts` will be added on the new domains (`matches` will be replaced)
+_For Manifest v2, refer to the [usage-mv2](./usage-mv2.md) documentation._
 
-```json
-// example manifest.json
-{
-	"optional_permissions": [
-		"*://*/*"
-	],
-	"background": {
-		"scripts": [
-			"webext-dynamic-content-scripts.js",
-			"background.js"
-		]
-	},
-	"content_scripts": [
-		{
-			"matches": [
-				"https://github.com/*"
-			],
-			"css": [
-				"content.css"
-			],
-			"js": [
-				"content.js"
-			]
-		}
-	]
-}
-```
-
-## Permissions for Chrome
-
-This section does not apply to Firefox users.
-
-In order to use `all_frames: true` you should the add [`webNavigation` permission](https://developer.chrome.com/docs/extensions/reference/webNavigation/). Without it, `all_frames: true` won’t work:
-
-- when the iframe is not on the same domain as the top frame
-- when the iframe reloads or navigates to another page
-- when the iframe is not ready when `runAt` is configured to run (`runAt: 'start'` is unlikely to work)
-
-If available, the `webNavigation` API will be automatically used in every situation for better performance.
+Manifest v3 supporting is [coming soon](https://github.com/fregante/webext-dynamic-content-scripts/issues/18).
 
 ## Related
 

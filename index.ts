@@ -9,10 +9,23 @@ Promise<browser.contentScripts.RegisteredContentScript>
 
 type ContentScripts = NonNullable<chrome.runtime.Manifest['content_scripts']>;
 
-const registerContentScript
-	= globalThis?.browser?.contentScripts?.register
-	?? globalThis?.chrome?.scripting?.registerContentScripts
-	?? registerContentScriptPonyfill;
+const chromeRegister = globalThis?.chrome?.scripting?.registerContentScripts;
+const firefoxRegister = globalThis?.browser?.contentScripts?.register;
+
+async function registerContentScript(contentScript: browser.contentScripts.RegisteredContentScriptOptions): Promise<browser.contentScripts.RegisteredContentScript> {
+	if (chromeRegister) {
+		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
+		await chromeRegister([{
+			id,
+			...contentScript,
+		}]);
+		return {
+			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
+		};
+	}
+
+	return (firefoxRegister ?? registerContentScriptPonyfill)(contentScript);
+}
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
 function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
@@ -20,7 +33,7 @@ function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
 	return {file: url.pathname};
 }
 
-function injectOnExistingTabs(origins: string[], scripts: ContentScripts) {
+function injectToExistingTabs(origins: string[], scripts: ContentScripts) {
 	if (origins.length === 0) {
 		return;
 	}
@@ -61,7 +74,9 @@ async function registerOnOrigins({
 		}
 	}
 
-	injectOnExistingTabs(newOrigins || [], manifest);
+	// May not be needed in the future in Firefox
+	// https://bugzilla.mozilla.org/show_bug.cgi?id=1458947
+	injectToExistingTabs(newOrigins || [], manifest);
 }
 
 (async () => {

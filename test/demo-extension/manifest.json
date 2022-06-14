@@ -8,22 +8,14 @@
 		"https://iframe-test-page-n786423ca-fregante.vercel.app/*"
 	],
 	"background": {
-		"scripts": [
-			"background.js"
-		]
+		"scripts": ["background.js"]
 	},
 	"content_scripts": [
 		{
 			"all_frames": true,
-			"matches": [
-				"https://iframe-test-page.vercel.app/*"
-			],
-			"js": [
-				"content.js"
-			],
-			"css": [
-				"content.css"
-			]
+			"matches": ["https://iframe-test-page.vercel.app/*"],
+			"js": ["content.js"],
+			"css": ["content.css"]
 		},
 		{
 			"all_frames": true,
@@ -35,8 +27,5 @@
 			"css": ["content.css"]
 		}
 	],
-	"web_accessible_resources": [
-		"*.js",
-		"*.css"
-	]
+	"web_accessible_resources": ["*.js", "*.css"]
 }

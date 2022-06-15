@@ -1,21 +1,22 @@
 {
-	"name": "webext-dynamic-content-scripts",
+	"name": "webext-dynamic-content-scripts-mv3",
 	"version": "0.0.0",
-	"manifest_version": 2,
-	"permissions": [
-		"webNavigation",
+	"manifest_version": 3,
+	"permissions": ["webNavigation", "scripting"],
+	"host_permissions": [
 		"https://iframe-test-page.vercel.app/*",
 		"https://iframe-test-page-n786423ca-fregante.vercel.app/*"
 	],
 	"background": {
-		"scripts": ["../background.js"]
+		"service_worker": "background.js",
+		"type": "module"
 	},
 	"content_scripts": [
 		{
 			"all_frames": true,
 			"matches": ["https://iframe-test-page.vercel.app/*"],
-			"js": ["../content.js"],
-			"css": ["../content.css"]
+			"js": ["content.js"],
+			"css": ["content.css"]
 		},
 		{
 			"all_frames": true,
@@ -23,9 +24,8 @@
 			"exclude_matches": [
 				"https://fregante.github.io/pixiebrix-testing-ground/Parent-page*"
 			],
-			"js": ["../content.js"],
-			"css": ["../content.css"]
+			"js": ["content.js"],
+			"css": ["content.css"]
 		}
-	],
-	"web_accessible_resources": ["*.js", "*.css"]
+	]
 }

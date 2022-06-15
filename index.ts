@@ -42,7 +42,10 @@ function makePathRelative(file: string): string {
 	return new URL(file, location.origin).pathname;
 }
 
-function injectToExistingTabs(origins: string[], scripts: ManifestContentScripts) {
+function injectToExistingTabs(
+	origins: string[],
+	scripts: ManifestContentScripts,
+) {
 	if (origins.length === 0) {
 		return;
 	}

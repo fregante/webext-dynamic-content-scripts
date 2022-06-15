@@ -29,7 +29,8 @@
 		"demo:build": "parcel build --no-cache",
 		"demo:watch": "parcel watch --no-cache --no-hmr",
 		"prejest": "npm run demo:build",
-		"jest": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
+		"jest": "TARGET=2 npm run jest:core && TARGET=3 npm run jest:core",
+		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
 		"prepack": "tsc --sourceMap false",
 		"test": "xo && tsc --noEmit && npm run jest",
 		"watch": "tsc --watch"
@@ -79,9 +80,17 @@
 	"targets": {
 		"main": false,
 		"module": false,
-		"default": {
-			"source": "./test/demo-extension/v3/manifest.json",
-			"distDir": "./test/dist",
+		"mv2": {
+			"source": "./test/demo-extension/mv2/manifest.json",
+			"distDir": "./test/dist/mv2",
+			"sourceMap": {
+				"inline": true
+			},
+			"optimize": false
+		},
+		"mv3": {
+			"source": "./test/demo-extension/mv3/manifest.json",
+			"distDir": "./test/dist/mv3",
 			"sourceMap": {
 				"inline": true
 			},
@@ -89,7 +98,7 @@
 		}
 	},
 	"webExt": {
-		"sourceDir": "test/dist",
+		"sourceDir": "test/dist/mv2",
 		"run": {
 			"startUrl": [
 				"https://iframe-test-page.vercel.app/",

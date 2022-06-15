@@ -11,32 +11,35 @@ const chromeRegister = globalThis?.chrome?.scripting?.registerContentScripts;
 const firefoxRegister = globalThis?.browser?.contentScripts?.register;
 
 async function registerContentScript(
-	contentScript: browser.contentScripts.RegisteredContentScriptOptions,
+	contentScript: ChromeContentScript,
 ): Promise<browser.contentScripts.RegisteredContentScript> {
 	if (chromeRegister) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
 		await chromeRegister([{
 			id,
 			...contentScript,
-			js: contentScript.js?.map(content => 'file' in content ? content.file : ''),
-			css: contentScript.css?.map(content => 'file' in content ? content.file : ''),
 		}]);
 		return {
 			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
 		};
 	}
 
+	const firefoxContentScript = {
+		...contentScript,
+		js: contentScript.js?.map(file => ({file})),
+		css: contentScript.css?.map(file => ({file})),
+	};
+
 	if (firefoxRegister) {
-		return firefoxRegister(contentScript);
+		return firefoxRegister(firefoxContentScript);
 	}
 
-	return registerContentScriptPonyfill(contentScript);
+	return registerContentScriptPonyfill(firefoxContentScript);
 }
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
-function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
-	const url = new URL(file, location.origin);
-	return {file: url.pathname};
+function makePathRelative(file: string): string {
+	return new URL(file, location.origin).pathname;
 }
 
 function injectToExistingTabs(origins: string[], scripts: ManifestContentScripts) {
@@ -70,8 +73,8 @@ async function registerOnOrigins({
 		for (const config of manifest) {
 			const registeredScript = registerContentScript({
 				// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
-				js: (config.js || []).map(file => convertPath(file)),
-				css: (config.css || []).map(file => convertPath(file)),
+				js: config.js?.map(file => makePathRelative(file)),
+				css: config.css?.map(file => makePathRelative(file)),
 				allFrames: config.all_frames,
 				matches: [origin],
 				excludeMatches: config.matches,

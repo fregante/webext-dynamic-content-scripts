@@ -7,13 +7,11 @@ string,
 Promise<browser.contentScripts.RegisteredContentScript>
 >();
 
-type ContentScripts = NonNullable<chrome.runtime.Manifest['content_scripts']>;
-
 const chromeRegister = globalThis?.chrome?.scripting?.registerContentScripts;
 const firefoxRegister = globalThis?.browser?.contentScripts?.register;
 
 async function registerContentScript(
-	contentScript: browser.contentScripts.RegisteredContentScriptOptions,
+	contentScript: ScriptingContentScript,
 ): Promise<browser.contentScripts.RegisteredContentScript> {
 	if (chromeRegister) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
@@ -26,7 +24,17 @@ async function registerContentScript(
 		};
 	}
 
-	return (firefoxRegister ?? registerContentScriptPonyfill)(contentScript);
+	const firefoxContentScript = {
+		...contentScript,
+		js: (contentScript.js || []).map(file => convertPath(file)),
+		css: (contentScript.css || []).map(file => convertPath(file)),
+	};
+
+	if (firefoxRegister) {
+		return firefoxRegister(firefoxContentScript);
+	}
+
+	return registerContentScriptPonyfill(firefoxContentScript);
 }
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
@@ -35,7 +43,7 @@ function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
 	return {file: url.pathname};
 }
 
-function injectToExistingTabs(origins: string[], scripts: ContentScripts) {
+function injectToExistingTabs(origins: string[], scripts: ManifestContentScripts) {
 	if (origins.length === 0) {
 		return;
 	}
@@ -65,8 +73,8 @@ async function registerOnOrigins({
 	for (const origin of newOrigins || []) {
 		for (const config of manifest) {
 			const registeredScript = registerContentScript({
-				js: (config.js || []).map(file => convertPath(file)),
-				css: (config.css || []).map(file => convertPath(file)),
+				js: config.js,
+				css: config.css,
 				allFrames: config.all_frames,
 				matches: [origin],
 				excludeMatches: config.matches,

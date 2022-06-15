@@ -80,7 +80,7 @@
 		"main": false,
 		"module": false,
 		"default": {
-			"source": "./test/demo-extension/manifest.json",
+			"source": "./test/demo-extension/v3/manifest.json",
 			"distDir": "./test/dist",
 			"sourceMap": {
 				"inline": true

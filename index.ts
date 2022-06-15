@@ -11,30 +11,26 @@ const chromeRegister = globalThis?.chrome?.scripting?.registerContentScripts;
 const firefoxRegister = globalThis?.browser?.contentScripts?.register;
 
 async function registerContentScript(
-	contentScript: ScriptingContentScript,
+	contentScript: browser.contentScripts.RegisteredContentScriptOptions,
 ): Promise<browser.contentScripts.RegisteredContentScript> {
 	if (chromeRegister) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
 		await chromeRegister([{
 			id,
 			...contentScript,
+			js: contentScript.js?.map(content => 'file' in content ? content.file : ''),
+			css: contentScript.css?.map(content => 'file' in content ? content.file : ''),
 		}]);
 		return {
 			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
 		};
 	}
 
-	const firefoxContentScript = {
-		...contentScript,
-		js: (contentScript.js || []).map(file => convertPath(file)),
-		css: (contentScript.css || []).map(file => convertPath(file)),
-	};
-
 	if (firefoxRegister) {
-		return firefoxRegister(firefoxContentScript);
+		return firefoxRegister(contentScript);
 	}
 
-	return registerContentScriptPonyfill(firefoxContentScript);
+	return registerContentScriptPonyfill(contentScript);
 }
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
@@ -73,8 +69,9 @@ async function registerOnOrigins({
 	for (const origin of newOrigins || []) {
 		for (const config of manifest) {
 			const registeredScript = registerContentScript({
-				js: config.js,
-				css: config.css,
+				// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
+				js: (config.js || []).map(file => convertPath(file)),
+				css: (config.css || []).map(file => convertPath(file)),
 				allFrames: config.all_frames,
 				matches: [origin],
 				excludeMatches: config.matches,

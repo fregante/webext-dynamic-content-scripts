@@ -18,7 +18,11 @@ async function registerContentScript(
 		await chromeRegister([{
 			id,
 			...contentScript,
-		}]);
+		}]).catch(error => {
+			if (!error?.message.startsWith('Duplicate script ID')) {
+				throw error;
+			}
+		});
 		return {
 			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
 		};

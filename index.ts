@@ -15,14 +15,17 @@ async function registerContentScript(
 ): Promise<browser.contentScripts.RegisteredContentScript> {
 	if (chromeRegister) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
-		await chromeRegister([{
-			id,
-			...contentScript,
-		}]).catch(error => {
-			if (!error?.message.startsWith('Duplicate script ID')) {
+		try {
+			await chromeRegister([{
+				id,
+				...contentScript,
+			}]);
+		} catch (error) {
+			if (!(error as Error)?.message.startsWith('Duplicate script ID')) {
 				throw error;
 			}
-		});
+		}
+
 		return {
 			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
 		};

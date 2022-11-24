@@ -1,6 +1,6 @@
 {
 	"name": "webext-dynamic-content-scripts",
-	"version": "8.1.1",
+	"version": "9.0.0-1",
 	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
 	"keywords": [
 		"contentscript",
@@ -29,15 +29,11 @@
 		"demo:build": "parcel build --no-cache",
 		"demo:watch": "parcel watch --no-cache --no-hmr",
 		"prejest": "npm run demo:build",
-		"jest": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
+		"jest": "TARGET=2 npm run jest:core && TARGET=3 npm run jest:core",
+		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
 		"prepack": "tsc --sourceMap false",
-		"test": "xo && tsc --noEmit",
+		"test": "xo && tsc --noEmit && npm run jest",
 		"watch": "tsc --watch"
-	},
-	"alias": {
-		"these-are-just-mocks-for-parcel-tests": "yolo",
-		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
-		"webext-dynamic-content-scripts": "./index.ts"
 	},
 	"xo": {
 		"envs": [
@@ -76,12 +72,25 @@
 		"typescript": "^4.7.3",
 		"xo": "^0.50.0"
 	},
+	"alias": {
+		"these-are-just-mocks-for-parcel-tests": "yolo",
+		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
+		"webext-dynamic-content-scripts": "./index.ts"
+	},
 	"targets": {
 		"main": false,
 		"module": false,
-		"default": {
-			"source": "./test/demo-extension/manifest.json",
-			"distDir": "./test/dist",
+		"mv2": {
+			"source": "./test/demo-extension/mv2/manifest.json",
+			"distDir": "./test/dist/mv2",
+			"sourceMap": {
+				"inline": true
+			},
+			"optimize": false
+		},
+		"mv3": {
+			"source": "./test/demo-extension/mv3/manifest.json",
+			"distDir": "./test/dist/mv3",
 			"sourceMap": {
 				"inline": true
 			},
@@ -89,7 +98,7 @@
 		}
 	},
 	"webExt": {
-		"sourceDir": "test/dist",
+		"sourceDir": "test/dist/mv2",
 		"run": {
 			"startUrl": [
 				"https://iframe-test-page.vercel.app/",

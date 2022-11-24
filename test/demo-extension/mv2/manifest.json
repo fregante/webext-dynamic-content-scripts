@@ -1,5 +1,5 @@
 {
-	"name": "content-scripts-register-polyfill",
+	"name": "webext-dynamic-content-scripts",
 	"version": "0.0.0",
 	"manifest_version": 2,
 	"permissions": [
@@ -26,6 +26,5 @@
 			"js": ["content.js"],
 			"css": ["content.css"]
 		}
-	],
-	"web_accessible_resources": ["*.js", "*.css"]
+	]
 }

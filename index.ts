@@ -7,19 +7,52 @@ string,
 Promise<browser.contentScripts.RegisteredContentScript>
 >();
 
-type ContentScripts = NonNullable<chrome.runtime.Manifest['content_scripts']>;
+const chromeRegister = globalThis?.chrome?.scripting?.registerContentScripts;
+const firefoxRegister = globalThis?.browser?.contentScripts?.register;
 
-const registerContentScript
-	= globalThis?.browser?.contentScripts?.register
-	?? registerContentScriptPonyfill;
+async function registerContentScript(
+	contentScript: ChromeContentScript,
+): Promise<browser.contentScripts.RegisteredContentScript> {
+	if (chromeRegister) {
+		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
+		try {
+			await chromeRegister([{
+				id,
+				...contentScript,
+			}]);
+		} catch (error: unknown) {
+			if (!(error as Error)?.message.startsWith('Duplicate script ID')) {
+				throw error;
+			}
+		}
 
-// In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
-function convertPath(file: string): browser.extensionTypes.ExtensionFileOrCode {
-	const url = new URL(file, location.origin);
-	return {file: url.pathname};
+		return {
+			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
+		};
+	}
+
+	const firefoxContentScript = {
+		...contentScript,
+		js: contentScript.js?.map(file => ({file})),
+		css: contentScript.css?.map(file => ({file})),
+	};
+
+	if (firefoxRegister) {
+		return firefoxRegister(firefoxContentScript);
+	}
+
+	return registerContentScriptPonyfill(firefoxContentScript);
 }
 
-function injectToExistingTabs(origins: string[], scripts: ContentScripts) {
+// In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
+function makePathRelative(file: string): string {
+	return new URL(file, location.origin).pathname;
+}
+
+function injectToExistingTabs(
+	origins: string[],
+	scripts: ManifestContentScripts,
+) {
 	if (origins.length === 0) {
 		return;
 	}
@@ -49,8 +82,9 @@ async function registerOnOrigins({
 	for (const origin of newOrigins || []) {
 		for (const config of manifest) {
 			const registeredScript = registerContentScript({
-				js: (config.js || []).map(file => convertPath(file)),
-				css: (config.css || []).map(file => convertPath(file)),
+				// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
+				js: config.js?.map(file => makePathRelative(file)),
+				css: config.css?.map(file => makePathRelative(file)),
 				allFrames: config.all_frames,
 				matches: [origin],
 				excludeMatches: config.matches,

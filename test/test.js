@@ -10,7 +10,7 @@ const expect = puppeteer.default;
 async function expectToNotMatchElement(window, selector) {
 	try {
 		await expect(window).toMatchElement(selector);
-		throw new Error(`Expected ${selector} element found`);
+		throw new Error(`Unexpected "${selector}" element found`);
 	} catch (error) {
 		if (!error.message.startsWith(`Element ${selector} not found`)) {
 			throw error.message;

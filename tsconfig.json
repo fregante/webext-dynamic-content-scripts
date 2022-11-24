@@ -2,9 +2,9 @@
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
 		"outDir": ".",
-		"target": "es2019",
-		"module": "es2015",
-		"moduleResolution": "node"
+		"target": "ES2022",
+		"module": "ES2022",
+		"moduleResolution": "node",
 	},
 	"files": [
 		"global.d.ts",

@@ -20,7 +20,7 @@ async function registerContentScript(
 				id,
 				...contentScript,
 			}]);
-		} catch (error) {
+		} catch (error: unknown) {
 			if (!(error as Error)?.message.startsWith('Duplicate script ID')) {
 				throw error;
 			}

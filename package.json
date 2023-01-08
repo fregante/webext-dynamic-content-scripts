@@ -22,10 +22,12 @@
 	"module": "index.js",
 	"files": [
 		"index.js",
+		"utils.js",
 		"active-tab.js",
 		"including-activetab.js",
 		"simple-event-target.js",
 		"index.d.ts",
+		"utils.d.ts",
 		"active-tab.d.ts",
 		"including-activetab.d.ts",
 		"simple-event-target.d.ts"
@@ -67,7 +69,8 @@
 	"dependencies": {
 		"content-scripts-register-polyfill": "^3.2.2",
 		"webext-additional-permissions": "^2.3.0",
-		"webext-content-scripts": "^2.0.0"
+		"webext-content-scripts": "^2.0.0",
+		"webext-patterns": "^1.2.0"
 	},
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.8.0",

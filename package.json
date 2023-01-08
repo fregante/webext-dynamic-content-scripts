@@ -87,8 +87,8 @@
 	"alias": {
 		"these-are-just-mocks-for-parcel-tests": "yolo",
 		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
-		"webext-dynamic-content-scripts/including-active-tab.js": "./including-active-tab.ts",
-		"webext-dynamic-content-scripts": "./index.ts"
+		"webext-dynamic-content-scripts": "./",
+		"./*.js": "./$1.ts"
 	},
 	"targets": {
 		"main": false,

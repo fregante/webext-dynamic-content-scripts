@@ -9,12 +9,9 @@ const scripts = chrome.runtime.getManifest().content_scripts as ContentScript;
 
 async function injectToTab({id, origin}: ActiveTab): Promise<void> {
 	if (id && await isContentScriptRegistered(origin)) {
-		// Warning: This will still cause duplicate injection on frames of activeTabs with origins that have "registered" content scripts.
-		// Example:
-		// 1. manifest injects on google.com
-		// 2. user enables activeTab on example.com
-		// 3. the tab has a Google Maps frame that already has native content scripts
-		// 4. this line will inject the content script on both frame 0 and the Google Maps frame
+		// Warning: This might cause duplicate injections on frames of activeTabs with different origins. Some details in:
+		// https://github.com/fregante/webext-dynamic-content-scripts/pull/44
+		// https://github.com/pixiebrix/pixiebrix-extension/issues/4983
 		void injectContentScript(id, scripts);
 	}
 }

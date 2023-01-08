@@ -24,12 +24,12 @@
 		"index.js",
 		"utils.js",
 		"active-tab.js",
-		"including-activetab.js",
+		"including-active-tab.js",
 		"simple-event-target.js",
 		"index.d.ts",
 		"utils.d.ts",
 		"active-tab.d.ts",
-		"including-activetab.d.ts",
+		"including-active-tab.d.ts",
 		"simple-event-target.d.ts"
 	],
 	"scripts": {
@@ -87,6 +87,7 @@
 	"alias": {
 		"these-are-just-mocks-for-parcel-tests": "yolo",
 		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
+		"webext-dynamic-content-scripts/including-active-tab.js": "./including-active-tab.ts",
 		"webext-dynamic-content-scripts": "./index.ts"
 	},
 	"targets": {

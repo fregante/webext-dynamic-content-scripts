@@ -64,7 +64,7 @@ navigator.importScripts('webext-dynamic-content-scripts.js');
 By default, the module will only inject the content scripts into newly-permitted hosts, but it will ignore temporary permissions like `activeTab`. If you also want to automatically inject the content scripts into every frame of tabs as soon as they receive the `activeTab` permission, import a different entry point **instead of the default one.**
 
 ```js
-import 'webext-dynamic-content-scripts/including-activetab.js';
+import 'webext-dynamic-content-scripts/including-active-tab.js';
 ```
 
 ### Additional APIs

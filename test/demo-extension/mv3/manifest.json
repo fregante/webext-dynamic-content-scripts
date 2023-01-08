@@ -2,7 +2,7 @@
 	"name": "webext-dynamic-content-scripts-mv3",
 	"version": "0.0.0",
 	"manifest_version": 3,
-	"permissions": ["webNavigation", "scripting"],
+	"permissions": ["webNavigation", "scripting", "contextMenus", "activeTab"],
 	"host_permissions": [
 		"https://iframe-test-page.vercel.app/*",
 		"https://iframe-test-page-n786423ca-fregante.vercel.app/*"
@@ -11,6 +11,7 @@
 		"service_worker": "background.js",
 		"type": "module"
 	},
+	"action": {},
 	"content_scripts": [
 		{
 			"all_frames": true,

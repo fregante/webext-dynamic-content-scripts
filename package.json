@@ -22,7 +22,13 @@
 	"module": "index.js",
 	"files": [
 		"index.js",
-		"index.d.ts"
+		"active-tab.js",
+		"including-activetab.js",
+		"simple-event-target.js",
+		"index.d.ts",
+		"active-tab.d.ts",
+		"including-activetab.d.ts",
+		"simple-event-target.d.ts"
 	],
 	"scripts": {
 		"build": "tsc",
@@ -61,7 +67,7 @@
 	"dependencies": {
 		"content-scripts-register-polyfill": "^3.2.2",
 		"webext-additional-permissions": "^2.3.0",
-		"webext-content-scripts": "^1.0.3"
+		"webext-content-scripts": "^2.0.0"
 	},
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.8.0",
@@ -107,7 +113,8 @@
 				"https://iframe-test-page.vercel.app/",
 				"https://iframe-test-page.vercel.app/cross-origin-parent.html",
 				"https://iframe-test-page-n786423ca-fregante.vercel.app/",
-				"https://iframe-test-page-n786423ca-fregante.vercel.app/cross-origin-parent.html"
+				"https://iframe-test-page-n786423ca-fregante.vercel.app/cross-origin-parent.html",
+				"https://pbx.vercel.app/#use-context-menu-to-inject"
 			]
 		}
 	}

@@ -10,6 +10,4 @@ function injectToTab(tab: ActiveTab): void {
 	}
 }
 
-export function injectToActiveTabs(): void {
-	onActiveTab(injectToTab);
-}
+onActiveTab(injectToTab);

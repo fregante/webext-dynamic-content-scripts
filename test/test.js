@@ -23,13 +23,13 @@ async function expectToNotMatchElement(window, selector) {
 // "Static" will test the manifest-based injection
 // "Dynamic" is the URL we're injecting. The "additional permission" is faked via a mock
 const pages = [
-	['static', 'https://iframe-test-page.vercel.app/'],
-	['dynamic', 'https://iframe-test-page-n786423ca-fregante.vercel.app/'],
+	['static', 'https://static-ephiframe.vercel.app/Parent-page?iframe=./Framed-page'],
+	['dynamic', 'https://dynamic-ephiframe.vercel.app/Parent-page?iframe=./Framed-page'],
 ];
 
 const nestedPages = [
 	['static', './Framed-page'],
-	['dynamic', 'https://iframe-test-page-n786423ca-fregante.vercel.app'],
+	['dynamic', 'https://dynamic-ephiframe.vercel.app/Framed-page'],
 ];
 
 describe.each(pages)('%s: tab', (title, url) => {
@@ -79,15 +79,14 @@ describe.each(pages)('%s: iframe', (title, url) => {
 let iframeOfExcludedParent;
 describe.each(nestedPages)('%s: excludeMatches', (title, url) => {
 	beforeAll(async () => {
-		await page.goto('https://fregante.github.io/pixiebrix-testing-ground/Parent-page?iframe=' + encodeURIComponent(url));
+		await page.goto('https://partial-ephiframe.vercel.app/Excluded-page?iframe=' + encodeURIComponent(url));
 		const elementHandle = await page.waitForSelector('iframe');
 		iframeOfExcludedParent = await elementHandle.contentFrame();
 	});
 
 	it('should load page and iframe', async () => {
-		await expect(page).toMatchElement('title', {text: 'Parent page'});
-		// TODO: We need another page like `pixiebrix-testing-ground`, on a different domain, to customize the title
-		// await expect(iframeOfExcludedParent).toMatchElement('title', {text: 'Framed page'});
+		await expect(page).toMatchElement('title', {text: 'Excluded page'});
+		await expect(iframeOfExcludedParent).toMatchElement('title', {text: 'Framed page'});
 	});
 
 	it('should load the content script only in iframe, once', async () => {

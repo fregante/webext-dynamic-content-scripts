@@ -6,7 +6,7 @@ Checks whether a URL will have the content scripts automatically injected.
 It returns a promise that resolves with string indicating the type of injection ('static' or 'dynamic') or `false` if it won't be injected on the specified URL.
 */
 export async function isContentScriptRegistered(
-	url: string
+	url: string,
 ): Promise<'static' | 'dynamic' | false> {
 	const isInjectedByBrowser = chrome.runtime
 		.getManifest()

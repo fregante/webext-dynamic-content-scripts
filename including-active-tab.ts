@@ -8,7 +8,7 @@ import {isContentScriptRegistered} from './utils.js';
 const scripts = chrome.runtime.getManifest().content_scripts as ContentScript;
 
 async function injectToTab({id, origin}: ActiveTab): Promise<void> {
-	if (id && await isContentScriptRegistered(origin)) {
+	if (id && !(await isContentScriptRegistered(origin))) {
 		// Warning: This might cause duplicate injections on frames of activeTabs with different origins. Some details in:
 		// https://github.com/fregante/webext-dynamic-content-scripts/pull/44
 		// https://github.com/pixiebrix/pixiebrix-extension/issues/4983

@@ -107,10 +107,18 @@
 		"sourceDir": "test/dist/mv2",
 		"run": {
 			"startUrl": [
-				"https://iframe-test-page.vercel.app/",
-				"https://iframe-test-page.vercel.app/cross-origin-parent.html",
-				"https://iframe-test-page-n786423ca-fregante.vercel.app/",
-				"https://iframe-test-page-n786423ca-fregante.vercel.app/cross-origin-parent.html"
+				"https://static-ephiframe.vercel.app/Static",
+				"https://static-ephiframe.vercel.app/Static?iframe=./Inner",
+				"https://dynamic-ephiframe.vercel.app/Dynamic",
+				"https://dynamic-ephiframe.vercel.app/Dynamic?iframe=./Inner",
+				"https://dynamic-ephiframe.vercel.app/Dynamic?iframe=https://static-ephiframe.vercel.app/Static-inner",
+				"https://static-ephiframe.vercel.app/Static?iframe=https://dynamic-ephiframe.vercel.app/Dynamic-inner",
+				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please",
+				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please?iframe=https://static-ephiframe.vercel.app/Static-inner",
+				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please?iframe=https://dynamic-ephiframe.vercel.app/Dynamic-inner",
+				"https://static-ephiframe.vercel.app/Static?iframe=https://extra-ephiframe.vercel.app/Inject-via-context-menu-please",
+				"https://dynamic-ephiframe.vercel.app/Dynamic?iframe=https://extra-ephiframe.vercel.app/Inject-via-context-menu-please",
+				"chrome://extensions/"
 			]
 		}
 	}

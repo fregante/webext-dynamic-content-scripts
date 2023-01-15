@@ -19,20 +19,17 @@
 	"funding": "https://github.com/sponsors/fregante",
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
-	"module": "index.js",
+	"module": "distribution/index.js",
 	"files": [
-		"index.js",
-		"index.d.ts",
-		"utils.js",
-		"utils.d.ts"
+		"distribution"
 	],
 	"scripts": {
 		"build": "tsc",
 		"demo:build": "parcel build --no-cache",
 		"demo:watch": "parcel watch --no-cache --no-hmr",
 		"prejest": "npm run demo:build",
-		"vitest": "vitest",
 		"jest": "TARGET=2 npm run jest:core && TARGET=3 npm run jest:core",
+		"vitest": "vitest",
 		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
 		"prepack": "tsc --sourceMap false",
 		"lint": "xo",
@@ -89,7 +86,8 @@
 	"alias": {
 		"these-are-just-mocks-for-parcel-tests": "yolo",
 		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
-		"webext-dynamic-content-scripts": "./index.ts"
+		"webext-dynamic-content-scripts": "./source/index.ts",
+		"./source/*.js": "./source/$1.ts"
 	},
 	"targets": {
 		"main": false,

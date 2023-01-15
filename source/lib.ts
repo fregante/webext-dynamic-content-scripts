@@ -99,21 +99,13 @@ async function registerOnOrigins({
 	injectToExistingTabs(newOrigins || [], manifest);
 }
 
-(async () => {
-	void registerOnOrigins(
-		await getAdditionalPermissions({
-			strictOrigins: false,
-		}),
-	);
-})();
-
-chrome.permissions.onAdded.addListener(permissions => {
+function handleNewPermissions(permissions: chrome.permissions.Permissions) {
 	if (permissions.origins && permissions.origins.length > 0) {
 		void registerOnOrigins(permissions);
 	}
-});
+}
 
-chrome.permissions.onRemoved.addListener(async ({origins}) => {
+async function handledDroppedPermissions({origins}: chrome.permissions.Permissions) {
 	if (!origins || origins.length === 0) {
 		return;
 	}
@@ -125,4 +117,14 @@ chrome.permissions.onRemoved.addListener(async ({origins}) => {
 			void script.unregister();
 		}
 	}
-});
+}
+
+export async function init() {
+	chrome.permissions.onRemoved.addListener(handledDroppedPermissions);
+	chrome.permissions.onAdded.addListener(handleNewPermissions);
+	void registerOnOrigins(
+		await getAdditionalPermissions({
+			strictOrigins: false,
+		}),
+	);
+}

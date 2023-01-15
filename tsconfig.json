@@ -1,15 +1,12 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"outDir": ".",
+		"outDir": "distribution",
 		"target": "ES2022",
 		"module": "ES2022",
 		"moduleResolution": "node",
 	},
-	"files": [
-		"global.d.ts",
-		"utils.test.ts",
-		"utils.ts",
-		"index.ts"
+	"include": [
+		"source",
 	]
 }

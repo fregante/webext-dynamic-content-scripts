@@ -1,11 +1,11 @@
 import {chrome} from 'jest-chrome';
 import {test, vi, beforeAll, assert} from 'vitest';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
-import {isContentScriptStaticallyRegistered, isContentScriptDynamicallyRegistered, isContentScriptRegistered} from './utils';
+import {isContentScriptStaticallyRegistered, isContentScriptDynamicallyRegistered, isContentScriptRegistered} from './utils.js';
 
 vi.mock('webext-additional-permissions');
 
-const coreManifest: chrome.runtime.Manifest = {
+const manifest: chrome.runtime.Manifest = {
 	name: 'required',
 	manifest_version: 2,
 	version: '0.0.0',
@@ -34,7 +34,7 @@ beforeAll(() => {
 		origins: ['https://granted.example.com/*'],
 		permissions: [],
 	}));
-	chrome.runtime.getManifest.mockImplementation(() => coreManifest);
+	chrome.runtime.getManifest.mockImplementation(() => manifest);
 });
 
 test('isContentScriptStaticallyRegistered', () => {

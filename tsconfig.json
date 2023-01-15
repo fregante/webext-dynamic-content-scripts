@@ -8,6 +8,8 @@
 	},
 	"files": [
 		"global.d.ts",
+		"utils.test.ts",
+		"utils.ts",
 		"index.ts"
 	]
 }

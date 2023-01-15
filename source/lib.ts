@@ -1,48 +1,11 @@
-import registerContentScriptPonyfill from 'content-scripts-register-polyfill/ponyfill.js';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
 import {injectContentScript} from 'webext-content-scripts';
+import {registerContentScript} from './register-content-script.js';
 
 const registeredScripts = new Map<
 string,
 Promise<browser.contentScripts.RegisteredContentScript>
 >();
-
-const chromeRegister = globalThis?.chrome?.scripting?.registerContentScripts;
-const firefoxRegister = globalThis?.browser?.contentScripts?.register;
-
-async function registerContentScript(
-	contentScript: ChromeContentScript,
-): Promise<browser.contentScripts.RegisteredContentScript> {
-	if (chromeRegister) {
-		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
-		try {
-			await chromeRegister([{
-				id,
-				...contentScript,
-			}]);
-		} catch (error) {
-			if (!(error as Error)?.message.startsWith('Duplicate script ID')) {
-				throw error;
-			}
-		}
-
-		return {
-			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
-		};
-	}
-
-	const firefoxContentScript = {
-		...contentScript,
-		js: contentScript.js?.map(file => ({file})),
-		css: contentScript.css?.map(file => ({file})),
-	};
-
-	if (firefoxRegister) {
-		return firefoxRegister(firefoxContentScript);
-	}
-
-	return registerContentScriptPonyfill(firefoxContentScript);
-}
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
 function makePathRelative(file: string): string {

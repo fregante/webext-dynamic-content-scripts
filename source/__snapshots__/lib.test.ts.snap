@@ -1,0 +1,128 @@
+// Vitest Snapshot v1
+
+exports[`init - registerContentScript > should register multiple manifest scripts on new permissions 1`] = `
+[MockFunction registerContentScript] {
+  "calls": [
+    [
+      {
+        "allFrames": undefined,
+        "css": undefined,
+        "excludeMatches": [
+          "https://content-script.example.com/*",
+        ],
+        "js": [
+          "/script.js",
+        ],
+        "matches": [
+          "https://granted.example.com/*",
+        ],
+        "runAt": undefined,
+      },
+    ],
+    [
+      {
+        "allFrames": undefined,
+        "css": undefined,
+        "excludeMatches": [
+          "https://content-script-extra.example.com/*",
+        ],
+        "js": [
+          "/otherScript.js",
+        ],
+        "matches": [
+          "https://granted.example.com/*",
+        ],
+        "runAt": undefined,
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`init - registerContentScript > should register the manifest scripts on multiple new permissions 1`] = `
+[MockFunction registerContentScript] {
+  "calls": [
+    [
+      {
+        "allFrames": undefined,
+        "css": undefined,
+        "excludeMatches": [
+          "https://content-script.example.com/*",
+        ],
+        "js": [
+          "/script.js",
+        ],
+        "matches": [
+          "https://granted.example.com/*",
+        ],
+        "runAt": undefined,
+      },
+    ],
+    [
+      {
+        "allFrames": undefined,
+        "css": undefined,
+        "excludeMatches": [
+          "https://content-script.example.com/*",
+        ],
+        "js": [
+          "/script.js",
+        ],
+        "matches": [
+          "https://granted-more.example.com/*",
+        ],
+        "runAt": undefined,
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`init - registerContentScript > should register the manifest scripts on new permissions 1`] = `
+[MockFunction registerContentScript] {
+  "calls": [
+    [
+      {
+        "allFrames": undefined,
+        "css": undefined,
+        "excludeMatches": [
+          "https://content-script.example.com/*",
+        ],
+        "js": [
+          "/script.js",
+        ],
+        "matches": [
+          "https://granted.example.com/*",
+        ],
+        "runAt": undefined,
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

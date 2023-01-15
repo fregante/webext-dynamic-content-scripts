@@ -1,5 +1,5 @@
+import {chrome} from 'jest-chrome';
 import {vi} from 'vitest';
 
-global.jest = vi;
-
-Object.assign(global, require('jest-chrome'))
+globalThis.jest = vi;
+globalThis.chrome = chrome;

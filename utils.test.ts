@@ -1,21 +1,24 @@
-import {describe, it, vi, expect} from 'vitest';
+import {chrome} from 'jest-chrome';
+import {it, vi, expect} from 'vitest';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
 import {isContentScriptRegistered} from './utils';
 
 vi.mock('webext-additional-permissions');
 
+const coreManifest: chrome.runtime.Manifest = {
+	name: 'required',
+	manifest_version: 2,
+	version: '0.0.0',
+	content_scripts: [],
+	permissions: [],
+};
+
+const getAdditionalPermissionsMock = vi.mocked(getAdditionalPermissions);
+
 // The two tests marked with concurrent will be run in parallel
 it('suite', async () => {
-	const manifest = {
-		name: 'my chrome extension',
-		manifest_version: 2,
-		version: '1.0.0',
-		content_scripts: [],
-	};
-
-	getAdditionalPermissions.mockImplementation(x => ({origins: []}));
-
-	chrome.runtime.getManifest.mockImplementation(() => manifest);
+	chrome.runtime.getManifest.mockImplementation(() => coreManifest);
+	getAdditionalPermissionsMock.mockImplementation(async x => ({origins: [], permissions: []}));
 	// Chrome.permissions.getAll.mockImplementation(
 	// 	callback => {
 	// 		callback({origins: []});

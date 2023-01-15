@@ -1,4 +1,4 @@
-import chrome from 'sinon-chrome'
+import chrome from 'sinon-chrome';
 
 global.chrome = chrome;
 

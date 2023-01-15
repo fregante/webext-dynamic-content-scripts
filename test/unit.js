@@ -1,8 +1,9 @@
 import chrome from 'sinon-chrome';
 
 import {describe, it, expect, test, jest} from '@jest/globals';
+
 jest.mock('webext-additional-permissions', () => {});
-// const {getAdditionalPermissions} = await import('webext-additional-permissions');
+// Const {getAdditionalPermissions} = await import('webext-additional-permissions');
 
 describe('core', () => {
 	it('should load page', async () => {

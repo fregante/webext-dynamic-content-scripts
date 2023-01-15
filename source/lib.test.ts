@@ -18,7 +18,7 @@ const baseManifest: chrome.runtime.Manifest = {
 		},
 	],
 	host_permissions: ['https://permission-only.example.com/*'],
-	optional_permissions: ['*://*/*'],
+	optional_host_permissions: ['*://*/*'],
 };
 
 const getAdditionalPermissionsMock = vi.mocked(getAdditionalPermissions);

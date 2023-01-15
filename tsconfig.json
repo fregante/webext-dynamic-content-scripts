@@ -5,9 +5,14 @@
 		"target": "ES2022",
 		"module": "ES2022",
 		"moduleResolution": "node",
+
+		// Exclude @types/jest’s global
+		"types": [],
 	},
 	"files": [
 		"global.d.ts",
+		"utils.test.ts",
+		"utils.ts",
 		"index.ts"
 	]
 }

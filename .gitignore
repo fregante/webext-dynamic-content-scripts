@@ -8,7 +8,9 @@ Thumbs.db
 *.log
 logs
 *.map
+*.d.ts
 index.js
-index.d.ts
+utils.js
+utils.test.js
 .parcel-cache
 dist

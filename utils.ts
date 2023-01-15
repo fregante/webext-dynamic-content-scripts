@@ -1,12 +1,12 @@
 import {getAdditionalPermissions} from 'webext-additional-permissions';
 import {patternToRegex} from 'webext-patterns';
 
-export async function isContentScriptStaticallyRegistered(url: string): Promise<boolean> {
-	return chrome.runtime
+export function isContentScriptStaticallyRegistered(url: string): boolean {
+	return Boolean(chrome.runtime
 		.getManifest()
-		.content_scripts!
-		.flatMap(script => script.matches!)
-		.some(pattern => patternToRegex(pattern).test(url));
+		.content_scripts
+		?.flatMap(script => script.matches!)
+		.some(pattern => patternToRegex(pattern).test(url)));
 }
 
 export async function isContentScriptDynamicallyRegistered(url: string): Promise<boolean> {
@@ -26,7 +26,7 @@ It returns a promise that resolves with string indicating the type of injection 
 export async function isContentScriptRegistered(
 	url: string,
 ): Promise<'static' | 'dynamic' | false> {
-	if (await isContentScriptStaticallyRegistered(url)) {
+	if (isContentScriptStaticallyRegistered(url)) {
 		return 'static';
 	}
 

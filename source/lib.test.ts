@@ -1,7 +1,7 @@
 import {chrome} from 'jest-chrome';
-import {test, describe, it, vi, beforeEach, expect} from 'vitest';
+import {describe, it, vi, beforeEach, expect} from 'vitest';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
-import * as lib from './lib.js';
+import {init} from './lib.js';
 import {registerContentScript} from './register-content-script.js';
 
 vi.mock('webext-additional-permissions');
@@ -33,14 +33,26 @@ beforeEach(() => {
 	chrome.runtime.getManifest.mockReturnValue(baseManifest);
 });
 
-test('init', async () => {
-	await lib.init();
-	expect(getAdditionalPermissionsMock).toHaveBeenCalled();
+describe('init', () => {
+	it('it should register the listeners and start checking permissions', async () => {
+		await init();
+		expect(getAdditionalPermissionsMock).toHaveBeenCalled();
+		// TODO: https://github.com/extend-chrome/jest-chrome/issues/20
+		// expect(chrome.permissions.onAdded.addListener).toHaveBeenCalledOnce();
+		// expect(chrome.permissions.onRemoved.addListener).toHaveBeenCalledOnce();
+	});
+
+	it('it should throw if no content scripts exist at all', async () => {
+		const manifest = structuredClone(baseManifest);
+		delete manifest.content_scripts;
+		chrome.runtime.getManifest.mockReturnValue(manifest);
+		await expect(init()).rejects.toMatchInlineSnapshot('[Error: webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.]');
+	});
 });
 
 describe('init - registerContentScript', () => {
 	it('should register the manifest scripts on new permissions', async () => {
-		await lib.init();
+		await init();
 		expect(registerContentScriptMock).toMatchSnapshot();
 	});
 
@@ -53,7 +65,7 @@ describe('init - registerContentScript', () => {
 			permissions: [],
 		});
 
-		await lib.init();
+		await init();
 		expect(registerContentScriptMock).toMatchSnapshot();
 	});
 
@@ -65,7 +77,7 @@ describe('init - registerContentScript', () => {
 		});
 		chrome.runtime.getManifest.mockReturnValue(manifest);
 
-		await lib.init();
+		await init();
 		expect(registerContentScriptMock).toMatchSnapshot();
 	});
 });

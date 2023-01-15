@@ -85,7 +85,7 @@ async function handledDroppedPermissions({origins}: chrome.permissions.Permissio
 export async function init() {
 	chrome.permissions.onRemoved.addListener(handledDroppedPermissions);
 	chrome.permissions.onAdded.addListener(handleNewPermissions);
-	void registerOnOrigins(
+	await registerOnOrigins(
 		await getAdditionalPermissions({
 			strictOrigins: false,
 		}),

@@ -1,5 +1,5 @@
 import {getAdditionalPermissions} from 'webext-additional-permissions';
-import {injectContentScript} from 'webext-content-scripts';
+import {injectToExistingTabs} from './inject-to-existing-tabss
 import {registerContentScript} from './register-content-script-shim.js';
 
 const registeredScripts = new Map<
@@ -10,25 +10,6 @@ Promise<browser.contentScripts.RegisteredContentScript>
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
 function makePathRelative(file: string): string {
 	return new URL(file, location.origin).pathname;
-}
-
-function injectToExistingTabs(
-	origins: string[],
-	scripts: ManifestContentScripts,
-) {
-	if (origins.length === 0) {
-		return;
-	}
-
-	chrome.tabs.query({
-		url: origins,
-	}, tabs => {
-		for (const tab of tabs) {
-			if (tab.id) {
-				void injectContentScript(tab.id, scripts);
-			}
-		}
-	});
 }
 
 // Automatically register the content scripts on the new origins

@@ -2,10 +2,12 @@ import {chrome} from 'jest-chrome';
 import {describe, it, vi, beforeEach, expect} from 'vitest';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
 import {init} from './lib.js';
+import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 import {registerContentScript} from './register-content-script-shim.js';
 
 vi.mock('webext-additional-permissions');
 vi.mock('./register-content-script-shim.js');
+vi.mock('./inject-to-existing-tabs.js');
 
 const baseManifest: chrome.runtime.Manifest = {
 	name: 'required',
@@ -21,15 +23,19 @@ const baseManifest: chrome.runtime.Manifest = {
 	optional_host_permissions: ['*://*/*'],
 };
 
+const additionalPermissions: Required<chrome.permissions.Permissions> = {
+	origins: ['https://granted.example.com/*'],
+	permissions: [],
+};
+
 const getAdditionalPermissionsMock = vi.mocked(getAdditionalPermissions);
+const injectToExistingTabsMock = vi.mocked(injectToExistingTabs);
 const registerContentScriptMock = vi.mocked(registerContentScript);
 
 beforeEach(() => {
 	registerContentScriptMock.mockClear();
-	getAdditionalPermissionsMock.mockResolvedValue({
-		origins: ['https://granted.example.com/*'],
-		permissions: [],
-	});
+	injectToExistingTabsMock.mockClear();
+	getAdditionalPermissionsMock.mockResolvedValue(additionalPermissions);
 	chrome.runtime.getManifest.mockReturnValue(baseManifest);
 });
 
@@ -37,6 +43,11 @@ describe('init', () => {
 	it('it should register the listeners and start checking permissions', async () => {
 		await init();
 		expect(getAdditionalPermissionsMock).toHaveBeenCalled();
+		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
+			additionalPermissions.origins,
+			baseManifest.content_scripts,
+		);
+
 		// TODO: https://github.com/extend-chrome/jest-chrome/issues/20
 		// expect(chrome.permissions.onAdded.addListener).toHaveBeenCalledOnce();
 		// expect(chrome.permissions.onRemoved.addListener).toHaveBeenCalledOnce();

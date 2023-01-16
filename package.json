@@ -21,7 +21,9 @@
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
 	"module": "distribution/index.js",
 	"files": [
-		"distribution"
+		"distribution",
+		"utils.js",
+		"utils.d.ts"
 	],
 	"scripts": {
 		"build": "tsc",
@@ -34,7 +36,7 @@
 		"prepack": "tsc --sourceMap false",
 		"lint": "xo",
 		"fix": "xo --fix",
-		"test": "run-p 'build -- --noEmit' lint vitest jest",
+		"test": "run-p lint vitest jest",
 		"watch": "tsc --watch"
 	},
 	"xo": {

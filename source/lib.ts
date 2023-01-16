@@ -40,7 +40,7 @@ async function registerOnOrigins({
 
 	// May not be needed in the future in Firefox
 	// https://bugzilla.mozilla.org/show_bug.cgi?id=1458947
-	injectToExistingTabs(newOrigins || [], manifest);
+	void injectToExistingTabs(newOrigins || [], manifest);
 }
 
 function handleNewPermissions(permissions: chrome.permissions.Permissions) {

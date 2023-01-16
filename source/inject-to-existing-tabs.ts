@@ -1,19 +1,12 @@
-import {injectContentScript} from 'webext-content-scripts';
+import {getTabsByUrl, injectContentScript} from 'webext-content-scripts';
 
-export function injectToExistingTabs(
+export async function injectToExistingTabs(
 	origins: string[],
-	scripts: ManifestContentScripts) {
-	if (origins.length === 0) {
-		return;
-	}
-
-	chrome.tabs.query({
-		url: origins,
-	}, tabs => {
-		for (const tab of tabs) {
-			if (tab.id) {
-				void injectContentScript(tab.id, scripts);
-			}
-		}
-	});
+	scripts: ManifestContentScripts,
+) {
+	const excludeMatches = scripts.flatMap(script => script.matches ?? []);
+	return injectContentScript(
+		await getTabsByUrl(origins, excludeMatches),
+		scripts,
+	);
 }

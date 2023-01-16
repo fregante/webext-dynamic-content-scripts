@@ -8,5 +8,6 @@ export async function injectToExistingTabs(
 	return injectContentScript(
 		await getTabsByUrl(origins, excludeMatches),
 		scripts,
+		{ignoreTargetErrors: true},
 	);
 }

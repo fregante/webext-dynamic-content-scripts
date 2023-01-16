@@ -1,5 +1,5 @@
 import {getAdditionalPermissions} from 'webext-additional-permissions';
-import {injectToExistingTabs} from './inject-to-existing-tabss
+import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 import {registerContentScript} from './register-content-script-shim.js';
 
 const registeredScripts = new Map<

@@ -70,7 +70,7 @@
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.8.2",
 		"@sindresorhus/tsconfig": "^3.0.1",
-		"@types/chrome": "^0.0.206",
+		"@types/chrome": "^0.0.208",
 		"@types/firefox-webext-browser": "^94.0.1",
 		"@types/jest": "^29.2.5",
 		"jest": "^29.3.1",

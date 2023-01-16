@@ -1,71 +1,15 @@
-import registerContentScriptPonyfill from 'content-scripts-register-polyfill/ponyfill.js';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
-import {injectContentScript} from 'webext-content-scripts';
+import {injectToExistingTabs} from './inject-to-existing-tabs.js';
+import {registerContentScript} from './register-content-script-shim.js';
 
 const registeredScripts = new Map<
 string,
 Promise<browser.contentScripts.RegisteredContentScript>
 >();
 
-const chromeRegister = globalThis?.chrome?.scripting?.registerContentScripts;
-const firefoxRegister = globalThis?.browser?.contentScripts?.register;
-
-async function registerContentScript(
-	contentScript: ChromeContentScript,
-): Promise<browser.contentScripts.RegisteredContentScript> {
-	if (chromeRegister) {
-		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
-		try {
-			await chromeRegister([{
-				id,
-				...contentScript,
-			}]);
-		} catch (error) {
-			if (!(error as Error)?.message.startsWith('Duplicate script ID')) {
-				throw error;
-			}
-		}
-
-		return {
-			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
-		};
-	}
-
-	const firefoxContentScript = {
-		...contentScript,
-		js: contentScript.js?.map(file => ({file})),
-		css: contentScript.css?.map(file => ({file})),
-	};
-
-	if (firefoxRegister) {
-		return firefoxRegister(firefoxContentScript);
-	}
-
-	return registerContentScriptPonyfill(firefoxContentScript);
-}
-
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
 function makePathRelative(file: string): string {
 	return new URL(file, location.origin).pathname;
-}
-
-function injectToExistingTabs(
-	origins: string[],
-	scripts: ManifestContentScripts,
-) {
-	if (origins.length === 0) {
-		return;
-	}
-
-	chrome.tabs.query({
-		url: origins,
-	}, tabs => {
-		for (const tab of tabs) {
-			if (tab.id) {
-				void injectContentScript(tab.id, scripts);
-			}
-		}
-	});
 }
 
 // Automatically register the content scripts on the new origins
@@ -122,7 +66,7 @@ async function handledDroppedPermissions({origins}: chrome.permissions.Permissio
 export async function init() {
 	chrome.permissions.onRemoved.addListener(handledDroppedPermissions);
 	chrome.permissions.onAdded.addListener(handleNewPermissions);
-	void registerOnOrigins(
+	await registerOnOrigins(
 		await getAdditionalPermissions({
 			strictOrigins: false,
 		}),

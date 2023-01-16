@@ -2,10 +2,10 @@ import {chrome} from 'jest-chrome';
 import {describe, it, vi, beforeEach, expect} from 'vitest';
 import {getAdditionalPermissions} from 'webext-additional-permissions';
 import {init} from './lib.js';
-import {registerContentScript} from './register-content-script.js';
+import {registerContentScript} from './register-content-script-shim.js';
 
 vi.mock('webext-additional-permissions');
-vi.mock('./register-content-script.js');
+vi.mock('./register-content-script-shim.js');
 
 const baseManifest: chrome.runtime.Manifest = {
 	name: 'required',

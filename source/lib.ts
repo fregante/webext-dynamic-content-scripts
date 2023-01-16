@@ -1,6 +1,6 @@
 import {getAdditionalPermissions} from 'webext-additional-permissions';
 import {injectContentScript} from 'webext-content-scripts';
-import {registerContentScript} from './register-content-script.js';
+import {registerContentScript} from './register-content-script-shim.js';
 
 const registeredScripts = new Map<
 string,

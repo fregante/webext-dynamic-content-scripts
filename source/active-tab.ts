@@ -25,7 +25,7 @@ async function addIfScriptable({url, id}: chrome.tabs.Tab): Promise<void> {
 		id && url
 
 		// Skip if it already exists. A previous change of origin already cleared this
-		&& possiblyActiveTabs.has(id)
+		&& !possiblyActiveTabs.has(id)
 
 		// ActiveTab makes sense on non-scriptable URLs as they generally don't have scriptable frames
 		&& isScriptableUrl(url)
@@ -33,8 +33,11 @@ async function addIfScriptable({url, id}: chrome.tabs.Tab): Promise<void> {
 	// Note: Do not filter by `isContentScriptRegistered`; `active-tab` also applies to random `executeScript` calls
 	) {
 		const {origin} = new URL(url);
+		console.debug('activeTab:', id, 'added with origin', origin);
 		possiblyActiveTabs.set(id, origin);
 		newActiveTabs.emit({id, origin});
+	} else {
+		console.debug('activeTab: nope for', id, 'with origin', origin);
 	}
 }
 
@@ -42,6 +45,7 @@ function dropIfOriginChanged(tabId: number, {url}: chrome.tabs.TabChangeInfo): v
 	if (url && possiblyActiveTabs.has(tabId)) {
 		const {origin} = new URL(url);
 		if (possiblyActiveTabs.get(tabId) !== origin) {
+			console.debug('activeTab:', tabId, 'removed because origin changed from', origin, possiblyActiveTabs.get(tabId), 'to', origin);
 			possiblyActiveTabs.delete(tabId);
 		}
 	}
@@ -54,6 +58,7 @@ function altListener(_: unknown, tab?: chrome.tabs.Tab): void {
 }
 
 function drop(tabId: TabId): void {
+	console.debug('activeTab:', tabId, 'removed');
 	possiblyActiveTabs.delete(tabId);
 }
 

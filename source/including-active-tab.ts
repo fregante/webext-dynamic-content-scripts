@@ -1,6 +1,6 @@
 import './index.js'; // Core functionality
 import {type ContentScript} from 'webext-content-scripts/types';
-import {injectContentScript} from 'webext-content-scripts';
+import {injectContentScript, isScriptableUrl} from 'webext-content-scripts';
 import {type ActiveTab, onActiveTab, possiblyActiveTabs} from './active-tab.js';
 import {isContentScriptRegistered} from './utils.js';
 
@@ -28,6 +28,7 @@ async function injectIfActive(
 ): Promise<void> {
 	if (
 		possiblyActiveTabs.has(tabId)
+		&& isScriptableUrl(url) // This checks the frame’s URL, which might not match the tab’s
 		&& !(await isContentScriptRegistered(url))
 	) {
 		await injectContentScript({tabId, frameId}, scripts);

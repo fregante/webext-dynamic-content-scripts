@@ -30,8 +30,9 @@ async function injectToTabUnlessRegistered({id: tabId, origin}: ActiveTab): Prom
 async function injectIfActive(
 	{tabId, frameId, url}: InjectionDetails,
 ): Promise<void> {
+	const {origin} = new URL(url);
 	if (
-		possiblyActiveTabs.has(tabId)
+		possiblyActiveTabs.get(tabId) === origin
 		&& isScriptableUrl(url) // This checks the frame’s URL, which might not match the tab’s
 		&& !(await isContentScriptRegistered(url))
 	) {

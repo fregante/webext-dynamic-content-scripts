@@ -21,8 +21,12 @@ const newActiveTabs = new SimpleEventTarget<ActiveTab>();
 const browserAction = chrome.action ?? chrome.browserAction;
 
 function trackIfScriptable({url, id}: chrome.tabs.Tab): void {
-	if (id && url && !possiblyActiveTabs.has(id) && isScriptableUrl(url)) {
-		const {origin} = new URL(url);
+	if (!id || !url || !isScriptableUrl(url)) {
+		return;
+	}
+
+	const {origin} = new URL(url);
+	if (possiblyActiveTabs.get(id) !== origin) {
 		possiblyActiveTabs.set(id, origin);
 		newActiveTabs.emit({id, origin});
 	}

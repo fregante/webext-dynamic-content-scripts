@@ -1,6 +1,6 @@
 {
 	"name": "webext-dynamic-content-scripts",
-	"version": "9.2.0-5",
+	"version": "9.2.0-6",
 	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
 	"keywords": [
 		"contentscript",

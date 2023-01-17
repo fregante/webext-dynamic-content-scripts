@@ -1,5 +1,10 @@
 import {isScriptableUrl} from 'webext-content-scripts';
+import {isBackground} from 'webext-detect-page';
 import {SimpleEventTarget} from './simple-event-target';
+
+if (isBackground()) {
+	throw new Error('This module is only allowed in a background script');
+}
 
 type TabId = number;
 type Origin = string;

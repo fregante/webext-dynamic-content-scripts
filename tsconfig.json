@@ -1,17 +1,12 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"outDir": ".",
+		"outDir": "distribution",
 		"target": "ES2022",
 		"module": "ES2022",
 		"moduleResolution": "node",
 	},
-	"files": [
-		"global.d.ts",
-		"index.ts",
-		"utils.ts",
-		"active-tab.ts",
-		"including-active-tab.ts",
-		"simple-event-target.ts"
+	"include": [
+		"source",
 	]
 }

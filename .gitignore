@@ -7,8 +7,6 @@ Thumbs.db
 *.bak
 *.log
 logs
-*.map
-/*.js
-/*.d.ts
 .parcel-cache
 dist
+distribution

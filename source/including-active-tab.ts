@@ -1,6 +1,6 @@
 import './index.js'; // Core functionality
 import {type ContentScript} from 'webext-content-scripts/types';
-import {injectContentScript, isScriptableUrl} from 'webext-content-scripts';
+import {injectContentScript} from 'webext-content-scripts';
 import chromeP from 'webext-polyfill-kinda';
 import {type ActiveTab, onActiveTab, possiblyActiveTabs} from './active-tab.js';
 import {isContentScriptRegistered} from './utils.js';
@@ -24,7 +24,11 @@ async function injectToTabUnlessRegistered({id: tabId, origin}: ActiveTab): Prom
 		? await chromeP.webNavigation.getAllFrames({tabId})
 		: [{frameId: 0, url: origin}];
 
-	frames.map(async ({frameId, url}) => injectIfActive({frameId, url, tabId}));
+	// .map() needed for async loop
+	frames.map(async ({frameId, url}) =>
+		// Only same-origins frames are covered
+		url.startsWith(origin) && injectIfActive({frameId, url, tabId}),
+	);
 }
 
 async function injectIfActive(
@@ -32,8 +36,10 @@ async function injectIfActive(
 ): Promise<void> {
 	const {origin} = new URL(url);
 	if (
+		// Check origin because the request might be for a frame; cross-origin frames do not receive activeTab
 		possiblyActiveTabs.get(tabId) === origin
-		&& isScriptableUrl(url) // This checks the frame’s URL, which might not match the tab’s
+
+		// Don't inject if already registered
 		&& !(await isContentScriptRegistered(url))
 	) {
 		await injectContentScript({tabId, frameId}, scripts);

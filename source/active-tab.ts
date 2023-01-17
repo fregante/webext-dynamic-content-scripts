@@ -14,50 +14,70 @@ export type ActiveTab = {
 	origin: Origin;
 };
 
-export const possiblyActiveTabs = new Map<TabId, Origin>();
-
 const newActiveTabs = new SimpleEventTarget<ActiveTab>();
 
 const browserAction = chrome.action ?? chrome.browserAction;
 
-function trackIfScriptable({url, id}: chrome.tabs.Tab): void {
-	if (!id || !url || !isScriptableUrl(url)) {
-		return;
-	}
+export const possiblyActiveTabs = new Map<TabId, Origin>();
 
-	const {origin} = new URL(url);
-	if (possiblyActiveTabs.get(id) !== origin) {
+async function addIfScriptable({url, id}: chrome.tabs.Tab): Promise<void> {
+	if (
+		id && url
+
+		// Skip if it already exists. A previous change of origin already cleared this
+		&& possiblyActiveTabs.has(id)
+
+		// ActiveTab makes sense on non-scriptable URLs as they generally don't have scriptable frames
+		&& isScriptableUrl(url)
+
+	// Note: Do not filter by `isContentScriptRegistered`; `active-tab` also applies to random `executeScript` calls
+	) {
+		const {origin} = new URL(url);
 		possiblyActiveTabs.set(id, origin);
 		newActiveTabs.emit({id, origin});
 	}
 }
 
-function altListener(_: unknown, tab?: chrome.tabs.Tab) {
-	if (tab) {
-		trackIfScriptable(tab);
+function dropIfOriginChanged(tabId: number, {url}: chrome.tabs.TabChangeInfo): void {
+	if (url && possiblyActiveTabs.has(tabId)) {
+		const {origin} = new URL(url);
+		if (possiblyActiveTabs.get(tabId) !== origin) {
+			possiblyActiveTabs.delete(tabId);
+		}
 	}
 }
 
-function removalListener(tabId: TabId) {
+function altListener(_: unknown, tab?: chrome.tabs.Tab): void {
+	if (tab) {
+		void addIfScriptable(tab);
+	}
+}
+
+function drop(tabId: TabId): void {
 	possiblyActiveTabs.delete(tabId);
 }
 
-export function startActiveTabTracking() {
-	browserAction?.onClicked.addListener(trackIfScriptable);
+// https://developer.chrome.com/docs/extensions/mv3/manifest/activeTab/#invoking-activeTab
+export function startActiveTabTracking(): void {
+	browserAction?.onClicked.addListener(addIfScriptable);
 	chrome.contextMenus?.onClicked.addListener(altListener);
 	chrome.commands?.onCommand.addListener(altListener);
-	chrome.tabs.onRemoved.addListener(removalListener);
+
+	chrome.tabs.onUpdated.addListener(dropIfOriginChanged);
+	chrome.tabs.onRemoved.addListener(drop);
 }
 
-export function stopActiveTabTracking() {
-	browserAction?.onClicked.removeListener(trackIfScriptable);
+export function stopActiveTabTracking(): void {
+	browserAction?.onClicked.removeListener(addIfScriptable);
 	chrome.contextMenus?.onClicked.removeListener(altListener);
 	chrome.commands?.onCommand.removeListener(altListener);
-	chrome.tabs.onRemoved.removeListener(removalListener);
+
+	chrome.tabs.onUpdated.removeListener(dropIfOriginChanged);
+	chrome.tabs.onRemoved.removeListener(drop);
 	possiblyActiveTabs.clear();
 }
 
-export function onActiveTab(callback: (tab: ActiveTab) => void) {
+export function onActiveTab(callback: (tab: ActiveTab) => void): void {
 	startActiveTabTracking();
 	newActiveTabs.add(callback);
 }

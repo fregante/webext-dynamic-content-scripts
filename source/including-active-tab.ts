@@ -1,6 +1,7 @@
 import './index.js'; // Core functionality
 import {type ContentScript} from 'webext-content-scripts/types';
 import {injectContentScript, isScriptableUrl} from 'webext-content-scripts';
+import chromeP from 'webext-polyfill-kinda';
 import {type ActiveTab, onActiveTab, possiblyActiveTabs} from './active-tab.js';
 import {isContentScriptRegistered} from './utils.js';
 
@@ -14,13 +15,16 @@ const gotNavigation = typeof chrome === 'object' && 'webNavigation' in chrome;
 
 const scripts = chrome.runtime.getManifest().content_scripts as ContentScript;
 
-async function injectToTabUnlessRegistered({id, origin}: ActiveTab): Promise<void> {
-	if (id && !(await isContentScriptRegistered(origin))) {
-		// Warning: This might cause duplicate injections on frames of activeTabs with different origins. Some details in:
-		// https://github.com/fregante/webext-dynamic-content-scripts/pull/44
-		// https://github.com/pixiebrix/pixiebrix-extension/issues/4983
-		void injectContentScript(id, scripts);
+async function injectToTabUnlessRegistered({id: tabId, origin}: ActiveTab): Promise<void> {
+	if (tabId === undefined) {
+		return;
 	}
+
+	const frames = gotNavigation
+		? await chromeP.webNavigation.getAllFrames({tabId})
+		: [{frameId: 0, url: origin}];
+
+	frames.map(async ({frameId, url}) => injectIfActive({frameId, url, tabId}));
 }
 
 async function injectIfActive(

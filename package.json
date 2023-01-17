@@ -70,7 +70,8 @@
 		"webext-additional-permissions": "^2.3.0",
 		"webext-content-scripts": "^2.4.0",
 		"webext-detect-page": "^4.0.1",
-		"webext-patterns": "^1.2.0"
+		"webext-patterns": "^1.2.0",
+		"webext-polyfill-kinda": "^0.10.0"
 	},
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.8.2",

@@ -1,5 +1,4 @@
-// Core functionality
-import '.';
+import './index.js'; // Core functionality
 import {type ContentScript} from 'webext-content-scripts/types';
 import {injectContentScript} from 'webext-content-scripts';
 import {type ActiveTab, onActiveTab, possiblyActiveTabs} from './active-tab.js';
@@ -27,7 +26,10 @@ async function injectToTabUnlessRegistered({id, origin}: ActiveTab): Promise<voi
 async function injectIfActive(
 	{tabId, frameId, url}: InjectionDetails,
 ): Promise<void> {
-	if (possiblyActiveTabs.has(tabId) && !(await isContentScriptRegistered(url))) {
+	if (
+		possiblyActiveTabs.has(tabId)
+		&& !(await isContentScriptRegistered(url))
+	) {
 		await injectContentScript({tabId, frameId}, scripts);
 	}
 }

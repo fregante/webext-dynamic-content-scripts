@@ -15,8 +15,8 @@ const newActiveTabs = new SimpleEventTarget<ActiveTab>();
 
 const browserAction = chrome.action ?? chrome.browserAction;
 
-function listener({url, id}: chrome.tabs.Tab): void {
-	if (id && url &&!possiblyActiveTabs.has(id) && isScriptableUrl(url)) {
+function trackIfScriptable({url, id}: chrome.tabs.Tab): void {
+	if (id && url && !possiblyActiveTabs.has(id) && isScriptableUrl(url)) {
 		const {origin} = new URL(url);
 		possiblyActiveTabs.set(id, origin);
 		newActiveTabs.emit({id, origin});
@@ -25,7 +25,7 @@ function listener({url, id}: chrome.tabs.Tab): void {
 
 function altListener(_: unknown, tab?: chrome.tabs.Tab) {
 	if (tab) {
-		listener(tab);
+		trackIfScriptable(tab);
 	}
 }
 
@@ -34,14 +34,14 @@ function removalListener(tabId: TabId) {
 }
 
 export function startActiveTabTracking() {
-	browserAction?.onClicked.addListener(listener);
+	browserAction?.onClicked.addListener(trackIfScriptable);
 	chrome.contextMenus?.onClicked.addListener(altListener);
 	chrome.commands?.onCommand.addListener(altListener);
 	chrome.tabs.onRemoved.addListener(removalListener);
 }
 
 export function stopActiveTabTracking() {
-	browserAction?.onClicked.removeListener(listener);
+	browserAction?.onClicked.removeListener(trackIfScriptable);
 	chrome.contextMenus?.onClicked.removeListener(altListener);
 	chrome.commands?.onCommand.removeListener(altListener);
 	chrome.tabs.onRemoved.removeListener(removalListener);

@@ -90,7 +90,7 @@
 	"alias": {
 		"these-are-just-mocks-for-parcel-tests": "yolo",
 		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
-		"webext-dynamic-content-scripts": "./source/index.ts",
+		"webext-dynamic-content-scripts": "./source/",
 		"./source/*.js": "./source/$1.ts"
 	},
 	"targets": {

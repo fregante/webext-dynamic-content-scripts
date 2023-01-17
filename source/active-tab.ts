@@ -11,15 +11,15 @@ export type ActiveTab = {
 
 export const possiblyActiveTabs = new Map<TabId, Origin>();
 
-const emitter = new SimpleEventTarget<ActiveTab>();
+const newActiveTabs = new SimpleEventTarget<ActiveTab>();
 
 const browserAction = chrome.action ?? chrome.browserAction;
 
 function listener({url, id}: chrome.tabs.Tab): void {
-	if (id && url && isScriptableUrl(url)) {
+	if (id && url &&!possiblyActiveTabs.has(id) && isScriptableUrl(url)) {
 		const {origin} = new URL(url);
 		possiblyActiveTabs.set(id, origin);
-		emitter.emit({id, origin});
+		newActiveTabs.emit({id, origin});
 	}
 }
 
@@ -45,9 +45,10 @@ export function stopActiveTabTracking() {
 	chrome.contextMenus?.onClicked.removeListener(altListener);
 	chrome.commands?.onCommand.removeListener(altListener);
 	chrome.tabs.onRemoved.removeListener(removalListener);
+	possiblyActiveTabs.clear();
 }
 
 export function onActiveTab(callback: (tab: ActiveTab) => void) {
 	startActiveTabTracking();
-	emitter.add(callback);
+	newActiveTabs.add(callback);
 }

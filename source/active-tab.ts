@@ -82,7 +82,7 @@ export function stopActiveTabTracking(): void {
 	possiblyActiveTabs.clear();
 }
 
-export function onActiveTab(callback: (tab: ActiveTab) => void): void {
+export function addActiveTabListener(callback: (tab: ActiveTab) => void): void {
 	startActiveTabTracking();
 	newActiveTabs.add(callback);
 }

@@ -21,10 +21,11 @@ async function injectToTabUnlessRegistered({id: tabId, origin}: ActiveTab): Prom
 	}
 
 	const frames = gotNavigation
+		// Only with `webNavigation` we can inject into the frames
 		? await chromeP.webNavigation.getAllFrames({tabId})
-		: [{frameId: 0, url: origin}];
 
-	console.debug('activeTab: might inject into', ...frames.map(({frameId, url}) => ({frameId, url})));
+		// Without it, we only inject it into the top frame
+		: [{frameId: 0, url: origin}];
 
 	// .map() needed for async loop
 	frames.map(async ({frameId, url}) => injectIfActive({frameId, url, tabId}));
@@ -44,7 +45,7 @@ async function injectIfActive(
 		console.debug('activeTab: will inject', {tabId, frameId, url});
 		await injectContentScript({tabId, frameId}, scripts);
 	} else {
-		console.debug('activeTab: no injection for', {tabId, frameId, url}, {activeTab: possiblyActiveTabs.get(tabId) ?? 'no'});
+		console.debug('activeTab: won’t inject', {tabId, frameId, url}, {activeTab: possiblyActiveTabs.get(tabId) ?? 'no'});
 	}
 }
 

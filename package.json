@@ -1,7 +1,7 @@
 {
 	"name": "webext-dynamic-content-scripts",
 	"version": "9.2.0-6",
-	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
+	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request` or on `activeTab`",
 	"keywords": [
 		"contentscript",
 		"register",
@@ -10,9 +10,11 @@
 		"request",
 		"optional_permissions",
 		"manifest",
+		"new hosts",
 		"chrome",
 		"firefox",
 		"browser",
+		"activetab",
 		"extension"
 	],
 	"repository": "fregante/webext-dynamic-content-scripts",

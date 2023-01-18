@@ -1,9 +1,0 @@
-body {
-	border: solid 4px papayawhip;
-}
-body:before {
-	content: 'CSS LOADED';
-	font-size: 20px;
-	background: papayawhip;
-	display: inline-block;
-}

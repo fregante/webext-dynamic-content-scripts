@@ -1,14 +1,14 @@
 document.body.insertAdjacentHTML(
-	'beforeEnd',
+	'afterBegin',
 	`
-		<p class="web-ext" style="
+		<span class="web-ext" style="
+			display: inline-block;
 			padding: 4px;
 			font-size: 20px;
-			background: cornflowerblue;
-			display: inline-block;
+			background: gray;
 		">
-			Content script loaded
-		</p>
+			JS LOADED
+		</span>
 	`,
 );
 console.log('Content script loaded', new Date());

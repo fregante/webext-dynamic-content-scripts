@@ -1,7 +1,7 @@
 {
 	"name": "webext-dynamic-content-scripts",
-	"version": "9.1.0",
-	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
+	"version": "9.2.0-6",
+	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request` or on `activeTab`",
 	"keywords": [
 		"contentscript",
 		"register",
@@ -10,9 +10,11 @@
 		"request",
 		"optional_permissions",
 		"manifest",
+		"new hosts",
 		"chrome",
 		"firefox",
 		"browser",
+		"activetab",
 		"extension"
 	],
 	"repository": "fregante/webext-dynamic-content-scripts",
@@ -20,11 +22,6 @@
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
 	"module": "distribution/index.js",
-	"files": [
-		"distribution",
-		"utils.js",
-		"utils.d.ts"
-	],
 	"scripts": {
 		"build": "tsc",
 		"demo:build": "parcel build --no-cache",
@@ -67,7 +64,9 @@
 		"content-scripts-register-polyfill": "^3.2.2",
 		"webext-additional-permissions": "^2.3.0",
 		"webext-content-scripts": "^2.4.0",
-		"webext-patterns": "^1.2.0"
+		"webext-detect-page": "^4.0.1",
+		"webext-patterns": "^1.2.0",
+		"webext-polyfill-kinda": "^0.10.0"
 	},
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.8.2",
@@ -88,7 +87,7 @@
 	"alias": {
 		"these-are-just-mocks-for-parcel-tests": "yolo",
 		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",
-		"webext-dynamic-content-scripts": "./source/index.ts",
+		"webext-dynamic-content-scripts": "./source/",
 		"./source/*.js": "./source/$1.ts"
 	},
 	"targets": {
@@ -124,8 +123,6 @@
 				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please",
 				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please?iframe=https://static-ephiframe.vercel.app/Static-inner",
 				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please?iframe=https://dynamic-ephiframe.vercel.app/Dynamic-inner",
-				"https://static-ephiframe.vercel.app/Static?iframe=https://extra-ephiframe.vercel.app/Inject-via-context-menu-please",
-				"https://dynamic-ephiframe.vercel.app/Dynamic?iframe=https://extra-ephiframe.vercel.app/Inject-via-context-menu-please",
 				"chrome://extensions/"
 			]
 		}

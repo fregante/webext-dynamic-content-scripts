@@ -22,13 +22,6 @@
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
 	"module": "distribution/index.js",
-	"files": [
-		"distribution",
-		"utils.js",
-		"utils.d.ts",
-		"including-active-tab.js",
-		"including-active-tab.d.ts"
-	],
 	"scripts": {
 		"build": "tsc",
 		"demo:build": "parcel build --no-cache",

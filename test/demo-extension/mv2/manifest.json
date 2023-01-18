@@ -10,15 +10,15 @@
 		"https://accepted-ephiframe.vercel.app/*"
 	],
 	"background": {
-		"scripts": ["../background.js"]
+		"scripts": ["background.js"]
 	},
 	"browser_action": {},
 	"content_scripts": [
 		{
 			"all_frames": true,
 			"matches": ["https://static-ephiframe.vercel.app/*"],
-			"js": ["../content.js"],
-			"css": ["../content.css"]
+			"js": ["content.js"],
+			"css": ["content.css"]
 		},
 		{
 			"all_frames": true,
@@ -26,8 +26,8 @@
 			"exclude_matches": [
 				"https://partial-ephiframe.vercel.app/Excluded*"
 			],
-			"js": ["../content.js"],
-			"css": ["../content.css"]
+			"js": ["content.js"],
+			"css": ["content.css"]
 		}
 	],
 	"web_accessible_resources": [

@@ -67,6 +67,11 @@ By default, the module will only inject the content scripts into newly-permitted
 import 'webext-dynamic-content-scripts/including-active-tab.js';
 ```
 
+> **Note** 
+> This does not work well in Firefox because of some compounding bugs:
+> - `activeTab` seems to be lost after a reload
+> - further `contextMenu` clicks receive a moz-extension URL rather than the current page’s URL
+
 ### Additional APIs
 
 #### `isContentScriptRegistered(url)`

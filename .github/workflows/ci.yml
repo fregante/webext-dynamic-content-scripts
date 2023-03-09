@@ -30,6 +30,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        browser:
+          - chrome
+          - firefox
         permission:
           - tabs
           - webNavigation
@@ -48,3 +51,4 @@ jobs:
       - run: xvfb-run --auto-servernum npm run jest:core
         env:
           TARGET: ${{ matrix.version }}
+          BROWSER: ${{ matrix.browser }}

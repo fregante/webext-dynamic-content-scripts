@@ -38,6 +38,7 @@ jobs:
           - "3"
     steps:
       - uses: actions/checkout@v3
+      - run: sudo apt-get install xvfb
       - run: npm ci
       - name: Use tabs-only permission
         if: matrix.permission == 'tabs'

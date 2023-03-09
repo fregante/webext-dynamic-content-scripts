@@ -63,7 +63,7 @@
 	"dependencies": {
 		"content-scripts-register-polyfill": "^3.2.2",
 		"webext-additional-permissions": "^2.3.0",
-		"webext-content-scripts": "^2.4.0",
+		"webext-content-scripts": "^2.5.3",
 		"webext-detect-page": "^4.0.1",
 		"webext-patterns": "^1.2.0",
 		"webext-polyfill-kinda": "^0.10.0"
@@ -71,8 +71,8 @@
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.8.2",
 		"@sindresorhus/tsconfig": "^3.0.1",
-		"@types/chrome": "^0.0.208",
-		"@types/firefox-webext-browser": "^94.0.1",
+		"@types/chrome": "^0.0.220",
+		"@types/firefox-webext-browser": "^111.0.0",
 		"@types/jest": "^29.2.5",
 		"jest": "^29.3.1",
 		"jest-chrome": "^0.8.0",

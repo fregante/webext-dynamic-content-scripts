@@ -30,7 +30,7 @@
 		"jest": "TARGET=2 npm run jest:core && TARGET=3 npm run jest:core",
 		"vitest": "vitest",
 		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
-		"prepack": "tsc --sourceMap false",
+		"prepack": "tsc --sourceMap false && npx dot-json package.json alias --delete #parcel#8920",
 		"lint": "xo",
 		"fix": "xo --fix",
 		"test": "run-p lint vitest jest",

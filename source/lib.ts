@@ -1,4 +1,4 @@
-import {getAdditionalPermissions} from 'webext-additional-permissions';
+import {dropOverlappingPermissions, getAdditionalPermissions} from 'webext-additional-permissions';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 import {registerContentScript} from './register-content-script-shim.js';
 
@@ -67,8 +67,9 @@ export async function init() {
 	chrome.permissions.onRemoved.addListener(handledDroppedPermissions);
 	chrome.permissions.onAdded.addListener(handleNewPermissions);
 	await registerOnOrigins(
-		await getAdditionalPermissions({
-			strictOrigins: false,
-		}),
+		dropOverlappingPermissions(
+			await getAdditionalPermissions({
+				strictOrigins: false,
+			})),
 	);
 }

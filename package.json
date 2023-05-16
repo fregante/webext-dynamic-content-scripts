@@ -21,9 +21,12 @@
 	"funding": "https://github.com/sponsors/fregante",
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
-	"exports": "./index.js",
-	"main": "./index.js",
-	"types": "./index.d.ts",
+	"exports":{
+		".": "./distribution/index.js",
+		"./*": "./distribution/*.js"
+	},
+	"main": "./distribution/index.js",
+	"types": "./distribution/index.d.ts",
 	"scripts": {
 		"build": "tsc",
 		"demo:build": "parcel build --no-cache",

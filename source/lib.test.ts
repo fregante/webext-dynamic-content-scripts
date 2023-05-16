@@ -45,7 +45,7 @@ describe('init', () => {
 		expect(getAdditionalPermissionsMock).toHaveBeenCalled();
 		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
 			additionalPermissions.origins,
-			baseManifest.content_scripts,
+			[{css: [], js: ['script.js']}],
 		);
 
 		// TODO: https://github.com/extend-chrome/jest-chrome/issues/20

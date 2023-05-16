@@ -1,4 +1,5 @@
 import {getAdditionalPermissions} from 'webext-additional-permissions';
+import {excludeDuplicateFiles} from './deduplicator.js';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 import {registerContentScript} from './register-content-script-shim.js';
 
@@ -16,15 +17,17 @@ function makePathRelative(file: string): string {
 async function registerOnOrigins({
 	origins: newOrigins,
 }: chrome.permissions.Permissions): Promise<void> {
-	const manifest = chrome.runtime.getManifest().content_scripts;
+	const {content_scripts: rawManifest, manifest_version: manifestVersion} = chrome.runtime.getManifest();
 
-	if (!manifest) {
+	if (!rawManifest) {
 		throw new Error('webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.');
 	}
 
+	const cleanManifest = excludeDuplicateFiles(rawManifest, {warn: manifestVersion === 2});
+
 	// Register one at a time to allow removing one at a time as well
 	for (const origin of newOrigins || []) {
-		for (const config of manifest) {
+		for (const config of cleanManifest) {
 			const registeredScript = registerContentScript({
 				// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
 				js: config.js?.map(file => makePathRelative(file)),
@@ -40,7 +43,7 @@ async function registerOnOrigins({
 
 	// May not be needed in the future in Firefox
 	// https://bugzilla.mozilla.org/show_bug.cgi?id=1458947
-	void injectToExistingTabs(newOrigins || [], manifest);
+	void injectToExistingTabs(newOrigins || [], cleanManifest);
 }
 
 function handleNewPermissions(permissions: chrome.permissions.Permissions) {

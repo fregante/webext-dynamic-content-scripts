@@ -9,7 +9,7 @@ function getDifferentiators(c: ManifestContentScript): string {
 
 /**
 Exclude same-file injections from a manifest `content_script` array due to a change in the polyfill.
-https://github.com/fregante/webext-dynamic-content-scripts/pull/55
+https://github.com/fregante/webext-dynamic-content-scripts/issues/62
 */
 export function excludeDuplicateFiles(
 	contentScripts: ManifestContentScript[],
@@ -30,7 +30,7 @@ export function excludeDuplicateFiles(
 			if (uniques.has(file)) {
 				// Warn the user in case this removal changes the behavior from what's expected
 				if (warn && differentiators !== uniques.get(file)) {
-					console.warn(`Duplicate file in the manifest content_scripts: ${file} \nMore info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55`);
+					console.warn(`Duplicate file in the manifest content_scripts: ${file} \nMore info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62`);
 				}
 
 				return false;

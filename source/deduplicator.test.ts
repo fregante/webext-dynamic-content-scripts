@@ -87,22 +87,7 @@ describe('excludeDuplicateFiles', () => {
 				matches: ['https://example.com/*'],
 			},
 		])).toMatchSnapshot('it should warn when a differentiator is different');
-		expect(warnMock).toMatchInlineSnapshot(`
-			[MockFunction warn] {
-			  "calls": [
-			    [
-			      "Duplicate file in the manifest content_scripts: first.css 
-			More info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55",
-			    ],
-			  ],
-			  "results": [
-			    {
-			      "type": "return",
-			      "value": undefined,
-			    },
-			  ],
-			}
-		`);
+		expect(warnMock).toMatchSnapshot();
 		warnMock.mockClear();
 
 		expect(excludeDuplicateFiles([
@@ -117,30 +102,7 @@ describe('excludeDuplicateFiles', () => {
 				matches: ['https://example.com/*'],
 			},
 		])).toMatchSnapshot('it should warn when a differentiator is different');
-		expect(warnMock).toMatchInlineSnapshot(`
-			[MockFunction warn] {
-			  "calls": [
-			    [
-			      "Duplicate file in the manifest content_scripts: first.js 
-			More info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55",
-			    ],
-			    [
-			      "Duplicate file in the manifest content_scripts: second.js 
-			More info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55",
-			    ],
-			  ],
-			  "results": [
-			    {
-			      "type": "return",
-			      "value": undefined,
-			    },
-			    {
-			      "type": "return",
-			      "value": undefined,
-			    },
-			  ],
-			}
-		`);
+		expect(warnMock).toMatchSnapshot();
 		warnMock.mockClear();
 
 		expect(excludeDuplicateFiles([
@@ -154,22 +116,7 @@ describe('excludeDuplicateFiles', () => {
 				matches: ['https://example.com/*'],
 			},
 		])).toMatchSnapshot('it should warn when a differentiator is different');
-		expect(warnMock).toMatchInlineSnapshot(`
-			[MockFunction warn] {
-			  "calls": [
-			    [
-			      "Duplicate file in the manifest content_scripts: first.css 
-			More info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55",
-			    ],
-			  ],
-			  "results": [
-			    {
-			      "type": "return",
-			      "value": undefined,
-			    },
-			  ],
-			}
-		`);
+		expect(warnMock).toMatchSnapshot();
 		warnMock.mockClear();
 	});
 });

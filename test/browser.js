@@ -2,10 +2,7 @@
 /* Keep file in sync with https://github.com/fregante/content-scripts-register-polyfill/blob/main/test/test.js */
 
 import {describe, beforeAll, it} from '@jest/globals';
-import puppeteer from 'expect-puppeteer';
-
-// https://github.com/smooth-code/jest-puppeteer/commit/bcd0415#r76081519
-const expect = puppeteer.default;
+import {expect} from 'expect-puppeteer';
 
 async function expectToNotMatchElement(window, selector) {
 	try {
@@ -38,7 +35,7 @@ describe.each(pages)('%s: tab', (title, url) => {
 	});
 
 	it('should load page', async () => {
-		await expect(page).toMatch('Parent page');
+		await expect(page).toMatchTextContent('Parent page');
 	});
 
 	it('should load the content script, once', async () => {
@@ -61,7 +58,7 @@ describe.each(pages)('%s: iframe', (title, url) => {
 		iframe = await elementHandle.contentFrame();
 	});
 	it('should load iframe page', async () => {
-		await expect(iframe).toMatch('Framed page');
+		await expect(iframe).toMatchTextContent('Framed page');
 	});
 
 	it('should load the content script, once', async () => {

@@ -4,14 +4,14 @@ export const chromeRegister = globalThis.chrome?.scripting?.registerContentScrip
 export const firefoxRegister = globalThis.browser?.contentScripts?.register;
 
 export async function registerContentScript(
-	contentScript: ChromeContentScript,
+	contentScript: Omit<chrome.scripting.RegisteredContentScript, 'id' | 'world'> & {matches: string[]},
 ): Promise<browser.contentScripts.RegisteredContentScript> {
 	if (chromeRegister) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
 		try {
 			await chromeRegister([{
-				id,
 				...contentScript,
+				id,
 			}]);
 		} catch (error) {
 			if (!(error as Error)?.message.startsWith('Duplicate script ID')) {
@@ -20,7 +20,7 @@ export async function registerContentScript(
 		}
 
 		return {
-			unregister: async () => chrome.scripting.unregisterContentScripts([id]),
+			unregister: async () => chrome.scripting.unregisterContentScripts({ids: [id]}),
 		};
 	}
 
@@ -28,7 +28,7 @@ export async function registerContentScript(
 		...contentScript,
 		js: contentScript.js?.map(file => ({file})),
 		css: contentScript.css?.map(file => ({file})),
-	};
+	} as const;
 
 	if (firefoxRegister) {
 		return firefoxRegister(firefoxContentScript);

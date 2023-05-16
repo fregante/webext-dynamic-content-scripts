@@ -1,6 +1,6 @@
 {
 	"name": "webext-dynamic-content-scripts",
-	"version": "10.0.0-1",
+	"version": "10.0.0-2",
 	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request` or on `activeTab`",
 	"keywords": [
 		"contentscript",
@@ -21,7 +21,7 @@
 	"funding": "https://github.com/sponsors/fregante",
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
-	"exports":{
+	"exports": {
 		".": "./distribution/index.js",
 		"./*": "./distribution/*.js"
 	},

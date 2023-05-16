@@ -134,7 +134,7 @@ exports[`excludeDuplicateFiles > warning 1`] = `
   "calls": [
     [
       "Duplicate file in the manifest content_scripts: first.css 
-More info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55",
+More info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62",
     ],
   ],
   "results": [
@@ -151,11 +151,11 @@ exports[`excludeDuplicateFiles > warning 2`] = `
   "calls": [
     [
       "Duplicate file in the manifest content_scripts: first.js 
-More info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55",
+More info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62",
     ],
     [
       "Duplicate file in the manifest content_scripts: second.js 
-More info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55",
+More info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62",
     ],
   ],
   "results": [
@@ -176,7 +176,7 @@ exports[`excludeDuplicateFiles > warning 3`] = `
   "calls": [
     [
       "Duplicate file in the manifest content_scripts: first.css 
-More info: https://github.com/fregante/webext-dynamic-content-scripts/pull/55",
+More info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62",
     ],
   ],
   "results": [

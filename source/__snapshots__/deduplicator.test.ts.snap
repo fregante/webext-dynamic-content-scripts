@@ -1,0 +1,189 @@
+// Vitest Snapshot v1
+
+exports[`excludeDuplicateFiles > safe > it should drop the whole block if if empty 1`] = `
+[
+  {
+    "css": [
+      "first.css",
+    ],
+    "js": [
+      "alpha.js",
+    ],
+  },
+]
+`;
+
+exports[`excludeDuplicateFiles > safe > it should remove duplicate scripts 1`] = `
+[
+  {
+    "css": [],
+    "js": [
+      "first.js",
+    ],
+  },
+  {
+    "css": [],
+    "js": [
+      "second.js",
+    ],
+  },
+]
+`;
+
+exports[`excludeDuplicateFiles > safe > it should remove duplicate scripts and stylesheets 1`] = `
+[
+  {
+    "css": [
+      "first.css",
+    ],
+    "js": [
+      "alpha.js",
+    ],
+  },
+  {
+    "css": [
+      "second.css",
+    ],
+    "js": [],
+  },
+]
+`;
+
+exports[`excludeDuplicateFiles > safe > it should remove duplicate stylesheets 1`] = `
+[
+  {
+    "css": [
+      "first.css",
+    ],
+    "js": [],
+  },
+  {
+    "css": [
+      "second.css",
+    ],
+    "js": [],
+  },
+]
+`;
+
+exports[`excludeDuplicateFiles > warning > it should not warn when a differentiator is the same 1`] = `
+[
+  {
+    "css": [],
+    "exclude_matches": [
+      "https://*/admin/*",
+    ],
+    "js": [
+      "first.js",
+    ],
+  },
+]
+`;
+
+exports[`excludeDuplicateFiles > warning > it should warn when a differentiator is different 1`] = `
+[
+  {
+    "css": [
+      "first.css",
+    ],
+    "js": [],
+  },
+  {
+    "css": [
+      "second.css",
+    ],
+    "js": [],
+    "run_at": "document_start",
+  },
+]
+`;
+
+exports[`excludeDuplicateFiles > warning > it should warn when a differentiator is different 2`] = `
+[
+  {
+    "css": [],
+    "js": [
+      "first.js",
+      "second.js",
+    ],
+    "run_at": "document_end",
+  },
+]
+`;
+
+exports[`excludeDuplicateFiles > warning > it should warn when a differentiator is different 3`] = `
+[
+  {
+    "all_frames": true,
+    "css": [
+      "first.css",
+    ],
+    "js": [],
+  },
+  {
+    "css": [
+      "second.css",
+    ],
+    "js": [],
+  },
+]
+`;
+
+exports[`excludeDuplicateFiles > warning 1`] = `
+[MockFunction warn] {
+  "calls": [
+    [
+      "Duplicate file in the manifest content_scripts: first.css 
+More info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`excludeDuplicateFiles > warning 2`] = `
+[MockFunction warn] {
+  "calls": [
+    [
+      "Duplicate file in the manifest content_scripts: first.js 
+More info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62",
+    ],
+    [
+      "Duplicate file in the manifest content_scripts: second.js 
+More info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;
+
+exports[`excludeDuplicateFiles > warning 3`] = `
+[MockFunction warn] {
+  "calls": [
+    [
+      "Duplicate file in the manifest content_scripts: first.css 
+More info: https://github.com/fregante/webext-dynamic-content-scripts/issues/62",
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": undefined,
+    },
+  ],
+}
+`;

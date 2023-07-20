@@ -6,10 +6,8 @@ exports[`init - registerContentScript > should register multiple manifest script
     [
       {
         "allFrames": undefined,
-        "css": undefined,
-        "excludeMatches": [
-          "https://content-script.example.com/*",
-        ],
+        "css": [],
+        "excludeMatches": undefined,
         "js": [
           "/script.js",
         ],
@@ -22,10 +20,8 @@ exports[`init - registerContentScript > should register multiple manifest script
     [
       {
         "allFrames": undefined,
-        "css": undefined,
-        "excludeMatches": [
-          "https://content-script-extra.example.com/*",
-        ],
+        "css": [],
+        "excludeMatches": undefined,
         "js": [
           "/otherScript.js",
         ],
@@ -55,10 +51,8 @@ exports[`init - registerContentScript > should register the manifest scripts on 
     [
       {
         "allFrames": undefined,
-        "css": undefined,
-        "excludeMatches": [
-          "https://content-script.example.com/*",
-        ],
+        "css": [],
+        "excludeMatches": undefined,
         "js": [
           "/script.js",
         ],
@@ -71,10 +65,8 @@ exports[`init - registerContentScript > should register the manifest scripts on 
     [
       {
         "allFrames": undefined,
-        "css": undefined,
-        "excludeMatches": [
-          "https://content-script.example.com/*",
-        ],
+        "css": [],
+        "excludeMatches": undefined,
         "js": [
           "/script.js",
         ],
@@ -104,10 +96,8 @@ exports[`init - registerContentScript > should register the manifest scripts on 
     [
       {
         "allFrames": undefined,
-        "css": undefined,
-        "excludeMatches": [
-          "https://content-script.example.com/*",
-        ],
+        "css": [],
+        "excludeMatches": undefined,
         "js": [
           "/script.js",
         ],

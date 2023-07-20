@@ -1,6 +1,6 @@
 {
 	"name": "webext-dynamic-content-scripts",
-	"version": "9.2.2",
+	"version": "10.0.0-3",
 	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request` or on `activeTab`",
 	"keywords": [
 		"contentscript",
@@ -61,7 +61,7 @@
 		]
 	},
 	"dependencies": {
-		"content-scripts-register-polyfill": "^3.2.2",
+		"content-scripts-register-polyfill": "^4.0.1",
 		"webext-additional-permissions": "^2.3.0",
 		"webext-content-scripts": "^2.5.3",
 		"webext-detect-page": "^4.0.1",

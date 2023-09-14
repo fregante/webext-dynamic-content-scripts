@@ -84,9 +84,6 @@
 		"vitest": "^0.34.4",
 		"xo": "^0.56.0"
 	},
-	"engines": {
-		"node": ">=18"
-	},
 	"alias": {
 		"these-are-just-mocks-for-parcel-tests": "yolo",
 		"webext-additional-permissions": "./test/demo-extension/webext-additional-permissions.js",

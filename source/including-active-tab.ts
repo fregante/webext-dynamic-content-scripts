@@ -1,9 +1,9 @@
-import './index.js'; // Core functionality
 import {type ContentScript} from 'webext-content-scripts/types';
 import {injectContentScript} from 'webext-content-scripts';
 import chromeP from 'webext-polyfill-kinda';
 import {type ActiveTab, addActiveTabListener, possiblyActiveTabs} from './active-tab.js';
 import {isContentScriptRegistered} from './utils.js';
+import './index.js'; // Core functionality
 
 type InjectionDetails = {
 	tabId: number;

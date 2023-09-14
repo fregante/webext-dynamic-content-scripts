@@ -1,4 +1,4 @@
-import 'webext-dynamic-content-scripts/including-active-tab.js';
+import 'webext-dynamic-content-scripts/including-active-tab.ts';
 
 chrome.contextMenus.create({
 	title: 'Enable activeTab permission',

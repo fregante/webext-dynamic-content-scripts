@@ -21,7 +21,7 @@
 	"funding": "https://github.com/sponsors/fregante",
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
-	"module": "distribution/index.js",
+	"main": "./distribution/index.js",
 	"scripts": {
 		"build": "tsc",
 		"demo:build": "parcel build --no-cache",
@@ -83,6 +83,9 @@
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.4",
 		"xo": "^0.56.0"
+	},
+	"engines": {
+		"node": ">=18"
 	},
 	"alias": {
 		"these-are-just-mocks-for-parcel-tests": "yolo",

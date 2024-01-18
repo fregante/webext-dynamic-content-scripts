@@ -30,6 +30,10 @@
 		"./including-active-tab.js": {
 			"types": "./distribution/including-active-tab.d.ts",
 			"default": "./distribution/including-active-tab.js"
+		},
+		"./utils.js": {
+			"types": "./distribution/utils.d.ts",
+			"default": "./distribution/utils.js"
 		}
 	},
 	"scripts": {

@@ -90,17 +90,11 @@ if (await isContentScriptRegistered('https://google.com/search')) {
 
 ## Related
 
-### Permissions
-
 - [webext-permission-toggle](https://github.com/fregante/webext-permission-toggle) - Browser-action context menu to request permission for the current tab.
-- [webext-permissions](https://github.com/fregante/webext-permissions) - Get any optional permissions that users have granted you.
-
-### Others
-
 - [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options.
-- [webext-storage-cache](https://github.com/fregante/webext-storage-cache) - Map-like promised cache storage with expiration.
 - [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run.
 - [Awesome-WebExtensions](https://github.com/fregante/Awesome-WebExtensions) - A curated list of awesome resources for WebExtensions development.
+- [More…](https://github.com/fregante/webext-fun)
 
 ## License
 

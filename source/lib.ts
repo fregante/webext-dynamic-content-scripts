@@ -1,4 +1,4 @@
-import {getAdditionalPermissions} from 'webext-additional-permissions';
+import {queryAdditionalPermissions} from 'webext-permissions';
 import {excludeDuplicateFiles} from './deduplicator.js';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 import {registerContentScript} from './register-content-script-shim.js';
@@ -70,7 +70,7 @@ export async function init() {
 	chrome.permissions.onRemoved.addListener(handledDroppedPermissions);
 	chrome.permissions.onAdded.addListener(handleNewPermissions);
 	await registerOnOrigins(
-		await getAdditionalPermissions({
+		await queryAdditionalPermissions({
 			strictOrigins: false,
 		}),
 	);

@@ -1,9 +1,11 @@
 import {chrome} from 'jest-chrome';
-import {test, vi, beforeAll, assert} from 'vitest';
-import {getAdditionalPermissions} from 'webext-additional-permissions';
+import {
+	test, vi, beforeAll, assert,
+} from 'vitest';
+import {queryAdditionalPermissions} from 'webext-permissions';
 import {isContentScriptStaticallyRegistered, isContentScriptDynamicallyRegistered, isContentScriptRegistered} from './utils.js';
 
-vi.mock('webext-additional-permissions');
+vi.mock('webext-permissions');
 
 const manifest: chrome.runtime.Manifest = {
 	name: 'required',
@@ -27,10 +29,10 @@ const manifest: chrome.runtime.Manifest = {
 	],
 };
 
-const getAdditionalPermissionsMock = vi.mocked(getAdditionalPermissions);
+const queryAdditionalPermissionsMock = vi.mocked(queryAdditionalPermissions);
 
 beforeAll(() => {
-	getAdditionalPermissionsMock.mockImplementation(async () => ({
+	queryAdditionalPermissionsMock.mockImplementation(async () => ({
 		origins: ['https://granted.example.com/*'],
 		permissions: [],
 	}));

@@ -1,4 +1,4 @@
-import {getAdditionalPermissions} from 'webext-additional-permissions';
+import {queryAdditionalPermissions} from 'webext-permissions';
 import {patternToRegex} from 'webext-patterns';
 
 export function isContentScriptStaticallyRegistered(url: string): boolean {
@@ -11,7 +11,7 @@ export function isContentScriptStaticallyRegistered(url: string): boolean {
 
 export async function isContentScriptDynamicallyRegistered(url: string): Promise<boolean> {
 	// Injected by `webext-dynamic-content-scripts`
-	const {origins} = await getAdditionalPermissions({
+	const {origins} = await queryAdditionalPermissions({
 		strictOrigins: false,
 	});
 

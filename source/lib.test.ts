@@ -1,11 +1,13 @@
 import {chrome} from 'jest-chrome';
-import {describe, it, vi, beforeEach, expect} from 'vitest';
-import {getAdditionalPermissions} from 'webext-additional-permissions';
+import {
+	describe, it, vi, beforeEach, expect,
+} from 'vitest';
+import {queryAdditionalPermissions} from 'webext-permissions';
 import {init} from './lib.js';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 import {registerContentScript} from './register-content-script-shim.js';
 
-vi.mock('webext-additional-permissions');
+vi.mock('webext-permissions');
 vi.mock('./register-content-script-shim.js');
 vi.mock('./inject-to-existing-tabs.js');
 
@@ -28,21 +30,21 @@ const additionalPermissions: Required<chrome.permissions.Permissions> = {
 	permissions: [],
 };
 
-const getAdditionalPermissionsMock = vi.mocked(getAdditionalPermissions);
+const queryAdditionalPermissionsMock = vi.mocked(queryAdditionalPermissions);
 const injectToExistingTabsMock = vi.mocked(injectToExistingTabs);
 const registerContentScriptMock = vi.mocked(registerContentScript);
 
 beforeEach(() => {
 	registerContentScriptMock.mockClear();
 	injectToExistingTabsMock.mockClear();
-	getAdditionalPermissionsMock.mockResolvedValue(additionalPermissions);
+	queryAdditionalPermissionsMock.mockResolvedValue(additionalPermissions);
 	chrome.runtime.getManifest.mockReturnValue(baseManifest);
 });
 
 describe('init', () => {
 	it('it should register the listeners and start checking permissions', async () => {
 		await init();
-		expect(getAdditionalPermissionsMock).toHaveBeenCalled();
+		expect(queryAdditionalPermissionsMock).toHaveBeenCalled();
 		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
 			additionalPermissions.origins,
 			[{css: [], js: ['script.js']}],
@@ -68,7 +70,7 @@ describe('init - registerContentScript', () => {
 	});
 
 	it('should register the manifest scripts on multiple new permissions', async () => {
-		getAdditionalPermissionsMock.mockResolvedValue({
+		queryAdditionalPermissionsMock.mockResolvedValue({
 			origins: [
 				'https://granted.example.com/*',
 				'https://granted-more.example.com/*',

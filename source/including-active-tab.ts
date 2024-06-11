@@ -28,7 +28,7 @@ async function injectToTabUnlessRegistered({id: tabId, origin}: ActiveTab): Prom
 		: [{frameId: 0, url: origin}];
 
 	// .map() needed for async loop
-	frames?.map(async ({frameId, url}) => injectIfActive({frameId, url, tabId}));
+	void frames?.map(async ({frameId, url}) => injectIfActive({frameId, url, tabId}));
 }
 
 async function injectIfActive(

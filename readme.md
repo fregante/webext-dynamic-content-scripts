@@ -5,7 +5,7 @@
 - Browsers: Chrome, Firefox, and Safari
 - Manifest: v2 and v3
 
-This module will automatically register your `content_scripts` from `manifest.json` into new domains granted via `permissions.request()`, or via [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle).
+This module will automatically register your `content_scripts` from `manifest.json` into new domains granted via `permissions.request()`, or via [webext-permission-toggle](https://github.com/fregante/webext-permission-toggle).
 
 The main use case is ship your extension with a minimal set of hosts and then allow the user to enable it on any domain; this way you don't need to use a broad `<all_urls>` permission.
 
@@ -67,7 +67,7 @@ By default, the module will only inject the content scripts into newly-permitted
 import 'webext-dynamic-content-scripts/including-active-tab.js';
 ```
 
-> **Note** 
+> **Note**
 > This does not work well in Firefox because of some compounding bugs:
 > - `activeTab` seems to be lost after a reload
 > - further `contextMenu` clicks receive a moz-extension URL rather than the current page’s URL
@@ -90,18 +90,11 @@ if (await isContentScriptRegistered('https://google.com/search')) {
 
 ## Related
 
-### Permissions
-
-- [webext-domain-permission-toggle](https://github.com/fregante/webext-domain-permission-toggle) - Browser-action context menu to request permission for the current tab. Chrome and Firefox.
-- [webext-additional-permissions](https://github.com/fregante/webext-additional-permissions) - Get any optional permissions that users have granted you.
-
-### Others
-
-- [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options. Chrome and Firefox.
-- [webext-storage-cache](https://github.com/fregante/webext-storage-cache) - Map-like promised cache storage with expiration. Chrome and Firefox
-- [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run. Chrome and Firefox.
-- [web-ext-submit](https://github.com/fregante/web-ext-submit) - Wrapper around Mozilla’s web-ext to submit extensions to AMO.
+- [webext-permission-toggle](https://github.com/fregante/webext-permission-toggle) - Browser-action context menu to request permission for the current tab.
+- [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options.
+- [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run.
 - [Awesome-WebExtensions](https://github.com/fregante/Awesome-WebExtensions) - A curated list of awesome resources for WebExtensions development.
+- [More…](https://github.com/fregante/webext-fun)
 
 ## License
 

@@ -1,4 +1,6 @@
-import {test, describe, afterEach, expect} from 'vitest';
+import {
+	test, describe, afterEach, expect,
+} from 'vitest';
 import {excludeDuplicateFiles} from './deduplicator.js';
 
 const warnMock = jest.spyOn(console, 'warn').mockImplementation(() => undefined);

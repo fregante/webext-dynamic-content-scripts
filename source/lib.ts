@@ -17,6 +17,10 @@ function makePathRelative(file: string): string {
 async function registerOnOrigins({
 	origins: newOrigins,
 }: chrome.permissions.Permissions): Promise<void> {
+	if (!newOrigins?.length) {
+		return;
+	}
+
 	const {content_scripts: rawManifest, manifest_version: manifestVersion} = chrome.runtime.getManifest();
 
 	if (!rawManifest) {
@@ -26,7 +30,7 @@ async function registerOnOrigins({
 	const cleanManifest = excludeDuplicateFiles(rawManifest, {warn: manifestVersion === 2});
 
 	// Register one at a time to allow removing one at a time as well
-	for (const origin of newOrigins || []) {
+	for (const origin of newOrigins) {
 		for (const config of cleanManifest) {
 			const registeredScript = registerContentScript({
 				// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
@@ -43,17 +47,15 @@ async function registerOnOrigins({
 
 	// May not be needed in the future in Firefox
 	// https://bugzilla.mozilla.org/show_bug.cgi?id=1458947
-	void injectToExistingTabs(newOrigins || [], cleanManifest);
+	void injectToExistingTabs(newOrigins, cleanManifest);
 }
 
 function handleNewPermissions(permissions: chrome.permissions.Permissions) {
-	if (permissions.origins && permissions.origins.length > 0) {
-		void registerOnOrigins(permissions);
-	}
+	void registerOnOrigins(permissions);
 }
 
 async function handledDroppedPermissions({origins}: chrome.permissions.Permissions) {
-	if (!origins || origins.length === 0) {
+	if (!origins?.length) {
 		return;
 	}
 

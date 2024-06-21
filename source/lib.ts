@@ -79,12 +79,14 @@ async function registerExistingOrigins() {
 
 	const contentScripts = getContentScripts();
 	if (origins?.length) {
-		void injectToExistingTabs(origins, contentScripts);
-		void registerOnOrigins(origins, contentScripts);
+		await Promise.all([
+			injectToExistingTabs(origins, contentScripts),
+			registerOnOrigins(origins, contentScripts),
+		]);
 	}
 }
 
-export async function init() {
+export function init() {
 	chrome.permissions.onRemoved.addListener(handledDroppedPermissions);
 	chrome.permissions.onAdded.addListener(handleNewPermissions);
 	onExtensionStart.addListener(registerExistingOrigins);

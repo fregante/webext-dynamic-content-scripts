@@ -50,12 +50,12 @@ async function registerOnOrigins(
 	}
 }
 
-function handleNewPermissions({origins}: chrome.permissions.Permissions) {
-	const contentScripts = getContentScripts();
-	if (origins?.length) {
-		void injectToExistingTabs(origins, contentScripts);
-		void registerOnOrigins(origins, contentScripts);
+async function handleNewPermissions({origins}: chrome.permissions.Permissions) {
+	if (!origins?.length) {
+		return;
 	}
+
+	await registerOrigins(origins);
 }
 
 async function handledDroppedPermissions({origins}: chrome.permissions.Permissions) {
@@ -72,18 +72,24 @@ async function handledDroppedPermissions({origins}: chrome.permissions.Permissio
 	}
 }
 
+async function registerOrigins(origins: string[]) {
+	if (!origins?.length) {
+		return;
+	}
+
+	const contentScripts = getContentScripts();
+	await Promise.all([
+		injectToExistingTabs(origins, contentScripts),
+		registerOnOrigins(origins, contentScripts),
+	]);
+}
+
 async function registerExistingOrigins() {
 	const {origins} = await queryAdditionalPermissions({
 		strictOrigins: false,
 	});
 
-	const contentScripts = getContentScripts();
-	if (origins?.length) {
-		await Promise.all([
-			injectToExistingTabs(origins, contentScripts),
-			registerOnOrigins(origins, contentScripts),
-		]);
-	}
+	await registerOrigins(origins);
 }
 
 export function init() {

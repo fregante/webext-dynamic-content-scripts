@@ -55,7 +55,7 @@ async function handleNewPermissions({origins}: chrome.permissions.Permissions) {
 		return;
 	}
 
-	await registerOrigins(origins);
+	await enableOnOrigins(origins);
 }
 
 async function handledDroppedPermissions({origins}: chrome.permissions.Permissions) {
@@ -72,7 +72,7 @@ async function handledDroppedPermissions({origins}: chrome.permissions.Permissio
 	}
 }
 
-async function registerOrigins(origins: string[]) {
+async function enableOnOrigins(origins: string[]) {
 	if (!origins?.length) {
 		return;
 	}
@@ -89,7 +89,7 @@ async function registerExistingOrigins() {
 		strictOrigins: false,
 	});
 
-	await registerOrigins(origins);
+	await enableOnOrigins(origins);
 }
 
 export function init() {

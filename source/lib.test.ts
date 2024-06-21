@@ -1,4 +1,3 @@
-import process from 'process';
 import {chrome} from 'jest-chrome';
 import {
 	describe, it, vi, beforeEach, expect,

@@ -3,11 +3,15 @@ import {
 	describe, it, vi, beforeEach, expect,
 } from 'vitest';
 import {queryAdditionalPermissions} from 'webext-permissions';
+import {onExtensionStart} from 'webext-events';
 import {init} from './lib.js';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 import {registerContentScript} from './register-content-script-shim.js';
 
+type AsyncFunction = () => void | Promise<void>;
+
 vi.mock('webext-permissions');
+vi.mock('webext-events');
 vi.mock('./register-content-script-shim.js');
 vi.mock('./inject-to-existing-tabs.js');
 
@@ -21,6 +25,7 @@ const baseManifest: chrome.runtime.Manifest = {
 			matches: ['https://content-script.example.com/*'],
 		},
 	],
+	permissions: ['storage'],
 	host_permissions: ['https://permission-only.example.com/*'],
 	optional_host_permissions: ['*://*/*'],
 };
@@ -34,6 +39,17 @@ const queryAdditionalPermissionsMock = vi.mocked(queryAdditionalPermissions);
 const injectToExistingTabsMock = vi.mocked(injectToExistingTabs);
 const registerContentScriptMock = vi.mocked(registerContentScript);
 
+const callbacks = new Set<AsyncFunction>();
+
+vi.mocked(onExtensionStart.addListener).mockImplementation((callback: AsyncFunction) => {
+	callbacks.add(callback);
+});
+
+async function simulateExtensionStart() {
+	await Promise.all(Array.from(callbacks).map(async callback => callback()));
+	callbacks.clear();
+}
+
 beforeEach(() => {
 	registerContentScriptMock.mockClear();
 	injectToExistingTabsMock.mockClear();
@@ -43,7 +59,9 @@ beforeEach(() => {
 
 describe('init', () => {
 	it('it should register the listeners and start checking permissions', async () => {
-		await init();
+		init();
+		await simulateExtensionStart();
+
 		expect(queryAdditionalPermissionsMock).toHaveBeenCalled();
 		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
 			additionalPermissions.origins,
@@ -59,13 +77,16 @@ describe('init', () => {
 		const manifest = structuredClone(baseManifest);
 		delete manifest.content_scripts;
 		chrome.runtime.getManifest.mockReturnValue(manifest);
-		await expect(init()).rejects.toMatchInlineSnapshot('[Error: webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.]');
+		init();
+		await expect(simulateExtensionStart).rejects
+			.toThrowErrorMatchingInlineSnapshot('[Error: webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.]');
 	});
 });
 
 describe('init - registerContentScript', () => {
 	it('should register the manifest scripts on new permissions', async () => {
-		await init();
+		init();
+		await simulateExtensionStart();
 		expect(registerContentScriptMock).toMatchSnapshot();
 	});
 
@@ -78,7 +99,8 @@ describe('init - registerContentScript', () => {
 			permissions: [],
 		});
 
-		await init();
+		init();
+		await simulateExtensionStart();
 		expect(registerContentScriptMock).toMatchSnapshot();
 	});
 
@@ -90,7 +112,8 @@ describe('init - registerContentScript', () => {
 		});
 		chrome.runtime.getManifest.mockReturnValue(manifest);
 
-		await init();
+		init();
+		await simulateExtensionStart();
 		expect(registerContentScriptMock).toMatchSnapshot();
 	});
 });

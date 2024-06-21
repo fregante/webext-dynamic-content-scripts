@@ -44,7 +44,7 @@ navigator.importScripts('webext-dynamic-content-scripts.js');
 ```json
 // example manifest.json
 {
-	"permissions": ["scripting"],
+	"permissions": ["scripting", "storage"],
 	"optional_host_permissions": ["*://*/*"],
 	"background": {
 		"service_worker": "background.worker.js"

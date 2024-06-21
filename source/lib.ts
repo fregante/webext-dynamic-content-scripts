@@ -51,10 +51,6 @@ async function registerOnOrigins(
 }
 
 async function handleNewPermissions({origins}: chrome.permissions.Permissions) {
-	if (!origins?.length) {
-		return;
-	}
-
 	await enableOnOrigins(origins);
 }
 
@@ -72,7 +68,7 @@ async function handledDroppedPermissions({origins}: chrome.permissions.Permissio
 	}
 }
 
-async function enableOnOrigins(origins: string[]) {
+async function enableOnOrigins(origins: string[] | undefined) {
 	if (!origins?.length) {
 		return;
 	}

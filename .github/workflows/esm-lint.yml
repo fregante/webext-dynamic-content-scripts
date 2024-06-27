@@ -82,7 +82,7 @@ jobs:
       - run: >
           echo '{"extends":"@sindresorhus/tsconfig","files":["index.ts"]}' >
           tsconfig.json
-      - run: npx tsc@latest
+      - run: npx typescript@latest
       - run: cat distribution/index.js
   Node:
     runs-on: ubuntu-latest

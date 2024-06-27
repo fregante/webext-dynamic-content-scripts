@@ -1,6 +1,5 @@
 env:
-  IMPORT_TEXT: import
-  NPM_MODULE_NAME: webext-dynamic-content-scripts
+  IMPORT_STATEMENT: import "webext-dynamic-content-scripts"
 
 # FILE GENERATED WITH: npx ghat fregante/ghatemplates/esm-lint
 # SOURCE: https://github.com/fregante/ghatemplates
@@ -32,7 +31,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
       - run: npm install ./artifact
-      - run: echo "${{ env.IMPORT_TEXT }} '${{ env.NPM_MODULE_NAME }}'" > index.js
+      - run: echo "$IMPORT_STATEMENT" > index.js
       - run: webpack --entry ./index.js
       - run: cat dist/main.js
   Parcel:
@@ -41,7 +40,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
       - run: npm install ./artifact
-      - run: echo "${{ env.IMPORT_TEXT }} '${{ env.NPM_MODULE_NAME }}'" > index.js
+      - run: echo "$IMPORT_STATEMENT" > index.js
       - run: >-
           echo '{"@parcel/resolver-default": {"packageExports": true}}' >
           package.json
@@ -53,7 +52,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
       - run: npm install ./artifact rollup@2 @rollup/plugin-node-resolve
-      - run: echo "${{ env.IMPORT_TEXT }} '${{ env.NPM_MODULE_NAME }}'" > index.js
+      - run: echo "$IMPORT_STATEMENT" > index.js
       - run: npx rollup -p node-resolve index.js
   Vite:
     runs-on: ubuntu-latest
@@ -61,9 +60,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
       - run: npm install ./artifact
-      - run: >-
-          echo '<script type="module">${{ env.IMPORT_TEXT }} "${{
-          env.NPM_MODULE_NAME }}"</script>' > index.html
+      - run: echo '<script type="module">$IMPORT_STATEMENT</script>' > index.html
       - run: npx vite build
       - run: cat dist/assets/*
   esbuild:
@@ -72,7 +69,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
       - run: echo '{}' > package.json
-      - run: echo "${{ env.IMPORT_TEXT }} '${{ env.NPM_MODULE_NAME }}'" > index.js
+      - run: echo "$IMPORT_STATEMENT" > index.js
       - run: npm install ./artifact
       - run: npx esbuild --bundle index.js
   TypeScript:
@@ -81,13 +78,11 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
       - run: npm install ./artifact @sindresorhus/tsconfig
-      - run: echo "${{ env.IMPORT_TEXT }} '${{ env.NPM_MODULE_NAME }}'" > index.ts
+      - run: echo "$IMPORT_STATEMENT" > index.ts
       - run: >
           echo '{"extends":"@sindresorhus/tsconfig","files":["index.ts"]}' >
           tsconfig.json
-      - run: tsc
-      - run: ls -a
-      - run: tree
+      - run: npx tsc@latest
       - run: cat distribution/index.js
   Node:
     runs-on: ubuntu-latest
@@ -99,6 +94,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: artifact/package.json
-      - run: echo "${{ env.IMPORT_TEXT }} '${{ env.NPM_MODULE_NAME }}'" > index.mjs
+      - run: echo "$IMPORT_STATEMENT" > index.mjs
       - run: npm install ./artifact
       - run: node index.mjs

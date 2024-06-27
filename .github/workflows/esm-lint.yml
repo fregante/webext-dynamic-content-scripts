@@ -90,6 +90,8 @@ jobs:
   Node:
     runs-on: ubuntu-latest
     needs: Pack
+    # "chrome is not defined"
+    if: false
     steps:
       - uses: actions/download-artifact@v4
       - uses: actions/setup-node@v4

@@ -42,6 +42,7 @@ jobs:
       - uses: actions/download-artifact@v4
       - run: npm install ./artifact
       - run: echo "${{ env.IMPORT_TEXT }} '${{ env.NPM_MODULE_NAME }}'" > index.js
+      - run: "echo '{\"@parcel/resolver-default\": {\"packageExports\": true}}' > package.json"
       - run: npx parcel@2 build index.js
       - run: cat dist/index.js
   Rollup:

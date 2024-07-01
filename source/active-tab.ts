@@ -1,5 +1,5 @@
 import {isScriptableUrl} from 'webext-content-scripts';
-import {isBackground} from 'webext-detect-page';
+import {isBackground} from 'webext-detect';
 import {SimpleEventTarget} from './simple-event-target';
 
 if (!isBackground()) {

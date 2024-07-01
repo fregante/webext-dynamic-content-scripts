@@ -92,7 +92,7 @@ if (await isContentScriptRegistered('https://google.com/search')) {
 
 - [webext-permission-toggle](https://github.com/fregante/webext-permission-toggle) - Browser-action context menu to request permission for the current tab.
 - [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options.
-- [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run.
+- [webext-detect](https://github.com/fregante/webext-detect) - Detects where the current browser extension code is being run.
 - [Awesome-WebExtensions](https://github.com/fregante/Awesome-WebExtensions) - A curated list of awesome resources for WebExtensions development.
 - [More…](https://github.com/fregante/webext-fun)
 

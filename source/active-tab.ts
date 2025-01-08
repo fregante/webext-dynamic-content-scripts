@@ -62,7 +62,7 @@ function drop(tabId: TabId): void {
 	possiblyActiveTabs.delete(tabId);
 }
 
-// https://developer.chrome.com/docs/extensions/mv3/manifest/activeTab/#invoking-activeTab
+// https://developer.chrome.com/docs/extensions/develop/concepts/activeTab#invoking-activeTab
 export function startActiveTabTracking(): void {
 	browserAction?.onClicked.addListener(addIfScriptable);
 	chrome.contextMenus?.onClicked.addListener(altListener);

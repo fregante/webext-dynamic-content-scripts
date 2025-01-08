@@ -1,18 +1,17 @@
 {
 	"name": "webext-dynamic-content-scripts",
 	"version": "0.0.0",
-	"manifest_version": 2,
-	"permissions": [
-		"activeTab",
-		"webNavigation",
-		"contextMenus",
+	"manifest_version": 3,
+	"permissions": ["tabs", "scripting", "contextMenus", "activeTab", "storage"],
+	"host_permissions": [
 		"https://dynamic-ephiframe.vercel.app/*",
 		"https://accepted-ephiframe.vercel.app/*"
 	],
 	"background": {
-		"scripts": ["background.js"]
+		"service_worker": "background.js",
+		"type": "module"
 	},
-	"browser_action": {},
+	"action": {},
 	"content_scripts": [
 		{
 			"all_frames": true,
@@ -29,8 +28,5 @@
 			"js": ["content.js"],
 			"css": ["content.css"]
 		}
-	],
-	"web_accessible_resources": [
-		"*.html"
 	]
 }

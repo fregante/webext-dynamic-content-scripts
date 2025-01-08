@@ -41,7 +41,7 @@
 		"demo:build": "parcel build --no-cache",
 		"demo:watch": "parcel watch --no-cache --no-hmr",
 		"prejest": "npm run demo:build",
-		"jest": "TARGET=2 npm run jest:core && TARGET=3 npm run jest:core",
+		"jest": "npm run jest:core",
 		"vitest": "vitest",
 		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
 		"prepack": "tsc --sourceMap false && npm pkg delete alias #parcel#8920",
@@ -109,17 +109,9 @@
 	"targets": {
 		"main": false,
 		"module": false,
-		"mv2": {
-			"source": "./test/demo-extension/mv2/manifest.json",
-			"distDir": "./test/dist/mv2",
-			"sourceMap": {
-				"inline": true
-			},
-			"optimize": false
-		},
-		"mv3": {
-			"source": "./test/demo-extension/mv3/manifest.json",
-			"distDir": "./test/dist/mv3",
+		"demo": {
+			"source": "./test/demo-extension/manifest.json",
+			"distDir": "./test/dist",
 			"sourceMap": {
 				"inline": true
 			},
@@ -127,7 +119,7 @@
 		}
 	},
 	"webExt": {
-		"sourceDir": "test/dist/mv2",
+		"sourceDir": "test/dist",
 		"run": {
 			"startUrl": [
 				"https://static-ephiframe.vercel.app/Static",

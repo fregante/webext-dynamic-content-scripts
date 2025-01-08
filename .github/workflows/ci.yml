@@ -34,24 +34,9 @@ jobs:
 
   Test:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        permission:
-          - tabs
-          - webNavigation
-        version:
-          - "2"
-          - "3"
     steps:
       - uses: actions/checkout@v3
       - run: sudo apt-get install xvfb
       - run: npm ci
       - run: npm run demo:build
-      - name: Use tabs-only permission
-        if: matrix.permission == 'tabs'
-        run: |
-          sed -i 's/webNavigation/tabs/' test/demo-extension/mv${{ matrix.version }}/manifest.json
       - run: xvfb-run --auto-servernum npm run jest:core
-        env:
-          TARGET: ${{ matrix.version }}

@@ -47,11 +47,11 @@ exports[`init - registerContentScript > should register multiple manifest script
   "results": [
     {
       "type": "return",
-      "value": undefined,
+      "value": Promise {},
     },
     {
       "type": "return",
-      "value": undefined,
+      "value": Promise {},
     },
   ],
 }
@@ -104,11 +104,11 @@ exports[`init - registerContentScript > should register the manifest scripts on 
   "results": [
     {
       "type": "return",
-      "value": undefined,
+      "value": Promise {},
     },
     {
       "type": "return",
-      "value": undefined,
+      "value": Promise {},
     },
   ],
 }
@@ -141,7 +141,7 @@ exports[`init - registerContentScript > should register the manifest scripts on 
   "results": [
     {
       "type": "return",
-      "value": undefined,
+      "value": Promise {},
     },
   ],
 }

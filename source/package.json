@@ -1,0 +1,6 @@
+{
+	"alias": {
+		"these-are-just-mocks-for-parcel-tests": "yolo",
+		"webext-permissions": "../test/demo-extension/webext-permissions.js"
+	}
+}

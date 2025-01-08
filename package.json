@@ -74,7 +74,6 @@
 		]
 	},
 	"dependencies": {
-		"content-scripts-register-polyfill": "^4.0.2",
 		"webext-content-scripts": "^2.7.0",
 		"webext-detect": "^5.0.2",
 		"webext-events": "^3.0.1",

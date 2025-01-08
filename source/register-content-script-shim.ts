@@ -1,38 +1,35 @@
-import registerContentScriptPonyfill from 'content-scripts-register-polyfill/ponyfill.js';
+import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 
-export const chromeRegister = globalThis.chrome?.scripting?.registerContentScripts;
-export const firefoxRegister = globalThis.browser?.contentScripts?.register;
+type ManifestContentScript = NonNullable<chrome.runtime.Manifest['content_scripts']>[0];
 
-export async function registerContentScript(
-	contentScript: Omit<chrome.scripting.RegisteredContentScript, 'id' | 'world'> & {matches: string[]},
-): Promise<browser.contentScripts.RegisteredContentScript> {
-	if (chromeRegister) {
-		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
-		try {
-			await chromeRegister([{
-				...contentScript,
-				id,
-			}]);
-		} catch (error) {
-			if (!(error as Error)?.message.startsWith('Duplicate script ID')) {
-				throw error;
-			}
+// In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
+function makePathRelative(file: string): string {
+	return new URL(file, location.origin).pathname;
+}
+
+export async function registerContentScript(id: string, origin: string, config: ManifestContentScript) {
+	try {
+		await chrome.scripting.registerContentScripts([{
+			id,
+			// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
+			js: config.js?.map(file => makePathRelative(file)),
+			css: config.css?.map(file => makePathRelative(file)),
+			allFrames: config.all_frames,
+			matches: [origin],
+			excludeMatches: config.matches,
+			persistAcrossSessions: true,
+			runAt: config.run_at as browser.extensionTypes.RunAt,
+		}]);
+	} catch (error) {
+		if ((error as Error)?.message.startsWith('Duplicate script ID')) {
+			// Previously registered, nothing to do
+			return;
 		}
 
-		return {
-			unregister: async () => chrome.scripting.unregisterContentScripts({ids: [id]}),
-		};
+		// Unknown error, throw
+		throw error;
 	}
 
-	const firefoxContentScript = {
-		...contentScript,
-		js: contentScript.js?.map(file => ({file})),
-		css: contentScript.css?.map(file => ({file})),
-	} as const;
-
-	if (firefoxRegister) {
-		return firefoxRegister(firefoxContentScript);
-	}
-
-	return registerContentScriptPonyfill(firefoxContentScript);
+	// Registration successful, now inject into existing tabs
+	await injectToExistingTabs([origin], [config]);
 }

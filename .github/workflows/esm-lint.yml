@@ -87,9 +87,9 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
       - run: npm install --omit=dev ./artifact @sindresorhus/tsconfig
-      - run: echo "$IMPORT_STATEMENT" > index.ts
+      - run: echo "$IMPORT_STATEMENT" > index.mts
       - run: >
-          echo '{"extends":"@sindresorhus/tsconfig","files":["index.ts"]}' >
+          echo '{"extends":"@sindresorhus/tsconfig","files":["index.mts"]}' >
           tsconfig.json
       - run: npx --package typescript -- tsc
       - run: cat distribution/index.js

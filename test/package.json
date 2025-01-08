@@ -2,7 +2,6 @@
 	"type": "module",
 	"alias": {
 		"these-are-just-mocks-for-parcel-tests": "yolo",
-		"webext-permissions": "./demo-extension/webext-permissions.js",
 		"webext-dynamic-content-scripts": "../source/"
 	}
 }

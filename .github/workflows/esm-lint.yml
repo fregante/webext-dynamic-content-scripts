@@ -92,4 +92,4 @@ jobs:
           echo '{"extends":"@sindresorhus/tsconfig","files":["index.mts"]}' >
           tsconfig.json
       - run: npx --package typescript -- tsc
-      - run: cat distribution/index.js
+      - run: cat distribution/index.mjs

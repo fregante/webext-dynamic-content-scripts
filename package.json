@@ -64,6 +64,7 @@
 			"import/no-unassigned-import": "off",
 			"unicorn/prefer-top-level-await": "off",
 			"unicorn/prefer-node-protocol": "off",
+			"import/no-extraneous-dependencies": "off",
 			"n/file-extension-in-import": "off"
 		}
 	},
@@ -91,7 +92,7 @@
 		"jest": "^29.7.0",
 		"jest-chrome": "^0.8.0",
 		"jest-puppeteer": "^11.0.0",
-		"npm-run-all": "^4.1.5",
+		"npm-run-all2": "^7.0.2",
 		"parcel": "^2.13.3",
 		"puppeteer": "^23.11.1",
 		"typescript": "^5.6.3",

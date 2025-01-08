@@ -44,7 +44,7 @@
 		"jest": "npm run jest:core",
 		"vitest": "vitest",
 		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
-		"prepack": "tsc --sourceMap false && npm pkg delete alias #parcel#8920",
+		"prepack": "tsc --sourceMap false",
 		"lint": "xo",
 		"fix": "xo --fix",
 		"test": "run-p lint vitest jest",
@@ -100,11 +100,6 @@
 	},
 	"@parcel/resolver-default": {
 		"packageExports": true
-	},
-	"alias": {
-		"these-are-just-mocks-for-parcel-tests": "yolo",
-		"webext-permissions": "./test/demo-extension/webext-permissions.js",
-		"webext-dynamic-content-scripts": "./source/"
 	},
 	"targets": {
 		"main": false,

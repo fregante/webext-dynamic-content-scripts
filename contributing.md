@@ -2,7 +2,7 @@
 
 ## Demo extension
 
-There's a demo MV3 (manifest v3) extension. This extension can be build and run manually, via `web-ext` or as a test fixture.
+There's a demo MV3 (manifest v3) extension. This extension can be built and run manually, via `web-ext` or as a test fixture.
 
 ### Building the extension locally
 

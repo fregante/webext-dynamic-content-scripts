@@ -59,19 +59,6 @@ navigator.importScripts('webext-dynamic-content-scripts.js');
 }
 ```
 
-### `activeTab` tracking
-
-By default, the module will only inject the content scripts into newly-permitted hosts, but it will ignore temporary permissions like `activeTab`. If you also want to automatically inject the content scripts into every frame of tabs as soon as they receive the `activeTab` permission, import a different entry point **instead of the default one.**
-
-```js
-import 'webext-dynamic-content-scripts/including-active-tab.js';
-```
-
-> **Note**
-> This does not work well in Firefox because of some compounding bugs:
-> - `activeTab` seems to be lost after a reload
-> - further `contextMenu` clicks receive a moz-extension URL rather than the current page’s URL
-
 ### Additional APIs
 
 #### `isContentScriptRegistered(url)`

@@ -2,7 +2,7 @@
 	"name": "webext-dynamic-content-scripts-mv3",
 	"version": "0.0.0",
 	"manifest_version": 3,
-	"permissions": ["webNavigation", "scripting", "contextMenus", "activeTab", "storage"],
+	"permissions": ["webNavigation", "scripting", "storage"],
 	"host_permissions": [
 		"https://dynamic-ephiframe.vercel.app/*",
 		"https://accepted-ephiframe.vercel.app/*"

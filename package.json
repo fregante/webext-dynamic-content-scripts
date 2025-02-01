@@ -14,7 +14,6 @@
 		"chrome",
 		"firefox",
 		"browser",
-		"activetab",
 		"extension"
 	],
 	"repository": "fregante/webext-dynamic-content-scripts",
@@ -120,9 +119,6 @@
 				"https://dynamic-ephiframe.vercel.app/Dynamic?iframe=./Inner",
 				"https://dynamic-ephiframe.vercel.app/Dynamic?iframe=https://static-ephiframe.vercel.app/Static-inner",
 				"https://static-ephiframe.vercel.app/Static?iframe=https://dynamic-ephiframe.vercel.app/Dynamic-inner",
-				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please",
-				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please?iframe=https://static-ephiframe.vercel.app/Static-inner",
-				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please?iframe=https://dynamic-ephiframe.vercel.app/Dynamic-inner",
 				"chrome://extensions/"
 			]
 		}

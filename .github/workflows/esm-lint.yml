@@ -60,7 +60,7 @@ jobs:
     needs: Pack
     steps:
       - uses: actions/download-artifact@v4
-      - run: npm install --omit=dev ./artifact rollup@2 @rollup/plugin-node-resolve
+      - run: npm install --omit=dev ./artifact rollup@4 @rollup/plugin-node-resolve
       - run: echo "$IMPORT_STATEMENT" > index.js
       - run: npx rollup -p node-resolve index.js
   Vite:
@@ -86,6 +86,7 @@ jobs:
     needs: Pack
     steps:
       - uses: actions/download-artifact@v4
+      - run: echo '{"type":"module"}' > package.json
       - run: npm install --omit=dev ./artifact @sindresorhus/tsconfig
       - run: echo "$IMPORT_STATEMENT" > index.mts
       - run: >

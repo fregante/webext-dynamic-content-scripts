@@ -27,8 +27,6 @@ jobs:
         with:
           path: package
   Publint:
-    # Broken?
-    if: false
     runs-on: ubuntu-latest
     needs: Pack
     steps:

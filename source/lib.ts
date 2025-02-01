@@ -1,13 +1,8 @@
 import {queryAdditionalPermissions} from 'webext-permissions';
 import {onExtensionStart} from 'webext-events';
-import {excludeDuplicateFiles} from './deduplicator.js';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
-import {registerContentScript} from './register-content-script-shim.js';
 
-const registeredScripts = new Map<
-string,
-Promise<browser.contentScripts.RegisteredContentScript>
->();
+type ManifestContentScript = ReturnType<typeof getContentScripts>[number];
 
 // In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
 function makePathRelative(file: string): string {
@@ -15,37 +10,54 @@ function makePathRelative(file: string): string {
 }
 
 function getContentScripts() {
-	const {content_scripts: rawManifest, manifest_version: manifestVersion} = chrome.runtime.getManifest();
+	const {content_scripts: scripts} = chrome.runtime.getManifest();
 
-	if (!rawManifest) {
-		throw new Error('webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.');
+	if (scripts) {
+		return scripts;
 	}
 
-	return excludeDuplicateFiles(rawManifest, {warn: manifestVersion === 2});
+	throw new Error('webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.');
 }
 
-// Automatically register the content scripts on the new origins
-async function registerOnOrigins(
-	origins: string[],
-	contentScripts: ReturnType<typeof getContentScripts>,
-): Promise<void> {
-	if (origins.length === 0) {
-		return;
+function getIdFromConfig(origin: string, config: ManifestContentScript) {
+	return 'webext-dynamic-content-script-' + JSON.stringify({...config, matches: [origin]});
+}
+
+async function register(origin: string, config: ManifestContentScript) {
+	try {
+		await chrome.scripting.registerContentScripts([{
+			id: getIdFromConfig(origin, config),
+			// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
+			js: config.js?.map(file => makePathRelative(file)),
+			css: config.css?.map(file => makePathRelative(file)),
+			allFrames: config.all_frames,
+			matches: [origin],
+			excludeMatches: config.matches,
+			persistAcrossSessions: true,
+			runAt: config.run_at as browser.extensionTypes.RunAt,
+		}]);
+	} catch (error) {
+		if ((error as Error)?.message.startsWith('Duplicate script ID')) {
+			// Previously registered, nothing to do
+			return;
+		}
+
+		// Unknown error, throw
+		throw error;
 	}
 
-	// Register one at a time to allow removing one at a time as well
+	// Registration successful, now inject into existing tabs
+	await injectToExistingTabs([origin], [config]);
+}
+
+async function registerOnOrigins(
+	origins: string[],
+	contentScripts: ManifestContentScript[],
+): Promise<void> {
 	for (const origin of origins) {
 		for (const config of contentScripts) {
-			const registeredScript = registerContentScript({
-				// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
-				js: config.js?.map(file => makePathRelative(file)),
-				css: config.css?.map(file => makePathRelative(file)),
-				allFrames: config.all_frames,
-				matches: [origin],
-				excludeMatches: config.matches,
-				runAt: config.run_at as browser.extensionTypes.RunAt,
-			});
-			registeredScripts.set(origin, registeredScript);
+			// Register one at a time to allow removing one at a time as well
+			void register(origin, config);
 		}
 	}
 }
@@ -59,13 +71,8 @@ async function handledDroppedPermissions({origins}: chrome.permissions.Permissio
 		return;
 	}
 
-	for (const [origin, scriptPromise] of registeredScripts) {
-		if (origins.includes(origin)) {
-			// eslint-disable-next-line no-await-in-loop
-			const script = await scriptPromise;
-			void script.unregister();
-		}
-	}
+	const ids = getContentScripts().flatMap(config => origins.map(origin => getIdFromConfig(origin, config)));
+	void chrome.scripting.unregisterContentScripts({ids});
 }
 
 async function enableOnOrigins(origins: string[] | undefined) {
@@ -74,13 +81,11 @@ async function enableOnOrigins(origins: string[] | undefined) {
 	}
 
 	const contentScripts = getContentScripts();
-	await Promise.all([
-		injectToExistingTabs(origins, contentScripts),
-		registerOnOrigins(origins, contentScripts),
-	]);
+	await registerOnOrigins(origins, contentScripts);
 }
 
 async function registerExistingOrigins() {
+	// This should only be necessary for users who granted permissions before `webext-dynamic-content-scripts` was set up
 	const {origins} = await queryAdditionalPermissions({
 		strictOrigins: false,
 	});

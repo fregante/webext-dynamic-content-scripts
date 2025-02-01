@@ -6,16 +6,14 @@ import {queryAdditionalPermissions} from 'webext-permissions';
 import {onExtensionStart} from 'webext-events';
 import {init} from './lib.js';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
-import {registerContentScript} from './register-content-script-shim.js';
 
 type AsyncFunction = () => void | Promise<void>;
 
 vi.mock('webext-permissions');
 vi.mock('webext-events');
-vi.mock('./register-content-script-shim.js');
 vi.mock('./inject-to-existing-tabs.js');
 
-const baseManifest: chrome.runtime.Manifest = {
+const baseManifest = {
 	name: 'required',
 	manifest_version: 3,
 	version: '0.0.0',
@@ -28,7 +26,7 @@ const baseManifest: chrome.runtime.Manifest = {
 	permissions: ['storage'],
 	host_permissions: ['https://permission-only.example.com/*'],
 	optional_host_permissions: ['*://*/*'],
-};
+} satisfies chrome.runtime.Manifest;
 
 const additionalPermissions: Required<chrome.permissions.Permissions> = {
 	origins: ['https://granted.example.com/*'],
@@ -37,7 +35,6 @@ const additionalPermissions: Required<chrome.permissions.Permissions> = {
 
 const queryAdditionalPermissionsMock = vi.mocked(queryAdditionalPermissions);
 const injectToExistingTabsMock = vi.mocked(injectToExistingTabs);
-const registerContentScriptMock = vi.mocked(registerContentScript);
 
 const callbacks = new Set<AsyncFunction>();
 
@@ -51,10 +48,15 @@ async function simulateExtensionStart() {
 }
 
 beforeEach(() => {
-	registerContentScriptMock.mockClear();
 	injectToExistingTabsMock.mockClear();
 	queryAdditionalPermissionsMock.mockResolvedValue(additionalPermissions);
 	chrome.runtime.getManifest.mockReturnValue(baseManifest);
+	// @ts-expect-error Missing types in `jest-chrome`
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+	chrome.scripting.registerContentScripts.mockClear();
+	// @ts-expect-error Missing types in `jest-chrome`
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+	chrome.scripting.registerContentScripts.mockResolvedValue(undefined);
 });
 
 describe('init', () => {
@@ -65,7 +67,7 @@ describe('init', () => {
 		expect(queryAdditionalPermissionsMock).toHaveBeenCalled();
 		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
 			additionalPermissions.origins,
-			[{css: [], js: ['script.js']}],
+			[{js: ['script.js'], matches: baseManifest.content_scripts[0]?.matches}],
 		);
 
 		// TODO: https://github.com/extend-chrome/jest-chrome/issues/20
@@ -74,7 +76,7 @@ describe('init', () => {
 	});
 
 	it('it should throw if no content scripts exist at all', async () => {
-		const manifest = structuredClone(baseManifest);
+		const manifest: chrome.runtime.Manifest = structuredClone(baseManifest);
 		delete manifest.content_scripts;
 		chrome.runtime.getManifest.mockReturnValue(manifest);
 		init();
@@ -87,7 +89,8 @@ describe('init - registerContentScript', () => {
 	it('should register the manifest scripts on new permissions', async () => {
 		init();
 		await simulateExtensionStart();
-		expect(registerContentScriptMock).toMatchSnapshot();
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.registerContentScripts).toMatchSnapshot();
 	});
 
 	it('should register the manifest scripts on multiple new permissions', async () => {
@@ -101,12 +104,13 @@ describe('init - registerContentScript', () => {
 
 		init();
 		await simulateExtensionStart();
-		expect(registerContentScriptMock).toMatchSnapshot();
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.registerContentScripts).toMatchSnapshot();
 	});
 
 	it('should register multiple manifest scripts on new permissions', async () => {
 		const manifest = structuredClone(baseManifest);
-		manifest.content_scripts!.push({
+		manifest.content_scripts.push({
 			js: ['otherScript.js'],
 			matches: ['https://content-script-extra.example.com/*'],
 		});
@@ -114,6 +118,7 @@ describe('init - registerContentScript', () => {
 
 		init();
 		await simulateExtensionStart();
-		expect(registerContentScriptMock).toMatchSnapshot();
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.registerContentScripts).toMatchSnapshot();
 	});
 });

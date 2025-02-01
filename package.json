@@ -1,7 +1,7 @@
 {
 	"name": "webext-dynamic-content-scripts",
 	"version": "10.0.4",
-	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request` or on `activeTab`",
+	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
 	"keywords": [
 		"contentscript",
 		"register",
@@ -14,7 +14,6 @@
 		"chrome",
 		"firefox",
 		"browser",
-		"activetab",
 		"extension"
 	],
 	"repository": "fregante/webext-dynamic-content-scripts",
@@ -26,10 +25,6 @@
 		".": {
 			"types": "./distribution/index.d.ts",
 			"default": "./distribution/index.js"
-		},
-		"./including-active-tab.js": {
-			"types": "./distribution/including-active-tab.d.ts",
-			"default": "./distribution/including-active-tab.js"
 		},
 		"./utils.js": {
 			"types": "./distribution/utils.d.ts",
@@ -137,9 +132,6 @@
 				"https://dynamic-ephiframe.vercel.app/Dynamic?iframe=./Inner",
 				"https://dynamic-ephiframe.vercel.app/Dynamic?iframe=https://static-ephiframe.vercel.app/Static-inner",
 				"https://static-ephiframe.vercel.app/Static?iframe=https://dynamic-ephiframe.vercel.app/Dynamic-inner",
-				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please",
-				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please?iframe=https://static-ephiframe.vercel.app/Static-inner",
-				"https://extra-ephiframe.vercel.app/Inject-via-context-menu-please?iframe=https://dynamic-ephiframe.vercel.app/Dynamic-inner",
 				"chrome://extensions/"
 			]
 		}

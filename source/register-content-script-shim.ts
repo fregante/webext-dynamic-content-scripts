@@ -1,15 +1,15 @@
 import registerContentScriptPonyfill from 'content-scripts-register-polyfill/ponyfill.js';
 
-export const chromeRegister = globalThis.chrome?.scripting?.registerContentScripts;
-export const firefoxRegister = globalThis.browser?.contentScripts?.register;
+export const hasChromeRegister = Boolean(globalThis.chrome?.scripting?.registerContentScripts);
+export const hasFirefoxRegister = Boolean(globalThis.browser?.contentScripts?.register);
 
 export async function registerContentScript(
 	contentScript: Omit<chrome.scripting.RegisteredContentScript, 'id' | 'world'> & {matches: string[]},
 ): Promise<browser.contentScripts.RegisteredContentScript> {
-	if (chromeRegister) {
+	if (hasChromeRegister) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
 		try {
-			await chromeRegister([{
+			await globalThis.chrome.scripting.registerContentScripts([{
 				...contentScript,
 				id,
 			}]);
@@ -30,8 +30,8 @@ export async function registerContentScript(
 		css: contentScript.css?.map(file => ({file})),
 	} as const;
 
-	if (firefoxRegister) {
-		return firefoxRegister(firefoxContentScript);
+	if (hasFirefoxRegister) {
+		return globalThis.browser.contentScripts.register(firefoxContentScript);
 	}
 
 	return registerContentScriptPonyfill(firefoxContentScript);

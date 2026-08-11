@@ -3,7 +3,7 @@
 > WebExtension module: Automatically registers your `content_scripts` on domains added via `permissions.request`
 
 - Browsers: Chrome, Firefox, and Safari
-- Manifest: v2 and v3
+- Manifest: v3
 
 This module will automatically register your `content_scripts` from `manifest.json` into new domains granted via `permissions.request()`, or via [webext-permission-toggle](https://github.com/fregante/webext-permission-toggle).
 
@@ -27,8 +27,6 @@ import 'webext-dynamic-content-scripts';
 ```
 
 ## Usage
-
-_For Manifest v2, refer to the [usage-mv2](./usage-mv2.md) documentation._
 
 You need to:
 

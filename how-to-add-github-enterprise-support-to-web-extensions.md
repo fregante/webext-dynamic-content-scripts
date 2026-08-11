@@ -25,7 +25,7 @@ import addPermissionToggle from 'webext-permission-toggle';
 addPermissionToggle();
 ```
 
-## manifest.json v3 example
+## manifest.json
 
 ```js
 {
@@ -42,40 +42,7 @@ addPermissionToggle();
 		"*://*/*"
 	],
 	"background": {
-		"scripts": "background.worker.js"
-	},
-	"content_scripts": [
-		{
-			"matches": ["https://github.com/*"],
-			"css": ["content.css"],
-			"js": ["content.js"]
-		}
-	]
-}
-```
-
-## manifest.json v2 example
-
-```js
-{
-	"version": 2,
-	"permissions": [
-		"https://github.com/*",
-		"contextMenus",
-		"activeTab" // Required for Firefox support (webext-permission-toggle)
-	],
-	"browser_action": { // Required for Firefox support (webext-permission-toggle)
-		"default_icon": "icon.png"
-	},
-	"optional_permissions": [
-		"*://*/*"
-	],
-	"background": {
-		"scripts": [
-			"webext-permission-toggle.js",
-			"webext-dynamic-content-scripts.js",
-			"background.js"
-		]
+		"service_worker": "background.worker.js"
 	},
 	"content_scripts": [
 		{

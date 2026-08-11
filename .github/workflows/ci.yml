@@ -33,8 +33,7 @@ jobs:
       - run: npm run vitest
 
   Test:
-    # https://github.com/puppeteer/puppeteer/issues/12818#issuecomment-2415915338
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:

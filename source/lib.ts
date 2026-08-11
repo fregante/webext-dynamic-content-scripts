@@ -4,7 +4,7 @@ import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 
 type ManifestContentScript = ReturnType<typeof getContentScripts>[number];
 
-// In Firefox, paths in the manifest are converted to full URLs under `moz-extension://` but browser.contentScripts expects exclusively relative paths
+// In Firefox, paths in the manifest are converted to full URLs under `moz-extension://`; convert to relative paths for `chrome.scripting.registerContentScripts`
 function makePathRelative(file: string): string {
 	return new URL(file, location.origin).pathname;
 }

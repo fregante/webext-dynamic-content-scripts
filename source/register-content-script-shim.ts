@@ -6,10 +6,11 @@ export const firefoxRegister = globalThis.browser?.contentScripts?.register;
 export async function registerContentScript(
 	contentScript: Omit<chrome.scripting.RegisteredContentScript, 'id' | 'world'> & {matches: string[]},
 ): Promise<browser.contentScripts.RegisteredContentScript> {
-	if (chromeRegister) {
+	if (chromeRegister !== undefined) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
 		try {
-			await chromeRegister([{
+			// Don't use `chromeRegister` directly https://github.com/fregante/webext-dynamic-content-scripts/pull/80
+			await chrome.scripting.registerContentScripts([{
 				...contentScript,
 				id,
 			}]);

@@ -9,7 +9,8 @@ export async function registerContentScript(
 	if (chromeRegister) {
 		const id = 'webext-dynamic-content-script-' + JSON.stringify(contentScript);
 		try {
-			await chromeRegister([{
+			// Don't use `chromeRegister` directly https://github.com/fregante/webext-dynamic-content-scripts/pull/80
+			await chrome.scripting.registerContentScripts([{
 				...contentScript,
 				id,
 			}]);

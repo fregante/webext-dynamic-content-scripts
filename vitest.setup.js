@@ -10,4 +10,5 @@ Object.freeze(globalThis.location);
 
 globalThis.chrome.scripting = {
 	registerContentScripts: vi.fn(),
+	unregisterContentScripts: vi.fn(),
 };

@@ -57,6 +57,9 @@ beforeEach(() => {
 	// @ts-expect-error Missing types in `jest-chrome`
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 	chrome.scripting.registerContentScripts.mockResolvedValue(undefined);
+	// @ts-expect-error Missing types in `jest-chrome`
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+	chrome.scripting.unregisterContentScripts.mockClear();
 });
 
 describe('init', () => {
@@ -120,5 +123,101 @@ describe('init - registerContentScript', () => {
 		await simulateExtensionStart();
 		// @ts-expect-error Missing types in `jest-chrome`
 		expect(chrome.scripting.registerContentScripts).toMatchSnapshot();
+	});
+
+	it('should register scripts when new permissions are added via onAdded listener', async () => {
+		init();
+		await simulateExtensionStart();
+		// @ts-expect-error Missing types in `jest-chrome`
+		chrome.scripting.registerContentScripts.mockClear();
+		injectToExistingTabsMock.mockClear();
+
+		const newPermissions: chrome.permissions.Permissions = {
+			origins: ['https://new-host.example.com/*'],
+			permissions: [],
+		};
+		// @ts-expect-error Missing types in `jest-chrome`
+		await chrome.permissions.onAdded.callListeners(newPermissions);
+
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.registerContentScripts).toHaveBeenCalledWith([
+			expect.objectContaining({matches: ['https://new-host.example.com/*']}),
+		]);
+		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
+			['https://new-host.example.com/*'],
+			[{js: ['script.js'], matches: baseManifest.content_scripts[0]?.matches}],
+		);
+	});
+
+	it('should not register scripts when onAdded fires with no origins', async () => {
+		init();
+		await simulateExtensionStart();
+		// @ts-expect-error Missing types in `jest-chrome`
+		chrome.scripting.registerContentScripts.mockClear();
+		injectToExistingTabsMock.mockClear();
+
+		// @ts-expect-error Missing types in `jest-chrome`
+		await chrome.permissions.onAdded.callListeners({origins: [], permissions: []});
+
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.registerContentScripts).not.toHaveBeenCalled();
+		expect(injectToExistingTabsMock).not.toHaveBeenCalled();
+	});
+
+	it('should not re-inject into existing tabs when the script is already registered (duplicate ID)', async () => {
+		// @ts-expect-error Missing types in `jest-chrome`
+		chrome.scripting.registerContentScripts.mockRejectedValue(
+			new Error('Duplicate script ID webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}'),
+		);
+
+		init();
+		await simulateExtensionStart();
+
+		expect(injectToExistingTabsMock).not.toHaveBeenCalled();
+	});
+});
+
+describe('init - unregisterContentScript', () => {
+	it('should unregister scripts when permissions are removed via onRemoved listener', async () => {
+		init();
+		await simulateExtensionStart();
+
+		const removedPermissions: chrome.permissions.Permissions = {
+			origins: ['https://granted.example.com/*'],
+			permissions: [],
+		};
+		// @ts-expect-error Missing types in `jest-chrome`
+		await chrome.permissions.onRemoved.callListeners(removedPermissions);
+
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.unregisterContentScripts).toHaveBeenCalledWith({
+			ids: [
+				'webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}',
+			],
+		});
+	});
+
+	it('should not unregister scripts when onRemoved fires with no origins', async () => {
+		init();
+		await simulateExtensionStart();
+
+		// @ts-expect-error Missing types in `jest-chrome`
+		await chrome.permissions.onRemoved.callListeners({origins: [], permissions: []});
+
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.unregisterContentScripts).not.toHaveBeenCalled();
+	});
+});
+
+describe('init - no existing origins', () => {
+	it('should not register scripts when no additional permissions exist at startup', async () => {
+		queryAdditionalPermissionsMock.mockResolvedValue({origins: [], permissions: []});
+
+		init();
+		await simulateExtensionStart();
+
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.registerContentScripts).not.toHaveBeenCalled();
+		expect(injectToExistingTabsMock).not.toHaveBeenCalled();
 	});
 });

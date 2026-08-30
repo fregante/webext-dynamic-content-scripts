@@ -1,3 +1,7 @@
 {
-	"type": "module"
+	"type": "module",
+	"alias": {
+		"these-are-just-mocks-for-parcel-tests": "yolo",
+		"webext-dynamic-content-scripts": "../source/"
+	}
 }

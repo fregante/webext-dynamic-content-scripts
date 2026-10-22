@@ -31,7 +31,7 @@
 		"jest": "npm run jest:core",
 		"vitest": "vitest",
 		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
-		"prepack": "tsc --sourceMap false",
+		"prepare": "tsc --sourceMap false",
 		"lint": "xo",
 		"fix": "xo --fix",
 		"test": "run-p lint vitest jest",
@@ -55,12 +55,12 @@
 		"extension"
 	],
 	"dependencies": {
-		"webext-content-scripts": "^2.8.0",
+		"webext-content-scripts": "^3.0.0",
 		"webext-detect": "^6.0.0",
-		"webext-events": "^3.1.1",
+		"webext-events": "^4.0.0",
 		"webext-patterns": "^3.0.0",
-		"webext-permissions": "^3.1.4",
-		"webext-tools": "^4.1.1"
+		"webext-permissions": "^5.0.0",
+		"webext-tools": "^4.1.2"
 	},
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.16.4",

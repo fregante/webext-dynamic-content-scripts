@@ -13,14 +13,20 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
       - run: npm ci
       - run: npx xo
 
   Build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
       - run: npm ci
       - run: npm run build
       - run: npm run demo:build
@@ -28,7 +34,10 @@ jobs:
   UnitTest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
       - run: npm ci
       - run: npm run vitest
 
@@ -36,7 +45,10 @@ jobs:
     # https://github.com/puppeteer/puppeteer/issues/12818#issuecomment-2415915338
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: package.json
       - run: sudo apt-get install xvfb
       - run: npm ci
       - run: npm run demo:build

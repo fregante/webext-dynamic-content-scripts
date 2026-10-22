@@ -25,6 +25,7 @@ function getIdFromConfig(origin: string, config: ManifestContentScript) {
 
 async function register(origin: string, config: ManifestContentScript) {
 	try {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- `chrome.scripting` requires either `js` or `css`, and manifest content scripts always have one of them
 		await chrome.scripting.registerContentScripts([{
 			id: getIdFromConfig(origin, config),
 			// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
@@ -34,8 +35,8 @@ async function register(origin: string, config: ManifestContentScript) {
 			matches: [origin],
 			excludeMatches: config.matches,
 			persistAcrossSessions: true,
-			runAt: config.run_at as browser.extensionTypes.RunAt,
-		}]);
+			runAt: config.run_at,
+		} as chrome.scripting.RegisteredContentScript]);
 	} catch (error) {
 		if ((error as Error)?.message.startsWith('Duplicate script ID')) {
 			// Previously registered, nothing to do
@@ -67,7 +68,7 @@ async function handleNewPermissions({origins}: chrome.permissions.Permissions) {
 }
 
 async function handledDroppedPermissions({origins}: chrome.permissions.Permissions) {
-	if (!origins?.length) {
+	if (origins === undefined || origins.length === 0) {
 		return;
 	}
 
@@ -76,7 +77,7 @@ async function handledDroppedPermissions({origins}: chrome.permissions.Permissio
 }
 
 async function enableOnOrigins(origins: string[] | undefined) {
-	if (!origins?.length) {
+	if (origins === undefined || origins.length === 0) {
 		return;
 	}
 
@@ -94,7 +95,9 @@ async function registerExistingOrigins() {
 }
 
 export function init() {
+	/* eslint-disable @typescript-eslint/strict-void-return -- Async listeners, rejections must surface as unhandled errors */
 	chrome.permissions.onRemoved.addListener(handledDroppedPermissions);
 	chrome.permissions.onAdded.addListener(handleNewPermissions);
+	/* eslint-enable @typescript-eslint/strict-void-return */
 	onExtensionStart.addListener(registerExistingOrigins);
 }

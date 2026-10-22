@@ -23,6 +23,7 @@ export async function isContentScriptDynamicallyRegistered(url: string): Promise
 Checks whether a URL will have the content scripts automatically injected.
 It returns a promise that resolves with string indicating the type of injection ('static' or 'dynamic') or `false` if it won't be injected on the specified URL.
 */
+// eslint-disable-next-line unicorn/consistent-boolean-name -- Public API, it resolves with the type of injection or `false`
 export async function isContentScriptRegistered(
 	url: string,
 ): Promise<'static' | 'dynamic' | false> {
@@ -30,9 +31,5 @@ export async function isContentScriptRegistered(
 		return 'static';
 	}
 
-	if (await isContentScriptDynamicallyRegistered(url)) {
-		return 'dynamic';
-	}
-
-	return false;
+	return (await isContentScriptDynamicallyRegistered(url)) ? 'dynamic' : false;
 }

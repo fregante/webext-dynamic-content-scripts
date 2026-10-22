@@ -1,6 +1,10 @@
 import {chrome} from 'jest-chrome';
 import {
-	describe, it, vi, beforeEach, expect,
+	describe,
+	it,
+	vi,
+	beforeEach,
+	expect,
 } from 'vitest';
 import {queryAdditionalPermissions} from 'webext-permissions';
 import {onExtensionStart} from 'webext-events';
@@ -43,7 +47,7 @@ vi.mocked(onExtensionStart.addListener).mockImplementation((callback: AsyncFunct
 });
 
 async function simulateExtensionStart() {
-	await Promise.all(Array.from(callbacks).map(async callback => callback()));
+	await Promise.all([...callbacks].map(async callback => callback()));
 	callbacks.clear();
 }
 
@@ -52,13 +56,13 @@ beforeEach(() => {
 	queryAdditionalPermissionsMock.mockResolvedValue(additionalPermissions);
 	chrome.runtime.getManifest.mockReturnValue(baseManifest);
 	// @ts-expect-error Missing types in `jest-chrome`
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
 	chrome.scripting.registerContentScripts.mockClear();
 	// @ts-expect-error Missing types in `jest-chrome`
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
 	chrome.scripting.registerContentScripts.mockResolvedValue(undefined);
 	// @ts-expect-error Missing types in `jest-chrome`
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
 	chrome.scripting.unregisterContentScripts.mockClear();
 });
 

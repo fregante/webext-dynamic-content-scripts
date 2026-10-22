@@ -1,6 +1,9 @@
 import {chrome} from 'jest-chrome';
 import {
-	test, vi, beforeAll, assert,
+	test,
+	vi,
+	beforeAll,
+	assert,
 } from 'vitest';
 import {queryAdditionalPermissions} from 'webext-permissions';
 import {isContentScriptStaticallyRegistered, isContentScriptDynamicallyRegistered, isContentScriptRegistered} from './utils.js';

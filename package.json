@@ -12,7 +12,7 @@
 			"types": "./distribution/index.d.ts",
 			"default": "./distribution/index.js"
 		},
-		"./utils.js": {
+		"./utils": {
 			"types": "./distribution/utils.d.ts",
 			"default": "./distribution/utils.js"
 		}

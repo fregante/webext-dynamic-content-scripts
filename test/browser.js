@@ -68,6 +68,9 @@ describe.each(pages)('%s: iframe', (title, url) => {
 
 	it('should load the content script after a reload, once', async () => {
 		await iframe.goto(iframe.url());
+
+		const elementHandle = await page.waitForSelector('iframe');
+		iframe = await elementHandle.contentFrame();
 		await expect(iframe).toMatchElement('.web-ext');
 		await expectToNotMatchElement(iframe, '.web-ext + .web-ext');
 	});

@@ -1,7 +1,0 @@
-body:before {
-	content: 'CSS LOADED';
-	padding: 4px;
-	font-size: 20px;
-	background: silver;
-	display: inline-block;
-}

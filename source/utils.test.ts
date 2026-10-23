@@ -5,7 +5,7 @@ import {
 	beforeAll,
 	assert,
 } from 'vitest';
-import {queryAdditionalPermissions} from 'webext-permissions';
+import {queryPermissionsDiff} from 'webext-permissions';
 import {isContentScriptStaticallyRegistered, isContentScriptDynamicallyRegistered, isContentScriptRegistered} from './utils.js';
 
 vi.mock('webext-permissions');
@@ -32,12 +32,14 @@ const manifest: chrome.runtime.Manifest = {
 	],
 };
 
-const queryAdditionalPermissionsMock = vi.mocked(queryAdditionalPermissions);
+const queryPermissionsDiffMock = vi.mocked(queryPermissionsDiff);
 
 beforeAll(() => {
-	queryAdditionalPermissionsMock.mockImplementation(async () => ({
-		origins: ['https://granted.example.com/*'],
-		permissions: [],
+	queryPermissionsDiffMock.mockImplementation(async () => ({
+		added: {
+			origins: ['https://granted.example.com/*'],
+			permissions: [],
+		},
 	}));
 	chrome.runtime.getManifest.mockImplementation(() => manifest);
 });

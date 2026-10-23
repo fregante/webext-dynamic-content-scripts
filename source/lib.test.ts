@@ -6,7 +6,7 @@ import {
 	beforeEach,
 	expect,
 } from 'vitest';
-import {queryAdditionalPermissions} from 'webext-permissions';
+import {queryPermissionsDiff} from 'webext-permissions';
 import onExtensionStart from 'webext-events/on-extension-start';
 import {init} from './lib.js';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
@@ -37,7 +37,7 @@ const additionalPermissions: Required<chrome.permissions.Permissions> = {
 	permissions: [],
 };
 
-const queryAdditionalPermissionsMock = vi.mocked(queryAdditionalPermissions);
+const queryPermissionsDiffMock = vi.mocked(queryPermissionsDiff);
 const injectToExistingTabsMock = vi.mocked(injectToExistingTabs);
 
 const callbacks = new Set<AsyncFunction>();
@@ -53,7 +53,7 @@ async function simulateExtensionStart() {
 
 beforeEach(() => {
 	injectToExistingTabsMock.mockClear();
-	queryAdditionalPermissionsMock.mockResolvedValue(additionalPermissions);
+	queryPermissionsDiffMock.mockResolvedValue({added: additionalPermissions});
 	chrome.runtime.getManifest.mockReturnValue(baseManifest);
 	// @ts-expect-error Missing types in `jest-chrome`
 
@@ -71,7 +71,7 @@ describe('init', () => {
 		init();
 		await simulateExtensionStart();
 
-		expect(queryAdditionalPermissionsMock).toHaveBeenCalled();
+		expect(queryPermissionsDiffMock).toHaveBeenCalled();
 		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
 			additionalPermissions.origins,
 			[{js: ['script.js'], matches: baseManifest.content_scripts[0]?.matches}],
@@ -101,12 +101,14 @@ describe('init - registerContentScript', () => {
 	});
 
 	it('should register the manifest scripts on multiple new permissions', async () => {
-		queryAdditionalPermissionsMock.mockResolvedValue({
-			origins: [
-				'https://granted.example.com/*',
-				'https://granted-more.example.com/*',
-			],
-			permissions: [],
+		queryPermissionsDiffMock.mockResolvedValue({
+			added: {
+				origins: [
+					'https://granted.example.com/*',
+					'https://granted-more.example.com/*',
+				],
+				permissions: [],
+			},
 		});
 
 		init();
@@ -215,7 +217,7 @@ describe('init - unregisterContentScript', () => {
 
 describe('init - no existing origins', () => {
 	it('should not register scripts when no additional permissions exist at startup', async () => {
-		queryAdditionalPermissionsMock.mockResolvedValue({origins: [], permissions: []});
+		queryPermissionsDiffMock.mockResolvedValue({});
 
 		init();
 		await simulateExtensionStart();

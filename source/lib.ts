@@ -1,4 +1,4 @@
-import {queryAdditionalPermissions} from 'webext-permissions';
+import {queryPermissionsDiff} from 'webext-permissions';
 import onExtensionStart from 'webext-events/on-extension-start';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 
@@ -87,11 +87,11 @@ async function enableOnOrigins(origins: string[] | undefined) {
 
 async function registerExistingOrigins() {
 	// This should only be necessary for users who granted permissions before `webext-dynamic-content-scripts` was set up
-	const {origins} = await queryAdditionalPermissions({
+	const {added} = await queryPermissionsDiff({
 		strictOrigins: false,
 	});
 
-	await enableOnOrigins(origins);
+	await enableOnOrigins(added?.origins);
 }
 
 export function init() {

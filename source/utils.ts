@@ -1,4 +1,4 @@
-import {queryAdditionalPermissions} from 'webext-permissions';
+import {queryPermissionsDiff} from 'webext-permissions';
 import {patternToRegex} from 'webext-patterns';
 
 export function isContentScriptStaticallyRegistered(url: string): boolean {
@@ -11,12 +11,12 @@ export function isContentScriptStaticallyRegistered(url: string): boolean {
 
 export async function isContentScriptDynamicallyRegistered(url: string): Promise<boolean> {
 	// Injected by `webext-dynamic-content-scripts`
-	const {origins} = await queryAdditionalPermissions({
+	const {added} = await queryPermissionsDiff({
 		strictOrigins: false,
 	});
 
 	// Do not replace the 2 calls above with `permissions.getAll` because it might also include hosts that are permitted by the manifest but have no content script registered
-	return patternToRegex(...origins).test(url);
+	return patternToRegex(...added?.origins ?? []).test(url);
 }
 
 /**

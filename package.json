@@ -59,7 +59,7 @@
 		"webext-detect": "^6.0.0",
 		"webext-events": "^4.0.0",
 		"webext-patterns": "^3.0.0",
-		"webext-permissions": "^5.0.0",
+		"webext-permissions": "^6.0.0",
 		"webext-tools": "^4.1.2"
 	},
 	"devDependencies": {

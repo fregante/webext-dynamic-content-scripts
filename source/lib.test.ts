@@ -168,12 +168,13 @@ describe('init - registerContentScript', () => {
 		expect(injectToExistingTabsMock).not.toHaveBeenCalled();
 	});
 
-	it('should not re-inject into existing tabs when the script is already registered (duplicate ID)', async () => {
+	it.each([
+		['Chrome', 'Duplicate script ID \'webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}\''],
+		['Firefox', 'Content script with id "webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}" is already registered.'],
+	])('should not re-inject into existing tabs when the script is already registered (duplicate ID, %s)', async (_browser, message) => {
 		// @ts-expect-error Missing types in `jest-chrome`
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-		chrome.scripting.registerContentScripts.mockRejectedValue(
-			new Error('Duplicate script ID webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}'),
-		);
+		chrome.scripting.registerContentScripts.mockRejectedValue(new Error(message));
 
 		init();
 		await simulateExtensionStart();

@@ -37,7 +37,8 @@ async function register(origin: string, config: ManifestContentScript) {
 			runAt: config.run_at as browser.extensionTypes.RunAt,
 		}]);
 	} catch (error) {
-		if ((error as Error)?.message.startsWith('Duplicate script ID')) {
+		// Chrome: `Duplicate script ID '…'`; Firefox: `Content script with id "…" is already registered.`
+		if (/^Duplicate script ID|is already registered\.$/.test((error as Error)?.message)) {
 			// Previously registered, nothing to do
 			return;
 		}

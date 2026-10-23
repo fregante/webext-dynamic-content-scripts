@@ -64,7 +64,7 @@ navigator.importScripts('webext-dynamic-content-scripts.js');
 You can detect whether a specific URL will receive the content scripts by importing the `utils` file:
 
 ```js
-import {isContentScriptRegistered} from 'webext-dynamic-content-scripts/utils.js';
+import {isContentScriptRegistered} from 'webext-dynamic-content-scripts/utils';
 
 if (await isContentScriptRegistered('https://google.com/search')) {
 	console.log('Either way, the content scripts are registered');

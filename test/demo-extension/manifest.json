@@ -4,10 +4,7 @@
 	"manifest_version": 3,
 	"permissions": ["scripting", "storage"],
 	"host_permissions": [
-<<<<<<< HEAD
-=======
 		"https://ndr.specified-here-because-we-are-mocking-webext-permissions.com/*",
->>>>>>> origin/main
 		"https://dynamic-ephiframe.vercel.app/*",
 		"https://accepted-ephiframe.vercel.app/*"
 	],

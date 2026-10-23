@@ -6,7 +6,11 @@ globalThis.jest = vi;
 
 globalThis.chrome = chrome;
 globalThis.location = {origin: 'chrome://abc/'};
+<<<<<<< HEAD
 Object.freeze(location);
+=======
+Object.freeze(globalThis.location);
+>>>>>>> origin/main
 
 globalThis.chrome.scripting = {
 	registerContentScripts: vi.fn(),

@@ -14,7 +14,11 @@ import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 type AsyncFunction = () => void | Promise<void>;
 
 vi.mock('webext-permissions');
+<<<<<<< HEAD
 vi.mock('webext-events/on-extension-start');
+=======
+vi.mock('webext-events');
+>>>>>>> origin/main
 vi.mock('./inject-to-existing-tabs.js');
 
 const baseManifest = {
@@ -56,6 +60,7 @@ beforeEach(() => {
 	queryPermissionsDiffMock.mockResolvedValue({added: additionalPermissions});
 	chrome.runtime.getManifest.mockReturnValue(baseManifest);
 	// @ts-expect-error Missing types in `jest-chrome`
+<<<<<<< HEAD
 
 	chrome.scripting.registerContentScripts.mockClear();
 	// @ts-expect-error Missing types in `jest-chrome`
@@ -63,6 +68,15 @@ beforeEach(() => {
 	chrome.scripting.registerContentScripts.mockResolvedValue(undefined);
 	// @ts-expect-error Missing types in `jest-chrome`
 
+=======
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+	chrome.scripting.registerContentScripts.mockClear();
+	// @ts-expect-error Missing types in `jest-chrome`
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+	chrome.scripting.registerContentScripts.mockResolvedValue(undefined);
+	// @ts-expect-error Missing types in `jest-chrome`
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+>>>>>>> origin/main
 	chrome.scripting.unregisterContentScripts.mockClear();
 });
 
@@ -135,6 +149,10 @@ describe('init - registerContentScript', () => {
 		init();
 		await simulateExtensionStart();
 		// @ts-expect-error Missing types in `jest-chrome`
+<<<<<<< HEAD
+=======
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+>>>>>>> origin/main
 		chrome.scripting.registerContentScripts.mockClear();
 		injectToExistingTabsMock.mockClear();
 
@@ -143,6 +161,10 @@ describe('init - registerContentScript', () => {
 			permissions: [],
 		};
 		// @ts-expect-error Missing types in `jest-chrome`
+<<<<<<< HEAD
+=======
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+>>>>>>> origin/main
 		await chrome.permissions.onAdded.callListeners(newPermissions);
 
 		// @ts-expect-error Missing types in `jest-chrome`
@@ -159,10 +181,18 @@ describe('init - registerContentScript', () => {
 		init();
 		await simulateExtensionStart();
 		// @ts-expect-error Missing types in `jest-chrome`
+<<<<<<< HEAD
+=======
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+>>>>>>> origin/main
 		chrome.scripting.registerContentScripts.mockClear();
 		injectToExistingTabsMock.mockClear();
 
 		// @ts-expect-error Missing types in `jest-chrome`
+<<<<<<< HEAD
+=======
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+>>>>>>> origin/main
 		await chrome.permissions.onAdded.callListeners({origins: [], permissions: []});
 
 		// @ts-expect-error Missing types in `jest-chrome`
@@ -170,11 +200,21 @@ describe('init - registerContentScript', () => {
 		expect(injectToExistingTabsMock).not.toHaveBeenCalled();
 	});
 
+<<<<<<< HEAD
 	it('should not re-inject into existing tabs when the script is already registered (duplicate ID)', async () => {
 		// @ts-expect-error Missing types in `jest-chrome`
 		chrome.scripting.registerContentScripts.mockRejectedValue(
 			new Error('Duplicate script ID webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}'),
 		);
+=======
+	it.each([
+		['Chrome', 'Duplicate script ID \'webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}\''],
+		['Firefox', 'Content script with id "webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}" is already registered.'],
+	])('should not re-inject into existing tabs when the script is already registered (duplicate ID, %s)', async (_browser, message) => {
+		// @ts-expect-error Missing types in `jest-chrome`
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+		chrome.scripting.registerContentScripts.mockRejectedValue(new Error(message));
+>>>>>>> origin/main
 
 		init();
 		await simulateExtensionStart();
@@ -193,6 +233,10 @@ describe('init - unregisterContentScript', () => {
 			permissions: [],
 		};
 		// @ts-expect-error Missing types in `jest-chrome`
+<<<<<<< HEAD
+=======
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+>>>>>>> origin/main
 		await chrome.permissions.onRemoved.callListeners(removedPermissions);
 
 		// @ts-expect-error Missing types in `jest-chrome`
@@ -208,6 +252,10 @@ describe('init - unregisterContentScript', () => {
 		await simulateExtensionStart();
 
 		// @ts-expect-error Missing types in `jest-chrome`
+<<<<<<< HEAD
+=======
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+>>>>>>> origin/main
 		await chrome.permissions.onRemoved.callListeners({origins: [], permissions: []});
 
 		// @ts-expect-error Missing types in `jest-chrome`
@@ -217,7 +265,11 @@ describe('init - unregisterContentScript', () => {
 
 describe('init - no existing origins', () => {
 	it('should not register scripts when no additional permissions exist at startup', async () => {
+<<<<<<< HEAD
 		queryPermissionsDiffMock.mockResolvedValue({});
+=======
+		queryAdditionalPermissionsMock.mockResolvedValue({origins: [], permissions: []});
+>>>>>>> origin/main
 
 		init();
 		await simulateExtensionStart();

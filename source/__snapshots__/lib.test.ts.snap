@@ -1,7 +1,11 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`init - registerContentScript > should register multiple manifest scripts on new permissions 1`] = `
+<<<<<<< HEAD
 [MockFunction] {
+=======
+[MockFunction spy] {
+>>>>>>> origin/main
   "calls": [
     [
       [
@@ -58,7 +62,11 @@ exports[`init - registerContentScript > should register multiple manifest script
 `;
 
 exports[`init - registerContentScript > should register the manifest scripts on multiple new permissions 1`] = `
+<<<<<<< HEAD
 [MockFunction] {
+=======
+[MockFunction spy] {
+>>>>>>> origin/main
   "calls": [
     [
       [
@@ -115,7 +123,11 @@ exports[`init - registerContentScript > should register the manifest scripts on 
 `;
 
 exports[`init - registerContentScript > should register the manifest scripts on new permissions 1`] = `
+<<<<<<< HEAD
 [MockFunction] {
+=======
+[MockFunction spy] {
+>>>>>>> origin/main
   "calls": [
     [
       [

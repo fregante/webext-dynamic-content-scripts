@@ -1,16 +1,20 @@
 import {chrome} from 'jest-chrome';
 import {
-	describe, it, vi, beforeEach, expect,
+	describe,
+	it,
+	vi,
+	beforeEach,
+	expect,
 } from 'vitest';
-import {queryAdditionalPermissions} from 'webext-permissions';
-import {onExtensionStart} from 'webext-events';
+import {queryPermissionsDiff} from 'webext-permissions';
+import onExtensionStart from 'webext-events/on-extension-start';
 import {init} from './lib.js';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 
 type AsyncFunction = () => void | Promise<void>;
 
 vi.mock('webext-permissions');
-vi.mock('webext-events');
+vi.mock('webext-events/on-extension-start');
 vi.mock('./inject-to-existing-tabs.js');
 
 const baseManifest = {
@@ -33,7 +37,7 @@ const additionalPermissions: Required<chrome.permissions.Permissions> = {
 	permissions: [],
 };
 
-const queryAdditionalPermissionsMock = vi.mocked(queryAdditionalPermissions);
+const queryPermissionsDiffMock = vi.mocked(queryPermissionsDiff);
 const injectToExistingTabsMock = vi.mocked(injectToExistingTabs);
 
 const callbacks = new Set<AsyncFunction>();
@@ -43,22 +47,19 @@ vi.mocked(onExtensionStart.addListener).mockImplementation((callback: AsyncFunct
 });
 
 async function simulateExtensionStart() {
-	await Promise.all(Array.from(callbacks).map(async callback => callback()));
+	await Promise.all([...callbacks].map(async callback => callback()));
 	callbacks.clear();
 }
 
 beforeEach(() => {
 	injectToExistingTabsMock.mockClear();
-	queryAdditionalPermissionsMock.mockResolvedValue(additionalPermissions);
+	queryPermissionsDiffMock.mockResolvedValue({added: additionalPermissions});
 	chrome.runtime.getManifest.mockReturnValue(baseManifest);
 	// @ts-expect-error Missing types in `jest-chrome`
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 	chrome.scripting.registerContentScripts.mockClear();
 	// @ts-expect-error Missing types in `jest-chrome`
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 	chrome.scripting.registerContentScripts.mockResolvedValue(undefined);
 	// @ts-expect-error Missing types in `jest-chrome`
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 	chrome.scripting.unregisterContentScripts.mockClear();
 });
 
@@ -67,7 +68,7 @@ describe('init', () => {
 		init();
 		await simulateExtensionStart();
 
-		expect(queryAdditionalPermissionsMock).toHaveBeenCalled();
+		expect(queryPermissionsDiffMock).toHaveBeenCalled();
 		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
 			additionalPermissions.origins,
 			[{js: ['script.js'], matches: baseManifest.content_scripts[0]?.matches}],
@@ -97,12 +98,14 @@ describe('init - registerContentScript', () => {
 	});
 
 	it('should register the manifest scripts on multiple new permissions', async () => {
-		queryAdditionalPermissionsMock.mockResolvedValue({
-			origins: [
-				'https://granted.example.com/*',
-				'https://granted-more.example.com/*',
-			],
-			permissions: [],
+		queryPermissionsDiffMock.mockResolvedValue({
+			added: {
+				origins: [
+					'https://granted.example.com/*',
+					'https://granted-more.example.com/*',
+				],
+				permissions: [],
+			},
 		});
 
 		init();
@@ -129,7 +132,6 @@ describe('init - registerContentScript', () => {
 		init();
 		await simulateExtensionStart();
 		// @ts-expect-error Missing types in `jest-chrome`
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		chrome.scripting.registerContentScripts.mockClear();
 		injectToExistingTabsMock.mockClear();
 
@@ -138,7 +140,6 @@ describe('init - registerContentScript', () => {
 			permissions: [],
 		};
 		// @ts-expect-error Missing types in `jest-chrome`
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		await chrome.permissions.onAdded.callListeners(newPermissions);
 
 		// @ts-expect-error Missing types in `jest-chrome`
@@ -155,12 +156,10 @@ describe('init - registerContentScript', () => {
 		init();
 		await simulateExtensionStart();
 		// @ts-expect-error Missing types in `jest-chrome`
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		chrome.scripting.registerContentScripts.mockClear();
 		injectToExistingTabsMock.mockClear();
 
 		// @ts-expect-error Missing types in `jest-chrome`
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		await chrome.permissions.onAdded.callListeners({origins: [], permissions: []});
 
 		// @ts-expect-error Missing types in `jest-chrome`
@@ -173,7 +172,6 @@ describe('init - registerContentScript', () => {
 		['Firefox', 'Content script with id "webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}" is already registered.'],
 	])('should not re-inject into existing tabs when the script is already registered (duplicate ID, %s)', async (_browser, message) => {
 		// @ts-expect-error Missing types in `jest-chrome`
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		chrome.scripting.registerContentScripts.mockRejectedValue(new Error(message));
 
 		init();
@@ -193,7 +191,6 @@ describe('init - unregisterContentScript', () => {
 			permissions: [],
 		};
 		// @ts-expect-error Missing types in `jest-chrome`
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		await chrome.permissions.onRemoved.callListeners(removedPermissions);
 
 		// @ts-expect-error Missing types in `jest-chrome`
@@ -209,7 +206,6 @@ describe('init - unregisterContentScript', () => {
 		await simulateExtensionStart();
 
 		// @ts-expect-error Missing types in `jest-chrome`
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		await chrome.permissions.onRemoved.callListeners({origins: [], permissions: []});
 
 		// @ts-expect-error Missing types in `jest-chrome`
@@ -219,7 +215,7 @@ describe('init - unregisterContentScript', () => {
 
 describe('init - no existing origins', () => {
 	it('should not register scripts when no additional permissions exist at startup', async () => {
-		queryAdditionalPermissionsMock.mockResolvedValue({origins: [], permissions: []});
+		queryPermissionsDiffMock.mockResolvedValue({});
 
 		init();
 		await simulateExtensionStart();

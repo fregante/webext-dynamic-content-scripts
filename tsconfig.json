@@ -1,12 +1,12 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"outDir": "distribution",
-		"target": "ES2022",
-		"module": "ES2022",
-		"moduleResolution": "node",
+		"rootDir": "./source",
+		"types": ["chrome", "jest"],
+		"outDir": "./distribution",
+		"target": "ES2022"
 	},
 	"include": [
-		"source",
+		"source"
 	]
 }

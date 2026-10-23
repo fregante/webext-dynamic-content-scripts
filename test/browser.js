@@ -1,5 +1,7 @@
 /* globals page */
-/* Keep file in sync with https://github.com/fregante/content-scripts-register-polyfill/blob/main/test/test.js */
+/*
+Keep file in sync with https://github.com/fregante/content-scripts-register-polyfill/blob/main/test/test.js
+*/
 
 import {describe, beforeAll, it} from '@jest/globals';
 import {expect} from 'expect-puppeteer';

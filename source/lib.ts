@@ -1,5 +1,5 @@
-import {queryAdditionalPermissions} from 'webext-permissions';
-import {onExtensionStart} from 'webext-events';
+import {queryPermissionsDiff} from 'webext-permissions';
+import onExtensionStart from 'webext-events/on-extension-start';
 import {injectToExistingTabs} from './inject-to-existing-tabs.js';
 
 type ManifestContentScript = ReturnType<typeof getContentScripts>[number];
@@ -25,6 +25,7 @@ function getIdFromConfig(origin: string, config: ManifestContentScript) {
 
 async function register(origin: string, config: ManifestContentScript) {
 	try {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- `chrome.scripting` requires either `js` or `css`, and manifest content scripts always have one of them
 		await chrome.scripting.registerContentScripts([{
 			id: getIdFromConfig(origin, config),
 			// Always convert paths here because we don't know whether Firefox MV3 will accept full URLs
@@ -34,11 +35,12 @@ async function register(origin: string, config: ManifestContentScript) {
 			matches: [origin],
 			excludeMatches: config.matches,
 			persistAcrossSessions: true,
-			runAt: config.run_at as browser.extensionTypes.RunAt,
-		}]);
+			runAt: config.run_at,
+		} as chrome.scripting.RegisteredContentScript]);
 	} catch (error) {
 		// Chrome: `Duplicate script ID '…'`; Firefox: `Content script with id "…" is already registered.`
-		if (/^Duplicate script ID|is already registered\.$/.test((error as Error)?.message)) {
+		const message = (error as Error)?.message;
+		if (message?.startsWith('Duplicate script ID') || message?.endsWith('is already registered.')) {
 			// Previously registered, nothing to do
 			return;
 		}
@@ -68,7 +70,7 @@ async function handleNewPermissions({origins}: chrome.permissions.Permissions) {
 }
 
 async function handledDroppedPermissions({origins}: chrome.permissions.Permissions) {
-	if (!origins?.length) {
+	if (origins === undefined || origins.length === 0) {
 		return;
 	}
 
@@ -77,7 +79,7 @@ async function handledDroppedPermissions({origins}: chrome.permissions.Permissio
 }
 
 async function enableOnOrigins(origins: string[] | undefined) {
-	if (!origins?.length) {
+	if (origins === undefined || origins.length === 0) {
 		return;
 	}
 
@@ -87,15 +89,17 @@ async function enableOnOrigins(origins: string[] | undefined) {
 
 async function registerExistingOrigins() {
 	// This should only be necessary for users who granted permissions before `webext-dynamic-content-scripts` was set up
-	const {origins} = await queryAdditionalPermissions({
+	const {added} = await queryPermissionsDiff({
 		strictOrigins: false,
 	});
 
-	await enableOnOrigins(origins);
+	await enableOnOrigins(added?.origins);
 }
 
 export function init() {
+	/* eslint-disable @typescript-eslint/strict-void-return -- Async listeners, rejections must surface as unhandled errors */
 	chrome.permissions.onRemoved.addListener(handledDroppedPermissions);
 	chrome.permissions.onAdded.addListener(handleNewPermissions);
+	/* eslint-enable @typescript-eslint/strict-void-return */
 	onExtensionStart.addListener(registerExistingOrigins);
 }

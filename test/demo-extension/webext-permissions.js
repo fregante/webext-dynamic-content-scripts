@@ -1,7 +1,8 @@
 // Mock to fake a user-granted permission
-export function queryAdditionalPermissions() {
+export function queryPermissionsDiff() {
 	return {
-		origins: ['https://dynamic-ephiframe.vercel.app/*'],
-		permissions: [],
+		added: {
+			origins: ['https://dynamic-ephiframe.vercel.app/*'],
+		},
 	};
 }

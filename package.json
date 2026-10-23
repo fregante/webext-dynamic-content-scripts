@@ -2,6 +2,44 @@
 	"name": "webext-dynamic-content-scripts",
 	"version": "10.0.4",
 	"description": "WebExtension module: Automatically registers your `content_scripts` on domains added via `permission.request`",
+	"license": "MIT",
+	"repository": "fregante/webext-dynamic-content-scripts",
+	"funding": "https://github.com/sponsors/fregante",
+	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./distribution/index.d.ts",
+			"default": "./distribution/index.js"
+		},
+		"./utils.js": {
+			"types": "./distribution/utils.d.ts",
+			"default": "./distribution/utils.js"
+		}
+	},
+	"sideEffects": [
+		"./distribution/index.js"
+	],
+	"engines": {
+		"node": ">=24"
+	},
+	"scripts": {
+		"build": "tsc",
+		"demo:build": "parcel build --no-cache",
+		"demo:watch": "parcel watch --no-cache --no-hmr",
+		"prejest": "npm run demo:build",
+		"jest": "npm run jest:core",
+		"vitest": "vitest",
+		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
+		"prepare": "tsc --sourceMap false",
+		"lint": "xo",
+		"fix": "xo --fix",
+		"test": "run-p lint vitest jest",
+		"watch": "tsc --watch"
+	},
+	"files": [
+		"distribution"
+	],
 	"keywords": [
 		"contentscript",
 		"register",
@@ -16,81 +54,37 @@
 		"browser",
 		"extension"
 	],
-	"repository": "fregante/webext-dynamic-content-scripts",
-	"funding": "https://github.com/sponsors/fregante",
-	"license": "MIT",
-	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
-	"type": "module",
-	"exports": {
-		".": {
-			"types": "./distribution/index.d.ts",
-			"default": "./distribution/index.js"
-		},
-		"./utils.js": {
-			"types": "./distribution/utils.d.ts",
-			"default": "./distribution/utils.js"
-		}
+	"dependencies": {
+		"webext-content-scripts": "^3.0.0",
+		"webext-detect": "^6.0.0",
+		"webext-events": "^4.0.0",
+		"webext-patterns": "^3.0.0",
+		"webext-permissions": "^6.0.0",
+		"webext-tools": "^4.1.2"
 	},
-	"scripts": {
-		"build": "tsc",
-		"demo:build": "parcel build --no-cache",
-		"demo:watch": "parcel watch --no-cache --no-hmr",
-		"prejest": "npm run demo:build",
-		"jest": "npm run jest:core",
-		"vitest": "vitest",
-		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
-		"prepack": "tsc --sourceMap false",
-		"lint": "xo",
-		"fix": "xo --fix",
-		"test": "run-p lint vitest jest",
-		"watch": "tsc --watch"
-	},
-	"xo": {
-		"envs": [
-			"browser",
-			"webextensions"
-		],
-		"rules": {
-			"no-implicit-globals": "off",
-			"@typescript-eslint/prefer-nullish-coalescing": "off",
-			"@typescript-eslint/no-implicit-any-catch": "off",
-			"@typescript-eslint/naming-convention": "off",
-			"import/extensions": "off",
-			"import/no-unassigned-import": "off",
-			"unicorn/prefer-top-level-await": "off",
-			"unicorn/prefer-node-protocol": "off",
-			"import/no-extraneous-dependencies": "off",
-			"n/file-extension-in-import": "off"
-		}
+	"devDependencies": {
+		"@parcel/config-webextension": "^2.16.4",
+		"@sindresorhus/tsconfig": "^8.1.0",
+		"@types/chrome": "^0.3.6",
+		"@types/jest": "^30.0.0",
+		"expect-puppeteer": "^11.0.0",
+		"globals": "^17.13.0",
+		"jest": "^30.5.2",
+		"jest-chrome": "^0.8.0",
+		"jest-puppeteer": "^11.0.0",
+		"npm-run-all2": "^9.0.4",
+		"parcel": "^2.16.4",
+		"puppeteer": "^25.15.0",
+		"typescript": "^6.0.3",
+		"vite": "^8.3.5",
+		"vitest": "^5.0.5",
+		"xo": "^5.0.1"
 	},
 	"jest": {
 		"preset": "jest-puppeteer",
 		"testMatch": [
 			"**/test/*.js"
 		]
-	},
-	"dependencies": {
-		"webext-content-scripts": "^2.7.0",
-		"webext-events": "^3.1.1",
-		"webext-patterns": "^1.5.0",
-		"webext-permissions": "^3.1.4"
-	},
-	"devDependencies": {
-		"@parcel/config-webextension": "^2.13.3",
-		"@sindresorhus/tsconfig": "^7.0.0",
-		"@types/chrome": "^0.0.291",
-		"@types/firefox-webext-browser": "^120.0.4",
-		"@types/jest": "^29.5.14",
-		"expect-puppeteer": "^11.0.0",
-		"jest": "^29.7.0",
-		"jest-chrome": "^0.8.0",
-		"jest-puppeteer": "^11.0.0",
-		"npm-run-all2": "^7.0.2",
-		"parcel": "^2.13.3",
-		"puppeteer": "^23.11.1",
-		"typescript": "^5.6.3",
-		"vitest": "^2.1.8",
-		"xo": "^0.60.0"
 	},
 	"@parcel/resolver-default": {
 		"packageExports": true
@@ -100,6 +94,9 @@
 		"module": false,
 		"demo": {
 			"source": "./test/demo-extension/manifest.json",
+			"engines": {
+				"browsers": "last 1 chrome version"
+			},
 			"distDir": "./test/dist",
 			"sourceMap": {
 				"inline": true

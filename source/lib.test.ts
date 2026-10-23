@@ -30,7 +30,7 @@ const baseManifest = {
 	permissions: ['storage'],
 	host_permissions: ['https://permission-only.example.com/*'],
 	optional_host_permissions: ['*://*/*'],
-} satisfies chrome.runtime.Manifest;
+} satisfies chrome.runtime.ManifestV3;
 
 const additionalPermissions: Required<chrome.permissions.Permissions> = {
 	origins: ['https://granted.example.com/*'],
@@ -126,6 +126,28 @@ describe('init - registerContentScript', () => {
 		await simulateExtensionStart();
 		// @ts-expect-error Missing types in `jest-chrome`
 		expect(chrome.scripting.registerContentScripts).toMatchSnapshot();
+	});
+
+	it('should register the `world` of the manifest scripts', async () => {
+		const manifest: chrome.runtime.ManifestV3 = {
+			...baseManifest,
+			content_scripts: [
+				...baseManifest.content_scripts,
+				{
+					js: ['page.js'],
+					matches: ['https://content-script.example.com/*'],
+					world: 'MAIN',
+				},
+			],
+		};
+		chrome.runtime.getManifest.mockReturnValue(manifest);
+
+		init();
+		await simulateExtensionStart();
+		// @ts-expect-error Missing types in `jest-chrome`
+		expect(chrome.scripting.registerContentScripts).toHaveBeenCalledWith([
+			expect.objectContaining({js: ['/page.js'], world: 'MAIN'}),
+		]);
 	});
 
 	it('should register scripts when new permissions are added via onAdded listener', async () => {

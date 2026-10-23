@@ -10,7 +10,8 @@ function makePathRelative(file: string): string {
 }
 
 function getContentScripts() {
-	const {content_scripts: scripts} = chrome.runtime.getManifest();
+	// MV2 is not supported; only MV3 types include `world`
+	const {content_scripts: scripts} = chrome.runtime.getManifest() as chrome.runtime.ManifestV3;
 
 	if (scripts) {
 		return scripts;
@@ -36,6 +37,7 @@ async function register(origin: string, config: ManifestContentScript) {
 			excludeMatches: config.matches,
 			persistAcrossSessions: true,
 			runAt: config.run_at,
+			world: config.world,
 		} as chrome.scripting.RegisteredContentScript]);
 	} catch (error) {
 		// Chrome: `Duplicate script ID '…'`; Firefox: `Content script with id "…" is already registered.`

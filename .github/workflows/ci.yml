@@ -39,7 +39,7 @@ jobs:
         with:
           node-version-file: package.json
       - run: npm ci
-      - run: npm run vitest
+      - run: npm run test:unit
 
   Test:
     # https://github.com/puppeteer/puppeteer/issues/12818#issuecomment-2415915338

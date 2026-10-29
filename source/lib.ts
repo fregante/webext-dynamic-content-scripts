@@ -1,6 +1,6 @@
 import {queryPermissionsDiff} from 'webext-permissions';
 import onExtensionStart from 'webext-events/on-extension-start';
-import {injectToExistingTabs} from './inject-to-existing-tabs.js';
+import {injectToExistingTabs} from './inject-to-existing-tabs.ts';
 
 type ManifestContentScript = ReturnType<typeof getContentScripts>[number];
 

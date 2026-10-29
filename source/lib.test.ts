@@ -1,21 +1,8 @@
-import {chrome} from 'jest-chrome';
-import {
-	describe,
-	it,
-	vi,
-	beforeEach,
-	expect,
-} from 'vitest';
-import {queryPermissionsDiff} from 'webext-permissions';
-import onExtensionStart from 'webext-events/on-extension-start';
-import {init} from './lib.js';
-import {injectToExistingTabs} from './inject-to-existing-tabs.js';
+import {describe, it, type TestContext} from 'node:test';
+import type * as Lib from './lib.ts';
 
+type Listener = (...arguments_: any[]) => unknown;
 type AsyncFunction = () => void | Promise<void>;
-
-vi.mock('webext-permissions');
-vi.mock('webext-events/on-extension-start');
-vi.mock('./inject-to-existing-tabs.js');
 
 const baseManifest = {
 	name: 'required',
@@ -37,191 +24,234 @@ const additionalPermissions: Required<chrome.permissions.Permissions> = {
 	permissions: [],
 };
 
-const queryPermissionsDiffMock = vi.mocked(queryPermissionsDiff);
-const injectToExistingTabsMock = vi.mocked(injectToExistingTabs);
+const createEvent = () => {
+	const listeners = new Set<Listener>();
+	return {
+		addListener(listener: Listener) {
+			listeners.add(listener);
+		},
+		async callListeners(...arguments_: unknown[]) {
+			await Promise.all([...listeners].map(async listener => listener(...arguments_)));
+		},
+	};
+};
 
-const callbacks = new Set<AsyncFunction>();
+const getId = (js: string[], origin: string) => `webext-dynamic-content-script-{"js":${JSON.stringify(js)},"matches":["${origin}"]}`;
 
-vi.mocked(onExtensionStart.addListener).mockImplementation((callback: AsyncFunction) => {
-	callbacks.add(callback);
-});
+// What `registerContentScripts` should receive for a manifest content script
+const registration = (js: string, origin: string, excludeMatches: string[]) => [[{
+	allFrames: undefined,
+	css: undefined,
+	excludeMatches,
+	id: getId([js], origin),
+	js: [`/${js}`],
+	matches: [origin],
+	persistAcrossSessions: true,
+	runAt: undefined,
+}]];
 
-async function simulateExtensionStart() {
-	await Promise.all([...callbacks].map(async callback => callback()));
-	callbacks.clear();
+const injectedScripts = [{js: ['script.js'], matches: baseManifest.content_scripts[0]?.matches}];
+
+let importCount = 0;
+
+// `webext-permissions`, `webext-events` and `inject-to-existing-tabs` are mocked, so the module must be imported after the mocks
+type SetupOptions = {manifest?: chrome.runtime.Manifest; diff?: {added?: chrome.permissions.Permissions}};
+
+async function setup(t: TestContext, {manifest = baseManifest, diff = {added: additionalPermissions}}: SetupOptions = {}) {
+	const permissions = {onAdded: createEvent(), onRemoved: createEvent()};
+	const registerContentScripts = t.mock.fn(async (_scripts: unknown[]) => undefined);
+	const unregisterContentScripts = t.mock.fn(async (_filter: unknown) => undefined);
+	Object.assign(globalThis, {
+		chrome: {
+			runtime: {getManifest: () => manifest},
+			scripting: {registerContentScripts, unregisterContentScripts},
+			permissions,
+		},
+	});
+
+	const queryPermissionsDiff = t.mock.fn(async () => diff);
+	const injectToExistingTabs = t.mock.fn(async (_origins: string[], _scripts: unknown[]) => undefined);
+	const callbacks = new Set<AsyncFunction>();
+	const addListener = t.mock.fn((callback: AsyncFunction) => {
+		callbacks.add(callback);
+	});
+
+	t.mock.module('webext-permissions', {namedExports: {queryPermissionsDiff}});
+	t.mock.module('webext-events/on-extension-start', {defaultExport: {addListener}});
+	t.mock.module('./inject-to-existing-tabs.ts', {namedExports: {injectToExistingTabs}});
+	const {init} = await import(`./lib.ts?${importCount++}`) as typeof Lib;
+
+	return {
+		init,
+		permissions,
+		queryPermissionsDiff,
+		registerContentScripts,
+		unregisterContentScripts,
+		injectToExistingTabs,
+		async simulateExtensionStart() {
+			await Promise.all([...callbacks].map(async callback => callback()));
+			callbacks.clear();
+		},
+	};
 }
 
-beforeEach(() => {
-	injectToExistingTabsMock.mockClear();
-	queryPermissionsDiffMock.mockResolvedValue({added: additionalPermissions});
-	chrome.runtime.getManifest.mockReturnValue(baseManifest);
-	// @ts-expect-error Missing types in `jest-chrome`
-	chrome.scripting.registerContentScripts.mockClear();
-	// @ts-expect-error Missing types in `jest-chrome`
-	chrome.scripting.registerContentScripts.mockResolvedValue(undefined);
-	// @ts-expect-error Missing types in `jest-chrome`
-	chrome.scripting.unregisterContentScripts.mockClear();
-});
-
 describe('init', () => {
-	it('it should register the listeners and start checking permissions', async () => {
+	it('it should register the listeners and start checking permissions', async (t: TestContext) => {
+		const {init, simulateExtensionStart, queryPermissionsDiff, injectToExistingTabs} = await setup(t);
 		init();
 		await simulateExtensionStart();
 
-		expect(queryPermissionsDiffMock).toHaveBeenCalled();
-		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
-			additionalPermissions.origins,
-			[{js: ['script.js'], matches: baseManifest.content_scripts[0]?.matches}],
-		);
-
-		// TODO: https://github.com/extend-chrome/jest-chrome/issues/20
-		// expect(chrome.permissions.onAdded.addListener).toHaveBeenCalledOnce();
-		// expect(chrome.permissions.onRemoved.addListener).toHaveBeenCalledOnce();
+		t.assert.strictEqual(queryPermissionsDiff.mock.callCount(), 1);
+		t.assert.deepStrictEqual(injectToExistingTabs.mock.calls.map(call => call.arguments), [
+			[additionalPermissions.origins, injectedScripts],
+		]);
 	});
 
-	it('it should throw if no content scripts exist at all', async () => {
+	it('it should throw if no content scripts exist at all', async (t: TestContext) => {
 		const manifest: chrome.runtime.Manifest = structuredClone(baseManifest);
 		delete manifest.content_scripts;
-		chrome.runtime.getManifest.mockReturnValue(manifest);
+		const {init, simulateExtensionStart} = await setup(t, {manifest});
 		init();
-		await expect(simulateExtensionStart).rejects
-			.toThrowErrorMatchingInlineSnapshot('[Error: webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.]');
+
+		await t.assert.rejects(simulateExtensionStart(), {
+			message: 'webext-dynamic-content-scripts tried to register scripts on the new host permissions, but no content scripts were found in the manifest.',
+		});
 	});
 });
 
 describe('init - registerContentScript', () => {
-	it('should register the manifest scripts on new permissions', async () => {
+	it('should register the manifest scripts on new permissions', async (t: TestContext) => {
+		const {init, simulateExtensionStart, registerContentScripts} = await setup(t);
 		init();
 		await simulateExtensionStart();
-		// @ts-expect-error Missing types in `jest-chrome`
-		expect(chrome.scripting.registerContentScripts).toMatchSnapshot();
+
+		t.assert.deepStrictEqual(registerContentScripts.mock.calls.map(call => call.arguments), [
+			registration('script.js', 'https://granted.example.com/*', ['https://content-script.example.com/*']),
+		]);
 	});
 
-	it('should register the manifest scripts on multiple new permissions', async () => {
-		queryPermissionsDiffMock.mockResolvedValue({
-			added: {
-				origins: [
-					'https://granted.example.com/*',
-					'https://granted-more.example.com/*',
-				],
-				permissions: [],
+	it('should register the manifest scripts on multiple new permissions', async (t: TestContext) => {
+		const {init, simulateExtensionStart, registerContentScripts} = await setup(t, {
+			diff: {
+				added: {
+					origins: [
+						'https://granted.example.com/*',
+						'https://granted-more.example.com/*',
+					],
+					permissions: [],
+				},
 			},
 		});
-
 		init();
 		await simulateExtensionStart();
-		// @ts-expect-error Missing types in `jest-chrome`
-		expect(chrome.scripting.registerContentScripts).toMatchSnapshot();
+
+		t.assert.deepStrictEqual(registerContentScripts.mock.calls.map(call => call.arguments), [
+			registration('script.js', 'https://granted.example.com/*', ['https://content-script.example.com/*']),
+			registration('script.js', 'https://granted-more.example.com/*', ['https://content-script.example.com/*']),
+		]);
 	});
 
-	it('should register multiple manifest scripts on new permissions', async () => {
+	it('should register multiple manifest scripts on new permissions', async (t: TestContext) => {
 		const manifest = structuredClone(baseManifest);
 		manifest.content_scripts.push({
 			js: ['otherScript.js'],
 			matches: ['https://content-script-extra.example.com/*'],
 		});
-		chrome.runtime.getManifest.mockReturnValue(manifest);
-
+		const {init, simulateExtensionStart, registerContentScripts} = await setup(t, {manifest});
 		init();
 		await simulateExtensionStart();
-		// @ts-expect-error Missing types in `jest-chrome`
-		expect(chrome.scripting.registerContentScripts).toMatchSnapshot();
+
+		t.assert.deepStrictEqual(registerContentScripts.mock.calls.map(call => call.arguments), [
+			registration('script.js', 'https://granted.example.com/*', ['https://content-script.example.com/*']),
+			registration('otherScript.js', 'https://granted.example.com/*', ['https://content-script-extra.example.com/*']),
+		]);
 	});
 
-	it('should register scripts when new permissions are added via onAdded listener', async () => {
+	it('should register scripts when new permissions are added via onAdded listener', async (t: TestContext) => {
+		const {init, simulateExtensionStart, permissions, registerContentScripts, injectToExistingTabs} = await setup(t);
 		init();
 		await simulateExtensionStart();
-		// @ts-expect-error Missing types in `jest-chrome`
-		chrome.scripting.registerContentScripts.mockClear();
-		injectToExistingTabsMock.mockClear();
+		registerContentScripts.mock.resetCalls();
+		injectToExistingTabs.mock.resetCalls();
 
-		const newPermissions: chrome.permissions.Permissions = {
+		await permissions.onAdded.callListeners({
 			origins: ['https://new-host.example.com/*'],
 			permissions: [],
-		};
-		// @ts-expect-error Missing types in `jest-chrome`
-		await chrome.permissions.onAdded.callListeners(newPermissions);
+		});
+		await Promise.resolve();
 
-		// @ts-expect-error Missing types in `jest-chrome`
-		expect(chrome.scripting.registerContentScripts).toHaveBeenCalledWith([
-			expect.objectContaining({matches: ['https://new-host.example.com/*']}),
+		t.assert.deepStrictEqual(registerContentScripts.mock.calls.map(call => call.arguments), [registration('script.js', 'https://new-host.example.com/*', ['https://content-script.example.com/*'])]);
+		t.assert.deepStrictEqual(injectToExistingTabs.mock.calls.map(call => call.arguments), [
+			[['https://new-host.example.com/*'], injectedScripts],
 		]);
-		expect(injectToExistingTabsMock).toHaveBeenCalledWith(
-			['https://new-host.example.com/*'],
-			[{js: ['script.js'], matches: baseManifest.content_scripts[0]?.matches}],
-		);
 	});
 
-	it('should not register scripts when onAdded fires with no origins', async () => {
+	it('should not register scripts when onAdded fires with no origins', async (t: TestContext) => {
+		const {init, simulateExtensionStart, permissions, registerContentScripts, injectToExistingTabs} = await setup(t);
 		init();
 		await simulateExtensionStart();
-		// @ts-expect-error Missing types in `jest-chrome`
-		chrome.scripting.registerContentScripts.mockClear();
-		injectToExistingTabsMock.mockClear();
+		registerContentScripts.mock.resetCalls();
+		injectToExistingTabs.mock.resetCalls();
 
-		// @ts-expect-error Missing types in `jest-chrome`
-		await chrome.permissions.onAdded.callListeners({origins: [], permissions: []});
+		await permissions.onAdded.callListeners({origins: [], permissions: []});
 
-		// @ts-expect-error Missing types in `jest-chrome`
-		expect(chrome.scripting.registerContentScripts).not.toHaveBeenCalled();
-		expect(injectToExistingTabsMock).not.toHaveBeenCalled();
+		t.assert.strictEqual(registerContentScripts.mock.callCount(), 0);
+		t.assert.strictEqual(injectToExistingTabs.mock.callCount(), 0);
 	});
 
-	it.each([
+	for (const [browser, message] of [
 		['Chrome', 'Duplicate script ID \'webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}\''],
 		['Firefox', 'Content script with id "webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}" is already registered.'],
-	])('should not re-inject into existing tabs when the script is already registered (duplicate ID, %s)', async (_browser, message) => {
-		// @ts-expect-error Missing types in `jest-chrome`
-		chrome.scripting.registerContentScripts.mockRejectedValue(new Error(message));
+	] as const) {
+		it(`should not re-inject into existing tabs when the script is already registered (duplicate ID, ${browser})`, async (t: TestContext) => {
+			const {init, simulateExtensionStart, registerContentScripts, injectToExistingTabs} = await setup(t);
+			registerContentScripts.mock.mockImplementation(async () => {
+				throw new Error(message);
+			});
 
-		init();
-		await simulateExtensionStart();
+			init();
+			await simulateExtensionStart();
 
-		expect(injectToExistingTabsMock).not.toHaveBeenCalled();
-	});
+			t.assert.strictEqual(injectToExistingTabs.mock.callCount(), 0);
+		});
+	}
 });
 
 describe('init - unregisterContentScript', () => {
-	it('should unregister scripts when permissions are removed via onRemoved listener', async () => {
+	it('should unregister scripts when permissions are removed via onRemoved listener', async (t: TestContext) => {
+		const {init, simulateExtensionStart, permissions, unregisterContentScripts} = await setup(t);
 		init();
 		await simulateExtensionStart();
 
-		const removedPermissions: chrome.permissions.Permissions = {
+		await permissions.onRemoved.callListeners({
 			origins: ['https://granted.example.com/*'],
 			permissions: [],
-		};
-		// @ts-expect-error Missing types in `jest-chrome`
-		await chrome.permissions.onRemoved.callListeners(removedPermissions);
-
-		// @ts-expect-error Missing types in `jest-chrome`
-		expect(chrome.scripting.unregisterContentScripts).toHaveBeenCalledWith({
-			ids: [
-				'webext-dynamic-content-script-{"js":["script.js"],"matches":["https://granted.example.com/*"]}',
-			],
 		});
+
+		t.assert.deepStrictEqual(unregisterContentScripts.mock.calls.map(call => call.arguments), [
+			[{ids: [getId(['script.js'], 'https://granted.example.com/*')]}],
+		]);
 	});
 
-	it('should not unregister scripts when onRemoved fires with no origins', async () => {
+	it('should not unregister scripts when onRemoved fires with no origins', async (t: TestContext) => {
+		const {init, simulateExtensionStart, permissions, unregisterContentScripts} = await setup(t);
 		init();
 		await simulateExtensionStart();
 
-		// @ts-expect-error Missing types in `jest-chrome`
-		await chrome.permissions.onRemoved.callListeners({origins: [], permissions: []});
+		await permissions.onRemoved.callListeners({origins: [], permissions: []});
 
-		// @ts-expect-error Missing types in `jest-chrome`
-		expect(chrome.scripting.unregisterContentScripts).not.toHaveBeenCalled();
+		t.assert.strictEqual(unregisterContentScripts.mock.callCount(), 0);
 	});
 });
 
 describe('init - no existing origins', () => {
-	it('should not register scripts when no additional permissions exist at startup', async () => {
-		queryPermissionsDiffMock.mockResolvedValue({});
+	it('should not register scripts when no additional permissions exist at startup', async (t: TestContext) => {
+		const {init, simulateExtensionStart, registerContentScripts, injectToExistingTabs} = await setup(t, {diff: {}});
 
 		init();
 		await simulateExtensionStart();
 
-		// @ts-expect-error Missing types in `jest-chrome`
-		expect(chrome.scripting.registerContentScripts).not.toHaveBeenCalled();
-		expect(injectToExistingTabsMock).not.toHaveBeenCalled();
+		t.assert.strictEqual(registerContentScripts.mock.callCount(), 0);
+		t.assert.strictEqual(injectToExistingTabs.mock.callCount(), 0);
 	});
 });

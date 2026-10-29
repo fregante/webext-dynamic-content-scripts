@@ -29,16 +29,17 @@
 		"demo:watch": "parcel watch --no-cache --no-hmr",
 		"prejest": "npm run demo:build",
 		"jest": "npm run jest:core",
-		"vitest": "vitest",
+		"test:unit": "tsc --noEmit && node --experimental-test-module-mocks --import ./setup-tests.js --test \"source/*.test.ts\"",
 		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
 		"prepare": "tsc --sourceMap false",
 		"lint": "xo",
 		"fix": "xo --fix",
-		"test": "run-p lint vitest jest",
+		"test": "run-p lint test:unit jest",
 		"watch": "tsc --watch"
 	},
 	"files": [
-		"distribution"
+		"distribution",
+		"!distribution/*.test.*"
 	],
 	"keywords": [
 		"contentscript",
@@ -66,18 +67,15 @@
 		"@parcel/config-webextension": "^2.16.4",
 		"@sindresorhus/tsconfig": "^8.1.0",
 		"@types/chrome": "^0.3.6",
-		"@types/jest": "^30.0.0",
+		"@types/node": "^24.19.2",
 		"expect-puppeteer": "^11.0.0",
 		"globals": "^17.13.0",
 		"jest": "^30.5.2",
-		"jest-chrome": "^0.8.0",
 		"jest-puppeteer": "^11.0.0",
 		"npm-run-all2": "^9.0.4",
 		"parcel": "^2.16.4",
 		"puppeteer": "^25.15.0",
 		"typescript": "^6.0.3",
-		"vite": "^8.3.5",
-		"vitest": "^5.0.5",
 		"xo": "^5.0.1"
 	},
 	"jest": {

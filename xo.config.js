@@ -17,16 +17,18 @@ const xoConfig = [
 		},
 	},
 	{
-		// Mocks (`jest-chrome`) are loosely typed
+		// Mocks are loosely typed
 		files: ['source/**/*.test.ts'],
 		rules: {
 			'@typescript-eslint/no-unsafe-member-access': 'off',
 			'@typescript-eslint/no-unsafe-call': 'off',
+			// `node:test` registers tests synchronously and returns promises
+			'@typescript-eslint/no-floating-promises': 'off',
 		},
 	},
 	{
 		// Sets up the test environment globals
-		files: ['vitest.setup.js'],
+		files: ['setup-tests.js'],
 		rules: {
 			'unicorn/no-global-object-property-assignment': 'off',
 		},

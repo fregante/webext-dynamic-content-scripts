@@ -1,3 +1,3 @@
-import {init} from './lib.js';
+import {init} from './lib.ts';
 
 init();

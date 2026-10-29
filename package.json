@@ -29,7 +29,7 @@
 		"demo:watch": "parcel watch --no-cache --no-hmr",
 		"prejest": "npm run demo:build",
 		"jest": "npm run jest:core",
-		"test:unit": "tsc --noEmit && node --experimental-test-module-mocks --import ./setup-tests.js --test \"source/*.test.ts\"",
+		"test:unit": "node --experimental-test-module-mocks --import ./setup-tests.js --test \"source/*.test.ts\"",
 		"jest:core": "NODE_OPTIONS=--experimental-vm-modules JEST_PUPPETEER_CONFIG=jest-puppeteer.config.cjs jest",
 		"prepare": "tsc --sourceMap false",
 		"lint": "xo",

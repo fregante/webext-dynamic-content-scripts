@@ -22,8 +22,6 @@ const xoConfig = [
 		rules: {
 			'@typescript-eslint/no-unsafe-member-access': 'off',
 			'@typescript-eslint/no-unsafe-call': 'off',
-			// `node:test` registers tests synchronously and returns promises
-			'@typescript-eslint/no-floating-promises': 'off',
 		},
 	},
 	{

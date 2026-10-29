@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises -- `node:test` returns promises, fixed in a later xo */
 import {test, type TestContext} from 'node:test';
 import type * as Utils from './utils.ts';
 

@@ -2,7 +2,8 @@
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
 		"rootDir": "./source",
-		"types": ["chrome", "jest"],
+		"types": ["chrome", "node"],
+		"rewriteRelativeImportExtensions": true,
 		"outDir": "./distribution",
 		"target": "ES2022"
 	},

@@ -17,7 +17,7 @@ const xoConfig = [
 		},
 	},
 	{
-		// Mocks (`jest-chrome`) are loosely typed
+		// Mocks are loosely typed
 		files: ['source/**/*.test.ts'],
 		rules: {
 			'@typescript-eslint/no-unsafe-member-access': 'off',
@@ -26,7 +26,7 @@ const xoConfig = [
 	},
 	{
 		// Sets up the test environment globals
-		files: ['vitest.setup.js'],
+		files: ['setup-tests.js'],
 		rules: {
 			'unicorn/no-global-object-property-assignment': 'off',
 		},
